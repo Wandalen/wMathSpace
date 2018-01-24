@@ -1,6 +1,6 @@
 {
   "name": "wmathspace",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "engine": "node >= 6.0.0",
   "description": "Collection of routines for matrix math",
   "author": "Kostiantyn Wandalen <wtory.net@domainsbyproxy.com>",
@@ -13,7 +13,7 @@
   "license": "MIT",
   "main": "staging/dwtools/amath/space/wSpace.s",
   "files": [
-    "staging/dwtools/amath",
+    "staging/dwtools/amath/space",
     "production"
   ],
   "scripts": {
@@ -40,8 +40,8 @@
   "keywords": [
     "wTools",
     "math",
-    "vector",
-    "dot product",
+    "matrix",
+    "matrix math",
     "convolution"
   ]
 }
