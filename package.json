@@ -1,6 +1,6 @@
 {
   "name": "wmathspace",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "engine": "node >= 6.0.0",
   "description": "Collection of routines for matrix math",
   "author": "Kostiantyn Wandalen <wtory.net@domainsbyproxy.com>",
@@ -30,7 +30,8 @@
   "dependencies": {
     "wTools": "",
     "wProto": "",
-    "wscalar": ""
+    "wmathscalar": "",
+    "wmathsvector": ""
   },
   "devDependencies": {
     "wTesting": "",
