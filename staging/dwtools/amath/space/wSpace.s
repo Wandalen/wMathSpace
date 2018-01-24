@@ -24,8 +24,8 @@ if( typeof module !== 'undefined' )
 
   var _ = wTools;
 
-  _.include( 'wScalar' );
-  _.include( 'wVector' );
+  _.include( 'wMathScalar' );
+  _.include( 'wMathVector' );
 
   // require( '../arithmetic/cScalar.s' );
   // require( '../cvector/Base.s' );
