@@ -29,9 +29,9 @@
   },
   "dependencies": {
     "wTools": "",
-    "wProto": "",
+    "wCopyable": "",
     "wmathscalar": "",
-    "wmathsvector": ""
+    "wmathvector": ""
   },
   "devDependencies": {
     "wTesting": "",

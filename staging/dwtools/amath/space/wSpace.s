@@ -28,6 +28,7 @@ if( typeof module !== 'undefined' )
 
   _.include( 'wMathScalar' );
   _.include( 'wMathVector' );
+  _.include( 'wCopyable' );
 
   // require( '../arithmetic/cScalar.s' );
   // require( '../cvector/Base.s' );
