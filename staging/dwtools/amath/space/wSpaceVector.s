@@ -4,7 +4,7 @@
 
 //
 
-var _ = wTools;
+var _ = _global_.wTools;
 var vector = _.vector;
 var operations = vector.operations;
 

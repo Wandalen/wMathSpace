@@ -2,29 +2,28 @@
 
 'use strict';
 
-debugger;
-
 if( typeof module !== 'undefined' )
 {
 
-  if( typeof wBase === 'undefined' )
-  try
+  if( typeof _global_ === 'undefined' || !_global_.wBase )
   {
+    let toolsPath = '../../../dwtools/Base.s';
+    let toolsExternal = 0;
     try
     {
-      require.resolve( '../../../dwtools/Base.s' )/*fff*/;
+      require.resolve( toolsPath )/*hhh*/;
     }
-    finally
+    catch( err )
     {
-      require( '../../../dwtools/Base.s' )/*fff*/;
+      toolsExternal = 1;
+      require( 'wTools' );
     }
-  }
-  catch( err )
-  {
-    require( 'wTools' );
+    if( !toolsExternal )
+    require( toolsPath )/*hhh*/;
   }
 
-  var _ = wTools;
+
+  var _ = _global_.wTools;
 
   _.include( 'wMathScalar' );
   _.include( 'wMathVector' );
@@ -46,7 +45,7 @@ if( typeof module !== 'undefined' )
 
 //
 
-var _ = wTools;
+var _ = _global_.wTools;
 var abs = Math.abs;
 var min = Math.min;
 var max = Math.max;
@@ -188,7 +187,7 @@ function _copy( src,resetting )
   // if( _.instanceIsStandard( src ) && src.name === 'aColor' )
   // debugger;
 
-  wCopyable.prototype.copy.call( self,src );
+  _.Copyable.prototype.copy.call( self,src );
 
   if( isInstance )
   _.assert( _.arrayIdentical( self.dims , src.dims ) );
@@ -286,7 +285,7 @@ function clone()
 
   _.assert( arguments.length === 0 );
 
-  var dst = wCopyable.prototype.clone.call( self );
+  var dst = _.Copyable.prototype.clone.call( self );
 
   if( dst.buffer === self.buffer )
   dst[ bufferSymbol ] = _.arraySlice( dst.buffer );
@@ -3320,7 +3319,7 @@ _.classMake
   extend : Proto,
 });
 
-wCopyable.mixin( Self );
+_.Copyable.mixin( Self );
 /* _arrayDescriptorsApplyTo( Self ); */
 
 //
