@@ -3132,28 +3132,14 @@ function minmaxRowWise()
 
 //
 
-// function minmaxElement()
-// {
-//   var self = this;
-//   var result = { min : [], max : [] };
-//
-//   var minmax = self.distributionRangeSummaryColWise.apply( self,arguments );
-//
-//   for( var i = 0 ; i < minmax.length ; i += 1 )
-//   {
-//     result.min[ i ] = minmax[ i ].min.value;
-//     result.max[ i ] = minmax[ i ].max.value;
-//   }
-//
-//   return result;
-// }
-
-//
-
 function determinant()
 {
   var self = this;
   var l = self.length;
+
+  if( l === 0 )
+  return 0;
+
   var iterations = _.factorial( l );
   var result = 0;
 
