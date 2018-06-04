@@ -11,7 +11,7 @@ if( typeof module !== 'undefined' )
     let toolsExternal = 0;
     try
     {
-      require.resolve( toolsPath )/*hhh*/;
+      require.resolve( toolsPath );
     }
     catch( err )
     {
@@ -19,9 +19,8 @@ if( typeof module !== 'undefined' )
       require( 'wTools' );
     }
     if( !toolsExternal )
-    require( toolsPath )/*hhh*/;
+    require( toolsPath );
   }
-
 
   var _ = _global_.wTools;
 
@@ -89,6 +88,349 @@ function env( test )
   test.shouldBe( _.routineIs( space ) );
   test.shouldBe( _.objectIs( vector ) );
   test.shouldBe( _.objectIs( avector ) );
+
+}
+
+//
+
+function clone( test )
+{
+
+  test.description = 'make'; //
+
+  var buffer = new Float32Array([ 1,2,3,4,5,6 ]);
+  var a = new _.Space
+  ({
+    buffer : buffer,
+    dims : [ 3,2 ],
+    inputTransposing : 0,
+  });
+
+  test.description = 'clone'; //
+
+  var b = a.clone();
+  test.identical( a,b );
+  test.shouldBe( a.buffer !== b.buffer );
+  test.shouldBe( a.buffer === buffer );
+
+  test.identical( a.size,24 );
+  test.identical( a.sizeOfElementStride,12 );
+  test.identical( a.sizeOfElement,12 );
+  test.identical( a.sizeOfCol,12 );
+  test.identical( a.sizeOfRow,8 );
+  test.identical( a.dims,[ 3,2 ] );
+  test.identical( a.length,2 );
+
+  test.identical( a._stridesEffective,[ 1,3 ] );
+  test.identical( a.strideOfElement,3 );
+  test.identical( a.strideOfCol,3 );
+  test.identical( a.strideInCol,1 );
+  test.identical( a.strideOfRow,1 );
+  test.identical( a.strideInRow,3 );
+
+  test.description = 'set buffer'; //
+
+  a.buffer = new Float32Array([ 11,12,13 ]);
+
+  test.identical( a.size,12 );
+  test.identical( a.sizeOfElementStride,12 );
+  test.identical( a.sizeOfElement,12 );
+  test.identical( a.sizeOfCol,12 );
+  test.identical( a.sizeOfRow,4 );
+  test.identical( a.dims,[ 3,1 ] );
+  test.identical( a.length,1 );
+
+  test.identical( a._stridesEffective,[ 1,3 ] );
+  test.identical( a.strideOfElement,3 );
+  test.identical( a.strideOfCol,3 );
+  test.identical( a.strideInCol,1 );
+  test.identical( a.strideOfRow,1 );
+  test.identical( a.strideInRow,3 );
+
+  logger.log( a );
+
+  test.description = 'set dimension'; //
+
+  a.dims = [ 1,3 ];
+
+  test.identical( a.size,12 );
+  test.identical( a.sizeOfElementStride,4 );
+  test.identical( a.sizeOfElement,4 );
+  test.identical( a.sizeOfCol,4 );
+  test.identical( a.sizeOfRow,12 );
+  test.identical( a.dims,[ 1,3 ] );
+  test.identical( a.length,3 );
+
+  test.identical( a._stridesEffective,[ 1,1 ] );
+  test.identical( a.strideOfElement,1 );
+  test.identical( a.strideOfCol,1 );
+  test.identical( a.strideInCol,1 );
+  test.identical( a.strideOfRow,1 );
+  test.identical( a.strideInRow,1 );
+
+  logger.log( a );
+
+  test.description = 'copy buffer and dims'; //
+
+  a.dims = [ 1,3 ];
+  a.copyResetting({ buffer : new Float32Array([ 3,4,5 ]), dims : [ 3,1 ] });
+
+  test.identical( a.size,12 );
+  test.identical( a.sizeOfElementStride,12 );
+  test.identical( a.sizeOfElement,12 );
+  test.identical( a.sizeOfCol,12 );
+  test.identical( a.sizeOfRow,4 );
+  test.identical( a.dims,[ 3,1 ] );
+  test.identical( a.length,1 );
+
+  test.identical( a._stridesEffective,[ 1,3 ] );
+  test.identical( a.strideOfElement,3 );
+  test.identical( a.strideOfCol,3 );
+  test.identical( a.strideInCol,1 );
+  test.identical( a.strideOfRow,1 );
+  test.identical( a.strideInRow,3 );
+
+  logger.log( a );
+
+  test.description = 'copy dims and buffer'; //
+
+  a.dims = [ 1,3 ];
+  a.copyResetting({ dims : [ 3,1 ], buffer : new Float32Array([ 3,4,5 ]) });
+
+  test.identical( a.size,12 );
+  test.identical( a.sizeOfElementStride,12 );
+  test.identical( a.sizeOfElement,12 );
+  test.identical( a.sizeOfCol,12 );
+  test.identical( a.sizeOfRow,4 );
+  test.identical( a.dims,[ 3,1 ] );
+  test.identical( a.length,1 );
+
+  test.identical( a._stridesEffective,[ 1,3 ] );
+  test.identical( a.strideOfElement,3 );
+  test.identical( a.strideOfCol,3 );
+  test.identical( a.strideInCol,1 );
+  test.identical( a.strideOfRow,1 );
+  test.identical( a.strideInRow,3 );
+
+  logger.log( a );
+  debugger;
+}
+
+//
+
+function construct( test )
+{
+
+  test.description = 'creating'; //
+
+  var a = new _.Space
+  ({
+    buffer : new Float32Array([ 0, 1,2, 3,4, 5,6, 7 ]),
+    offset : 1,
+    atomsPerElement : 3,
+    inputTransposing : 0,
+    strides : [ 2,6 ],
+    dims : [ 3,1 ],
+  });
+
+  logger.log( a );
+
+  test.identical( a.size,12 );
+  test.identical( a.sizeOfElementStride,24 );
+  test.identical( a.sizeOfElement,12 );
+  test.identical( a.sizeOfCol,12 );
+  test.identical( a.sizeOfRow,4 );
+  test.identical( a.dims,[ 3,1 ] );
+  test.identical( a.length,1 );
+
+  test.identical( a._stridesEffective,[ 2,6 ] );
+  test.identical( a.strideOfElement,6 );
+  test.identical( a.strideOfCol,6 );
+  test.identical( a.strideInCol,2 );
+  test.identical( a.strideOfRow,2 );
+  test.identical( a.strideInRow,6 );
+
+  test.description = 'serializing clone'; //
+
+  var cloned = a.cloneSerializing();
+
+  test.identical( cloned.data.inputTransposing, 0 );
+
+  var expected =
+  {
+    "data" :
+    {
+      "dims" : [ 3, 1 ],
+      "growingDimension" : 1,
+      "inputTransposing" : 0,
+      "buffer" : `--buffer-->0<--buffer--`,
+      "offset" : 0,
+      "strides" : [ 1, 3 ]
+    },
+    "descriptorsMap" :
+    {
+      "--buffer-->0<--buffer--" :
+      {
+        "bufferConstructorName" : `Float32Array`,
+        "sizeOfAtom" : 4,
+        "offset" : 0,
+        "size" : 12,
+        "index" : 0
+      }
+    },
+    "buffer" : ( new Uint8Array([ 0x0,0x0,0x80,0x3f,0x0,0x0,0x40,0x40,0x0,0x0,0xa0,0x40 ]) ).buffer
+  }
+
+  test.identical( cloned,expected );
+
+    test.description = 'deserializing clone'; //
+
+  var b = new _.Space({ buffer : new Float32Array(), inputTransposing : true });
+  b.copyDeserializing( cloned );
+  test.identical( b,a );
+  test.shouldBe( a.buffer !== b.buffer );
+
+  test.identical( a.buffer.length,8 );
+  test.identical( a.size,12 );
+  test.identical( a.sizeOfElement,12 );
+  test.identical( a.sizeOfCol,12 );
+  test.identical( a.sizeOfRow,4 );
+  test.identical( a.dims,[ 3,1 ] );
+  test.identical( a.length,1 );
+  test.identical( a.offset,1 );
+
+  test.identical( a.strides,[ 2,6 ] );
+  test.identical( a._stridesEffective,[ 2,6 ] );
+  test.identical( a.strideOfElement,6 );
+  test.identical( a.strideOfCol,6 );
+  test.identical( a.strideInCol,2 );
+  test.identical( a.strideOfRow,2 );
+  test.identical( a.strideInRow,6 );
+
+  test.identical( b.buffer.length,3 );
+  test.identical( b.size,12 );
+  test.identical( b.sizeOfElement,12 );
+  test.identical( b.sizeOfCol,12 );
+  test.identical( b.sizeOfRow,4 );
+  test.identical( b.dims,[ 3,1 ] );
+  test.identical( b.length,1 );
+  test.identical( b.offset,0 );
+
+  test.identical( b.strides,[ 1,3 ] );
+  test.identical( b._stridesEffective,[ 1,3 ] );
+  test.identical( b.strideOfElement,3 );
+  test.identical( b.strideOfCol,3 );
+  test.identical( b.strideInCol,1 );
+  test.identical( b.strideOfRow,1 );
+  test.identical( b.strideInRow,3 );
+
+  test.description = 'creating'; //
+
+  var a = new _.Space
+  ({
+    buffer : new Float32Array([ 0, 1,2, 3,4, 5,6, 7 ]),
+    offset : 1,
+    atomsPerElement : 3,
+    inputTransposing : 1,
+    strides : [ 2,6 ],
+    // dims : [ 3,1 ],
+  });
+
+  logger.log( a );
+
+  test.identical( a.size,12 );
+  test.identical( a.sizeOfElementStride,24 );
+  test.identical( a.sizeOfElement,12 );
+  test.identical( a.sizeOfCol,12 );
+  test.identical( a.sizeOfRow,4 );
+  test.identical( a.dims,[ 3,1 ] );
+  test.identical( a.length,1 );
+
+  test.identical( a._stridesEffective,[ 2,6 ] );
+  test.identical( a.strideOfElement,6 );
+  test.identical( a.strideOfCol,6 );
+  test.identical( a.strideInCol,2 );
+  test.identical( a.strideOfRow,2 );
+  test.identical( a.strideInRow,6 );
+
+  test.description = 'serializing clone'; //
+
+  var cloned = a.cloneSerializing();
+
+  test.identical( cloned.data.inputTransposing, 1 );
+
+  var expected =
+  {
+    "data" :
+    {
+      "dims" : [ 3, 1 ],
+      "growingDimension" : 1,
+      "inputTransposing" : 1,
+      "buffer" : `--buffer-->0<--buffer--`,
+      "offset" : 0,
+      "strides" : [ 1, 1 ]
+    },
+    "descriptorsMap" :
+    {
+      "--buffer-->0<--buffer--" :
+      {
+        "bufferConstructorName" : `Float32Array`,
+        "sizeOfAtom" : 4,
+        "offset" : 0,
+        "size" : 12,
+        "index" : 0
+      }
+    },
+    "buffer" : ( new Uint8Array([ 0x0,0x0,0x80,0x3f,0x0,0x0,0x40,0x40,0x0,0x0,0xa0,0x40 ]) ).buffer
+  }
+
+  test.identical( cloned,expected );
+
+  test.description = 'deserializing clone'; //
+
+  var b = new _.Space({ buffer : new Float32Array(), inputTransposing : true });
+  b.copyDeserializing( cloned );
+  test.identical( b,a );
+  test.shouldBe( a.buffer !== b.buffer );
+
+  debugger;
+
+  test.identical( a.buffer.length,8 );
+  test.identical( a.size,12 );
+  test.identical( a.sizeOfElement,12 );
+  test.identical( a.sizeOfCol,12 );
+  test.identical( a.sizeOfRow,4 );
+  test.identical( a.dims,[ 3,1 ] );
+  test.identical( a.length,1 );
+  test.identical( a.offset,1 );
+
+  test.identical( a.strides,[ 2,6 ] );
+  test.identical( a._stridesEffective,[ 2,6 ] );
+  test.identical( a.strideOfElement,6 );
+  test.identical( a.strideOfCol,6 );
+  test.identical( a.strideInCol,2 );
+  test.identical( a.strideOfRow,2 );
+  test.identical( a.strideInRow,6 );
+
+  test.identical( b.buffer.length,3 );
+  test.identical( b.size,12 );
+  test.identical( b.sizeOfElement,12 );
+  test.identical( b.sizeOfCol,12 );
+  test.identical( b.sizeOfRow,4 );
+  test.identical( b.dims,[ 3,1 ] );
+  test.identical( b.length,1 );
+  test.identical( b.offset,0 );
+
+  test.identical( b.strides,[ 1,1 ] );
+  test.identical( b._stridesEffective,[ 1,1 ] );
+  test.identical( b.strideOfElement,1 );
+  test.identical( b.strideOfCol,1 );
+  test.identical( b.strideInCol,1 );
+  test.identical( b.strideOfRow,1 );
+  test.identical( b.strideInRow,1 );
+
+  // var s = _.toJs( c );
+  // debugger;
 
 }
 
@@ -417,9 +759,40 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 21 );
   test.identical( m.reduceToProductAtomWise(), 720 );
 
+  test.description = 'construct empty matrix with dims defined'; //
+
+  var m = new space({ buffer : o.arrayMake(), offset : o.offset, inputTransposing : 0, dims : [ 1,0 ] });
+
+  logger.log( 'm\n' + _.toStr( m ) );
+
+  test.identical( m.size,0 );
+  test.identical( m.sizeOfElement,4 );
+  test.identical( m.sizeOfCol,4 );
+  test.identical( m.sizeOfRow,0 );
+  test.identical( m.dims,[ 1,0 ] );
+  test.identical( m.length,0 );
+
+  test.identical( m._stridesEffective,[ 1,1 ] );
+  test.identical( m.strideOfElement,1 );
+  test.identical( m.strideOfCol,1 );
+  test.identical( m.strideInCol,1 );
+  test.identical( m.strideOfRow,1 );
+  test.identical( m.strideInRow,1 );
+
+  var r1 = m.rowVectorGet( 0 );
+  var r2 = m.lineVectorGet( 1,0 );
+
+  console.log( r1.toStr() );
+  console.log( o.vec([]) );
+
+  test.identical( r1,o.vec([]) );
+  test.identical( r1,r2 );
+  test.identical( m.reduceToSumAtomWise(), 0 );
+  test.identical( m.reduceToProductAtomWise(), 1 );
+
   test.description = 'construct empty matrix'; //
 
-  var m = new space({ buffer : o.arrayMake(), offset : o.offset, });
+  var m = new space({ buffer : o.arrayMake(), offset : o.offset, inputTransposing : 0/*, dims : [ 1,0 ]*/ });
 
   logger.log( 'm\n' + _.toStr( m ) );
 
@@ -473,6 +846,7 @@ function _make( test,o )
     test.identical( m.sizeOfCol,12 );
     test.identical( m.sizeOfRow,0 );
     test.identical( m.dims,[ 3,0 ] );
+    test.identical( m.breadth,[ 3 ] );
     test.identical( m.length,0 );
 
     test.identical( m._stridesEffective,[ 1,3 ] );
@@ -489,7 +863,6 @@ function _make( test,o )
     console.log( r1.toStr() );
     console.log( o.vec([]) );
 
-    debugger;
     test.identical( r1,vec( new m.buffer.constructor([]) ) );
     test.identical( r1,r2 );
     test.identical( r1,r3 );
@@ -1749,6 +2122,7 @@ function makeHelper( test )
 
     test.identical( m.reduceToSumAtomWise(), 0 );
     test.identical( m.reduceToProductAtomWise(), 1 );
+    debugger;
     test.identical( m.determinant(),0 );
     test.shouldBe( m.buffer instanceof Float32Array );
 
@@ -3210,7 +3584,98 @@ function copyTo( test )
 
 function copy( test )
 {
-  // debugger;
+
+  var b1 = new Float32Array([
+    0,
+    1,7,
+    2,8,
+    3,9,
+    4,10,
+    5,11,
+    6,12,
+    13,
+  ]);
+  var b2 = new Float32Array([ 0,0,10,20,30,40,50,60,0,0 ])
+
+  var src = new _.Space
+  ({
+    buffer : b1,
+    dims : [ 2,3 ],
+    strides : [ 2,4 ],
+    offset : 1,
+    inputTransposing : 1,
+  });
+
+  var dst = new _.Space
+  ({
+    buffer : b2,
+    dims : [ 2,3 ],
+    offset : 2,
+    inputTransposing : 0,
+  });
+
+  logger.log( 'src',src );
+  logger.log( 'dst',dst );
+
+  test.description = 'copy buffer without copying strides and offset'; //
+
+  debugger;
+  dst.copy( src );
+
+  test.identical( dst,src );
+  test.shouldBe( dst.buffer !== src.buffer );
+
+  debugger;
+
+  test.shouldBe( src.buffer === b1 );
+
+  test.identical( src.offset,1 );
+  test.identical( src.size,24 );
+  test.identical( src.sizeOfElementStride,16 );
+  test.identical( src.sizeOfElement,8 );
+  test.identical( src.sizeOfCol,8 );
+  test.identical( src.sizeOfRow,12 );
+  test.identical( src.dims,[ 2,3 ] );
+  test.identical( src.length,3 );
+
+  test.identical( src.strides,[ 2,4 ] );
+  test.identical( src._stridesEffective,[ 2,4 ] );
+  test.identical( src.strideOfElement,4 );
+  test.identical( src.strideOfCol,4 );
+  test.identical( src.strideInCol,2 );
+  test.identical( src.strideOfRow,2 );
+  test.identical( src.strideInRow,4 );
+
+  debugger;
+
+  test.shouldBe( dst.buffer === b2 );
+
+  test.identical( dst.offset,2 );
+  test.identical( dst.size,24 );
+  test.identical( dst.sizeOfElementStride,4 );
+  test.identical( dst.sizeOfElement,8 );
+  test.identical( dst.sizeOfCol,8 );
+  test.identical( dst.sizeOfRow,12 );
+  test.identical( dst.dims,[ 2,3 ] );
+  test.identical( dst.length,3 );
+
+  test.identical( dst.strides,null );
+  test.identical( dst._stridesEffective,[ 3,1 ] );
+  test.identical( dst.strideOfElement,1 );
+  test.identical( dst.strideOfCol,1 );
+  test.identical( dst.strideInCol,3 );
+  test.identical( dst.strideOfRow,3 );
+  test.identical( dst.strideInRow,1 );
+
+  debugger;
+
+  // test.identical( src1._stridesEffective,[ 1,3 ] );
+  // test.identical( src2._stridesEffective,[ 1,3 ] );
+  // test.identical( dst._stridesEffective,[ 1,2 ] );
+  //
+  // test.identical( src1.dims,[ 3,2 ] );
+  // test.identical( src2.dims,[ 2,1 ] );
+  // test.identical( dst.dims,[ 2,1 ] );
 
   test.description = 'no buffer move'; //
 
@@ -3340,7 +3805,6 @@ function copy( test )
   test.identical( dst,expected );
   test.shouldBe( dst.buffer === buffer );
 
-  // return;
   test.description = 'copy from space with different srides'; //
 
   var src1 = space.make([ 3,2 ]).copy
@@ -3358,8 +3822,6 @@ function copy( test )
     22,
   ]);
 
-  debugger;
-
   test.identical( src1._stridesEffective,[ 1,3 ] );
   test.identical( src2._stridesEffective,[ 1,3 ] );
   test.identical( dst._stridesEffective,[ 1,2 ] );
@@ -3368,8 +3830,11 @@ function copy( test )
   test.identical( src2.dims,[ 2,1 ] );
   test.identical( dst.dims,[ 2,1 ] );
 
-  debugger;
-  dst.copy( src2 );
+  console.log( 'src1',src1.toStr() );
+  console.log( 'src2',src2.toStr() );
+  console.log( 'dst',dst.toStr() );
+
+  dst.copy( src2 ); /* xxx */
 
   test.identical( src1._stridesEffective,[ 1,3 ] );
   test.identical( src2._stridesEffective,[ 1,3 ] );
@@ -3382,7 +3847,55 @@ function copy( test )
   console.log( 'src1',src1.toStr() );
   console.log( 'src2',src2.toStr() );
 
-  debugger;
+  test.description = 'copy different size'; //
+
+  var src = space.make([ 3,2 ]).copy
+  ([
+    1,4,
+    2,5,
+    3,6,
+  ]);
+
+  var dst = space.make([ 2,1 ]).copy
+  ([
+    11,
+    22,
+  ]);
+
+  dst.copy( src );
+
+  test.identical( dst.buffer, src.buffer );
+  test.identical( dst.dims, src.dims );
+  test.identical( dst.strides, src.strides );
+  test.identical( dst._stridesEffective, src._stridesEffective );
+
+  test.shouldBe( dst.buffer !== src.buffer );
+  test.shouldBe( dst.dims !== src.dims );
+  test.shouldBe( dst.strides === null );
+  test.shouldBe( dst._stridesEffective !== src._stridesEffective );
+
+  test.description = 'copy different size, empty'; //
+
+  var src = space.make([ 3,2 ]).copy
+  ([
+    1,4,
+    2,5,
+    3,6,
+  ]);
+
+  var dst = space.make([ 0,0 ]);
+
+  dst.copy( src );
+
+  test.identical( dst.buffer, src.buffer );
+  test.identical( dst.dims, src.dims );
+  test.identical( dst.strides, src.strides );
+  test.identical( dst._stridesEffective, src._stridesEffective );
+
+  test.shouldBe( dst.buffer !== src.buffer );
+  test.shouldBe( dst.dims !== src.dims );
+  test.shouldBe( dst.strides === null );
+  test.shouldBe( dst._stridesEffective !== src._stridesEffective );
 
   /* */
 
@@ -3391,11 +3904,12 @@ function copy( test )
 
   test.description = 'inconsistant sizes'; //
 
-  test.shouldThrowErrorSync( () => space.make([ 3,2 ]).copy( space.make([ 2,2 ]) ) );
-  test.shouldThrowErrorSync( () => space.make([ 3,2 ]).copy( space.make([ 3,1 ]) ) );
-  test.shouldThrowErrorSync( () => space.make([ 3,2 ]).copy( space.make([ 0,0 ]) ) );
+  test.shouldThrowErrorSync( () => space.make([ 3,2 ]).copy( 'x' ) );
 
-  debugger;
+  // test.shouldThrowErrorSync( () => space.make([ 3,2 ]).copy( space.make([ 2,2 ]) ) );
+  // test.shouldThrowErrorSync( () => space.make([ 3,2 ]).copy( space.make([ 3,1 ]) ) );
+  // test.shouldThrowErrorSync( () => space.make([ 3,2 ]).copy( space.make([ 0,0 ]) ) );
+
 }
 
 //
@@ -9518,10 +10032,10 @@ function polynomClosestFor( test )
 var Self =
 {
 
-  name : 'space',
+  name : 'Math.Space.test',
   silencing : 1,
 
-  // routine : 'solveWithPivoting',
+  // routine : 'construct',
   // verbosity : 7,
 
   context :
@@ -9548,6 +10062,8 @@ var Self =
     /* maker */
 
     env : env,
+    clone : clone,
+    construct : construct,
     make : make,
     makeHelper : makeHelper,
     makeLine : makeLine,
@@ -9603,6 +10119,6 @@ var Self =
 
 Self = wTestSuit( Self );
 if( typeof module !== 'undefined' && !module.parent )
-_.Tester.test( Self.name );
+_global_.wTester.test( Self.name );
 
 })();
