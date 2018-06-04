@@ -470,12 +470,12 @@ function convertToClass( cls,src )
     var result, array;
     var atomsPerSpace = src.atomsPerSpace;
 
-    if( _.clsLikeArray( cls ) )
+    if( _.constructorLikeArray( cls ) )
     {
       result = new cls( atomsPerSpace );
       array = result;
     }
-    else if( _.clsIsVector( cls ) )
+    else if( _.constructorIsVector( cls ) )
     {
       debugger;
       array = new src.buffer.constructor( atomsPerSpace );
@@ -493,7 +493,7 @@ function convertToClass( cls,src )
     var atomsPerSpace = src.length;
     src = vector.from( src );
 
-    if( _.clsIsSpace( cls ) )
+    if( _.constructorIsSpace( cls ) )
     {
       var array = new src._vectorBuffer.constructor( atomsPerSpace );
       result = new cls
@@ -505,13 +505,13 @@ function convertToClass( cls,src )
       for( var i = 0 ; i < src.length ; i += 1 )
       result.atomSet( [ i,0 ],src.eGet( i ) );
     }
-    else if( _.clsLikeArray( cls ) )
+    else if( _.constructorLikeArray( cls ) )
     {
       result = new cls( atomsPerSpace );
       for( var i = 0 ; i < src.length ; i += 1 )
       result[ i ] = src.eGet( i );
     }
-    else if( _.clsIsVector( cls ) )
+    else if( _.constructorIsVector( cls ) )
     {
       var array = new src._vectorBuffer.constructor( atomsPerSpace );
       result = vector.fromArray( array );
