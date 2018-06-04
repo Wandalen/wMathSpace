@@ -11,7 +11,7 @@ if( typeof module !== 'undefined' )
     let toolsExternal = 0;
     try
     {
-      require.resolve( toolsPath )/*hhh*/;
+      require.resolve( toolsPath );
     }
     catch( err )
     {
@@ -19,7 +19,7 @@ if( typeof module !== 'undefined' )
       require( 'wTools' );
     }
     if( !toolsExternal )
-    require( toolsPath )/*hhh*/;
+    require( toolsPath );
   }
 
 
@@ -69,13 +69,6 @@ var Self = function wSpace( o )
   return Self.prototype.init.apply( this,arguments );
 }
 
-// debugger;
-// var r2 = new( _.routineJoin( Array, Array, new Uint32Array([ 1,2,3,4 ]) ) );
-// debugger;
-// var f = Array.bind.apply( Array, new Uint32Array([ 1,2,3,4 ]) );
-// var r3 = new( f );
-// debugger;
-
 // --
 // routine
 // --
@@ -92,19 +85,208 @@ function init( o )
   self[ occupiedRangeSymbol ] = null;
   self[ breadthSymbol ] = null;
 
+  self[ stridesSymbol ] = null;
+  self[ offsetSymbol ] = null;
+
   _.instanceInit( self );
   _.assert( arguments.length <= 1 );
 
   Object.preventExtensions( self );
 
+  self.strides = null;
+  self.offset = 0;
+  self.breadth = null;
+
   self._changing[ 0 ] -= 1;
 
   if( o )
-  self.copy( o );
+  {
+
+    if( _.mapIs( o ) )
+    {
+
+      if( o.atomsPerElement !== undefined )
+      {
+        _.assert( _.arrayLike( o.buffer ) );
+        // _.assert( !o.dims );
+        if( !o.offset )
+        o.offset = 0;
+        if( !o.dims )
+        {
+          if( o.strides )
+          o.dims = [ o.atomsPerElement, ( o.buffer.length - o.offset ) / o.strides[ 1 ] ];
+          else
+          o.dims = [ o.atomsPerElement, ( o.buffer.length - o.offset ) / o.atomsPerElement ];
+          o.dims[ 1 ] = Math.floor( o.dims[ 1 ] );
+        }
+        _.assert( _.numberIsInt( o.dims[ 1 ] ) );
+        delete o.atomsPerElement;
+      }
+
+      // if( o.dims === undefined && o.strides === undefined )
+      // if( _.arrayLike( o.buffer ) )
+      // {
+      //   if( !o.offset )
+      //   o.offset = 0;
+      //   o.dims = [ o.buffer.length-o.offset,1 ];
+      //   // o.dims = [ 1,o.buffer.length-o.offset ];
+      // }
+
+    }
+
+    self.copy( o );
+  }
   else
-  self._sizeChanged();
+  {
+    self._sizeChanged();
+  }
 
 }
+
+//
+
+function _traverseAct( it )
+{
+
+  if( it.resetting === undefined )
+  it.resetting = 1;
+
+  _.Copyable.prototype._traverseActPre.call( this,it );
+
+  _.assert( arguments.length === 1 );
+  _.assert( it.resetting !== undefined );
+  _.assert( it.dst );
+  // _.assert( it.dst._changeBegin );
+
+  var dst = it.dst;
+  var src = it.src;
+  var srcIsInstance = src instanceof Self;
+  var dstIsInstance = dst instanceof Self;
+
+  if( src === dst )
+  return dst;
+
+  // if( src.buffer && src.buffer.length === 0 && src.offset === 0 && src.inputTransposing === 0 )
+  // debugger;
+
+  /* */
+
+  if( _.arrayLike( src ) )
+  {
+    dst.copyFromBuffer( src );
+    return dst;
+  }
+  else if( _.numberIs( src ) )
+  {
+    dst.copyFromScalar( src );
+    return dst;
+  }
+
+  if( dstIsInstance )
+  dst._changeBegin();
+
+  if( src.dims )
+  {
+    _.assert( it.resetting || !dst.dims || _.arrayIdentical( dst.dims , src.dims ) );
+  }
+
+  if( dstIsInstance )
+  if( dst._stridesEffective )
+  dst[ stridesEffectiveSymbol ] = null;
+
+  // if( src.buffer && src.buffer.length === 0 && src.offset === 0 && src.dims[ 0 ] === 1 && src.dims[ 1 ] === 0 )
+  // debugger;
+
+  // if( src.buffer && src.buffer.length === 0 && src.offset === 0 && src.inputTransposing === 0 )
+  // debugger;
+
+  /* */
+
+  if( dstIsInstance )
+  if( src.buffer !== undefined )
+  {
+    /* use here resetting option maybe!!!? */
+
+    dst.dims = null;
+
+    if( srcIsInstance && dst.buffer && dst.atomsPerSpace === src.atomsPerSpace )
+    {
+    }
+    else if( !srcIsInstance )
+    {
+      dst.buffer = src.buffer;
+      if( src.breadth !== undefined )
+      dst.breadth = src.breadth;
+      if( src.offset !== undefined )
+      dst.offset = src.offset;
+      if( src.strides !== undefined )
+      dst.strides = src.strides;
+    }
+    else if( src.buffer && !dst.buffer )
+    {
+      dst.buffer = _.arrayMakeSimilar( src.buffer , src.atomsPerSpace );
+      dst.offset = 0;
+      dst.strides = null;
+      dst[ stridesEffectiveSymbol ] = dst.stridesForDimensions( src.dims,!!dst.inputTransposing );
+    }
+    else if( src.buffer && dst.atomsPerSpace !== src.atomsPerSpace )
+    {
+      dst.buffer = _.arrayMakeSimilar( src.buffer , src.atomsPerSpace );
+      dst.offset = 0;
+      dst.strides = null;
+      dst[ stridesEffectiveSymbol ] = dst.stridesForDimensions( src.dims,!!dst.inputTransposing );
+    }
+    else debugger;
+
+  }
+
+  /* */
+
+  if( src.dims )
+  dst.dims = src.dims;
+
+  it.copyingAggregates = 0;
+  dst = _.Copyable.prototype._traverseAct( it );
+
+  if( srcIsInstance )
+  _.assert( _.arrayIdentical( dst.dims , src.dims ) );
+
+  if( dstIsInstance )
+  {
+    dst._changeEnd();
+    _.assert( dst._changing[ 0 ] === 0 );
+  }
+
+  if( srcIsInstance )
+  {
+
+    if( dstIsInstance )
+    {
+      _.assert( dst.hasShape( src ) );
+      src.atomEach( function( it )
+      {
+        dst.atomSet( it.indexNd, it.atom );
+      });
+
+    }
+    else
+    {
+      var extract = it.src.extractNormalized();
+      var newIteration = it.iterationNew();
+      newIteration.select( 'buffer' );
+      newIteration.src = extract.buffer;
+      dst.buffer = _._cloneAct( newIteration );
+      dst.offset = extract.offset;
+      dst.strides = extract.strides;
+    }
+  }
+
+  return dst;
+}
+
+_traverseAct.iterationDefaults = Object.create( _._cloner.iterationDefaults );
+// _traverseAct.iterationDefaults.resetting = 0;
+_traverseAct.defaults = _.mapSupplementOwn( Object.create( _._cloner.defaults ),_traverseAct.iterationDefaults );
 
 //
 
@@ -112,124 +294,13 @@ function _copy( src,resetting )
 {
   var self = this;
 
-  // if( src.name === 'aColor' && src.length === 2 && src.buffer )
-  // debugger;
-
   _.assert( arguments.length === 2 );
 
-  // if( src.name === 'aOpacity' )
-  // debugger;
+  var it = _._cloner( self._traverseAct,{ src : src, dst : self, /*resetting : resetting,*/ technique : 'object' } );
 
-  // if( _.instanceIsStandard( src ) && src.name === 'aColor' )
-  // debugger;
+  self._traverseAct( it );
 
-  if( src === self )
-  return self;
-
-  if( _.arrayLike( src ) )
-  {
-    self.copyFromBuffer( src );
-    return self;
-  }
-  else if( _.numberIs( src ) )
-  {
-    self.copyFromScalar( src );
-    return self;
-  }
-
-  self._changeBegin();
-
-  if( src.dims )
-  {
-    _.assert( resetting || !self.dims || _.arrayIdentical( self.dims , src.dims ) );
-  }
-
-  var isInstance = src instanceof Self;
-
-  if( self._stridesEffective )
-  self[ stridesEffectiveSymbol ] = null;
-
-  if( src.buffer !== undefined )
-  {
-    /* use here resetting option maybe!!!? */
-
-    if( isInstance && self.buffer && self.buffer.length === src.atomsPerSpace )
-    {
-    }
-    else if( !isInstance )
-    {
-      self.buffer = src.buffer;
-    }
-    else if( src.buffer && !self.buffer )
-    {
-      self.buffer = _.arrayMakeSimilar( src.buffer , src.atomsPerSpace );
-      self.offset = 0;
-      self.strides = null;
-      self[ stridesEffectiveSymbol ] = self.stridesForDimensions( src.dims,!!self.inputTransposing );
-    }
-    else if( src.buffer && self.buffer.length !== src.atomsPerSpace )
-    {
-      self.buffer = _.arrayMakeSimilar( src.buffer , src.atomsPerSpace );
-      self.offset = 0;
-      self.strides = null;
-      self[ stridesEffectiveSymbol ] = self.stridesForDimensions( src.dims,!!self.inputTransposing );
-    }
-    else debugger;
-
-  }
-
-  if( src.dims )
-  self.dims = src.dims;
-  // if( src._stridesEffective )
-  // self._stridesEffective = src._stridesEffective;
-  // _.assert( !src._stridesEffective );
-
-  // if( _.instanceIsStandard( src ) && src.name === 'aColor' )
-  // debugger;
-
-  _.Copyable.prototype.copy.call( self,src );
-
-  if( isInstance )
-  _.assert( _.arrayIdentical( self.dims , src.dims ) );
-
-  if( isInstance )
-  {
-
-    // if( !self.buffer )
-    // debugger;
-    // if( !self.buffer )
-    // self.buffer = _.arrayMakeSimilar( src.buffer , self.atomsPerSpaceForDimensions( self.dims ) );
-
-  }
-
-  self._changeEnd();
-  _.assert( self._changing[ 0 ] === 0 );
-
-  if( isInstance )
-  {
-
-    // debugger;
-    // if( !self.buffer )
-    // self.buffer = _.arrayMakeSimilar( src.buffer , self.atomsPerSpaceForDimensions( self.dims ) );
-
-    _.assert( self.hasShape( src ) );
-    src.atomEach( function( it )
-    {
-      // debugger;
-      self.atomSet( it.indexNd, it.atom );
-    });
-    // debugger;
-  }
-
-  // if( src instanceof Self )
-  // self.buffer = _.arraySlice( self.buffer );
-
-  // if( src.dims )
-  // self.dims = src.dims;
-
-  // self._changeEnd();
-
-  return self;
+  return it.dst;
 }
 
 //
@@ -353,6 +424,28 @@ function copyTo( dst,src )
   }
 
   return odst;
+}
+
+//
+
+function extractNormalized()
+{
+  var self = this;
+  var result = Object.create( null );
+
+  _.assert( arguments.length === 0 );
+
+  result.buffer = _.arrayMakeSimilar( self.buffer , self.atomsPerSpace );
+  result.offset = 0;
+  result.strides = self.stridesForDimensions( self.dims,self.inputTransposing );
+
+  self.atomEach( function( it )
+  {
+    var i = self._flatAtomIndexFromIndexNd( it.indexNd,result.strides );
+    result.buffer[ i ] = it.atom;
+  });
+
+  return result;
 }
 
 // --
@@ -569,7 +662,11 @@ function _stridesSet( src )
 {
   var self = this;
 
-  _.assert( _.arrayLike( src ) || _.numberIs( src ) || src === null );
+  // _.assert( _.arrayLike( src ) || _.numberIs( src ) || src === null );
+  _.assert( _.arrayLike( src ) || src === null );
+
+  if( _.arrayLike( src ) )
+  src = _.arraySlice( src );
 
   self[ stridesSymbol ] = src;
 
@@ -644,7 +741,7 @@ function stridesForDimensions( dims,transposing )
     strides[ i ] = strides[ i ]*strides[ i-1 ];
   }
 
-  // xxx
+  /* */
 
   if( dims[ 0 ] === Infinity )
   strides[ 0 ] = 0;
@@ -678,15 +775,14 @@ function _bufferSet( src )
   if( self[ bufferSymbol ] === src )
   return;
 
-  // if( _.numberIs( src ) )
-  // debugger;
-
   if( _.numberIs( src ) )
   src = this.array.makeArrayOfLength([ src ]);
 
   _.assert( _.arrayLike( src ) || src === null );
 
   self[ bufferSymbol ] = src;
+
+  if( !self._changing[ 0 ] )
   self[ dimsSymbol ] = null;
 
   self._sizeChanged();
@@ -863,17 +959,20 @@ function _adjustAct()
 
   _.assert( self.dims === null || _.arrayLike( self.dims ) );
 
-  if( !self.dims ) // xxx
+  // if( self.buffer && self.buffer.length === 0 && self.offset === 0 && self.inputTransposing === 0 )
+  // debugger;
+
+  if( !self.dims )
   {
     if( self._dimsWas )
     {
       // self[ dimsSymbol ] = self._dimsFromDimsWithoutLength( self.breadth, self.buffer, self.offset );
 
-      _.assert( self.breadth );
+      // _.assert( self.breadth );
       _.assert( self._dimsWas );
-      _.assert( self._dimsWas.length === self.breadth.length+1 );
+      // _.assert( self._dimsWas.length === self.breadth.length+1 );
       _.assert( _.arrayIs( self._dimsWas ) );
-      _.assert( _.arrayIs( self.breadth ) );
+      // _.assert( _.arrayIs( self.breadth ) );
       _.assert( _.arrayLike( self.buffer ) );
       _.assert( self.offset >= 0 );
 
@@ -887,7 +986,7 @@ function _adjustAct()
       // var dims = self.breadth.slice();
       // dims.push( l );
 
-      _.assert( self.breadth.length === 1,'not tested' );
+      // _.assert( self.breadth.length === 1,'not tested' );
       _.assert( l >= 0 );
       _.assert( _.numberIsInt( l ) );
 
@@ -930,6 +1029,9 @@ function _adjustAct()
   self[ lengthSymbol ] = self.dims[ self.dims.length-1 ];
 
   /* strides */
+
+  // if( self.buffer && self.buffer.length === 0 && self.offset === 0 && self.dims && self.dims[ 0 ] === 1 && self.dims[ 1 ] === 0 )
+  // debugger;
 
   if( !self._stridesEffective )
   {
@@ -1006,6 +1108,7 @@ function _adjustVerify()
 
   _.assert( _.arrayLike( self.buffer ),'space needs buffer' );
   _.assert( _.arrayLike( self.strides ) || self.strides === null );
+  // _.assert( _.arrayLike( self.strides ) || _.numberIs( self.strides ) || self.strides === null );
   _.assert( _.numberIs( self.offset ),'space needs offset' );
 
 }
@@ -1015,6 +1118,11 @@ function _adjustVerify()
 function _adjustValidate()
 {
   var self = this;
+
+  _.assert( self.breadth );
+  _.assert( self.dims.length === self.breadth.length+1 );
+  _.assert( _.arrayIs( self.dims ) );
+  _.assert( _.arrayIs( self.breadth ) );
 
   _.assert( self.length >= 0 );
   _.assert( self.atomsPerElement >= 0 );
@@ -1044,7 +1152,7 @@ function _adjustValidate()
   if( Config.debug )
   if( self.atomsPerSpace > 0 && _.numberIsFinite( self.length ) )
   for( var d = 0 ; d < self.dims.length ; d++ )
-  _.assert( self.offset + ( self.dims[ d ]-1 )*self._stridesEffective[ d ] < self.buffer.length,'out of bound' );
+  _.assert( self.offset + ( self.dims[ d ]-1 )*self._stridesEffective[ d ] <= self.buffer.length,'out of bound' );
 
 }
 
@@ -1127,6 +1235,8 @@ function _breadthSet( breadth )
 function _dimsSet( src )
 {
   var self = this;
+
+  // console.log( '_dimsSet' );
 
   _.assert( arguments.length === 1 );
 
@@ -1222,7 +1332,7 @@ function expand( expand )
       if( it.indexNd[ i ] < 0 || it.indexNd[ i ] >= dims[ i ] )
       return;
     }
-    var indexFlat = Self.flatAtomIndexFromIndexNdAndStrides( it.indexNd , strides );
+    var indexFlat = Self._flatAtomIndexFromIndexNd( it.indexNd , strides );
     _.assert( indexFlat >= 0 );
     _.assert( indexFlat < buffer.length );
     buffer[ indexFlat ] = it.atom;
@@ -1290,14 +1400,14 @@ function flatAtomIndexFrom( indexNd )
 
   _.assert( arguments.length === 1 );
 
-  var result = self.flatAtomIndexFromIndexNdAndStrides( indexNd,self._stridesEffective );
+  var result = self._flatAtomIndexFromIndexNd( indexNd,self._stridesEffective );
 
   return result + self.offset;
 }
 
 //
 
-function flatAtomIndexFromIndexNdAndStrides( indexNd,strides )
+function _flatAtomIndexFromIndexNd( indexNd,strides )
 {
   var result = 0;
 
@@ -1572,7 +1682,7 @@ function _bufferFrom( src )
   _.assert( arguments.length === 1 );
   _.assert( _.arrayLike( src ) || _.vectorIs( src ) );
 
-  if( !_.typeIsBuffer( proto.array.ArrayType ) )
+  if( !_.constructorIsBuffer( proto.array.ArrayType ) )
   return dst;
 
   if( _.vectorIs( dst ) && _.arrayIs( dst._vectorBuffer ) )
@@ -1691,7 +1801,6 @@ function atomWhile( o )
 
   var dims = self.dims;
 
-  // debugger; // xxx
   function handleEach( indexNd,indexFlat )
   {
     var value = self.atomGet( indexNd );
@@ -1737,17 +1846,17 @@ function atomEach( onAtom,args )
   if( dims1 === Infinity )
   dims1 = 1;
 
-  var iteration = Object.create( null );
-  iteration.args = args;
+  var it = Object.create( null );
+  it.args = args;
   var indexFlat = 0;
   for( var c = 0 ; c < dims1 ; c++ )
   for( var r = 0 ; r < dims0 ; r++ )
   {
-    iteration.indexNd = [ r,c ];
-    iteration.indexFlat = indexFlat;
-    iteration.indexFlatRowFirst = r*dims[ 1 ] + c;
-    iteration.atom = self.atomGet( iteration.indexNd );
-    onAtom.call( self,iteration );
+    it.indexNd = [ r,c ];
+    it.indexFlat = indexFlat;
+    it.indexFlatRowFirst = r*dims[ 1 ] + c;
+    it.atom = self.atomGet( it.indexNd );
+    onAtom.call( self,it );
     indexFlat += 1;
   }
 
@@ -1839,7 +1948,7 @@ function atomWiseHomogeneous( o )
 
   _.routineOptions( atomWiseHomogeneous,o );
 
-  if( o.dst !== undefined && o.dst !== nil )
+  if( o.dst !== undefined && o.dst !== _.nothing )
   {
     if( o.usingDstAsSrc )
     o.args.unshift( o.dst );
@@ -2031,7 +2140,7 @@ atomWiseHomogeneous.defaults =
   onVectorsEnd : null,
   onContinue : null,
   args : null,
-  dst : nil,
+  dst : _.nothing,
   usingDstAsSrc : 0,
   usingExtraSrcs : 0,
   reducing : 0,
@@ -2930,14 +3039,10 @@ var Composes =
 {
 
   dims : null,
-
-/*
-  // strides : null,
-  // offset : 0,
-*/
-
   growingDimension : 1,
   inputTransposing : null,
+
+  // strides : null,
 
 }
 
@@ -2945,7 +3050,7 @@ var Composes =
 
 var Aggregates =
 {
-
+  buffer : null,
 }
 
 //
@@ -2962,10 +3067,11 @@ var Restricts =
   _dimsWas : null,
   _changing : [ 1 ],
 
-  buffer : null,
-  strides : null,
-  offset : 0,
-  breadth : null,
+  // buffer : null,
+
+  // strides : null,
+  // offset : 0,
+  // breadth : null,
 
 }
 
@@ -2974,7 +3080,7 @@ var Restricts =
 var Medials =
 {
 
-  buffer : null,
+  // buffer : null,
   strides : null,
   offset : 0,
   breadth : null,
@@ -2999,7 +3105,7 @@ var Statics =
   stridesForDimensions : stridesForDimensions,
   stridesRoll : stridesRoll,
 
-  flatAtomIndexFromIndexNdAndStrides : flatAtomIndexFromIndexNdAndStrides,
+  _flatAtomIndexFromIndexNd : _flatAtomIndexFromIndexNd,
 
   _bufferFrom : _bufferFrom,
   is : is,
@@ -3120,6 +3226,7 @@ var Proto =
 
   init : init,
 
+  _traverseAct : _traverseAct,
   _copy : _copy,
   copy : copy,
   copyResetting : copyResetting,
@@ -3129,6 +3236,8 @@ var Proto =
   clone : clone,
 
   copyTo : copyTo,
+
+  extractNormalized : extractNormalized,
 
 
   /* size in bytes */
@@ -3214,7 +3323,7 @@ var Proto =
   /* etc */
 
   flatAtomIndexFrom : flatAtomIndexFrom,
-  flatAtomIndexFromIndexNdAndStrides : flatAtomIndexFromIndexNdAndStrides,
+  _flatAtomIndexFromIndexNd : _flatAtomIndexFromIndexNd,
   flatGranuleIndexFrom : flatGranuleIndexFrom,
 
   transpose : transpose,
