@@ -3309,7 +3309,7 @@ zip
 */
 
 // --
-// prototype
+// define class
 // --
 
 var Proto =

@@ -10026,7 +10026,7 @@ function polynomClosestFor( test )
 }
 
 // --
-// proto
+// define class
 // --
 
 var Self =
@@ -10117,7 +10117,7 @@ var Self =
 
 //
 
-Self = wTestSuit( Self );
+Self = wTestSuite( Self );
 if( typeof module !== 'undefined' && !module.parent )
 _global_.wTester.test( Self.name );
 
