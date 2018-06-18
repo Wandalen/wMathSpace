@@ -3127,16 +3127,12 @@ var Statics =
 
   /* var */
 
-  array : _.ArrayDescriptorsMap.Float32,
+  array : _.ArrayNameSpaces.Float32,
+  withArray : _.ArrayNameSpaces,
   EPS : EPS,
   EPS2 : EPS2,
 
 }
-
-_.assert( _.withArray );
-_.assert( _.withArray.Float32 );
-_.assert( _.ArrayDescriptorsMap.Float32 );
-_.assert( _.ArrayDescriptorsMap.Float32.makeArrayOfLength );
 
 //
 
@@ -3429,7 +3425,15 @@ _.classMake
 });
 
 _.Copyable.mixin( Self );
-/* _arrayDescriptorsApplyTo( Self ); */
+
+//
+
+_.assert( Self.prototype.array );
+_.assert( Self.prototype.withArray );
+_.assert( _.withArray );
+_.assert( _.withArray.Float32 );
+_.assert( _.ArrayNameSpaces.Float32 );
+_.assert( _.ArrayNameSpaces.Float32.makeArrayOfLength );
 
 //
 
@@ -3439,7 +3443,7 @@ _.accessor( Self.prototype,Accessors );
 
 //
 
-_.mapExtendConditional( _.field.mapper.atomicSrcOwn, Self, Composes );
+_.mapExtendConditional( _.field.mapper.srcOwnPrimitive, Self, Composes );
 _global_.wSpace = _.Space = Self;
 
 //
