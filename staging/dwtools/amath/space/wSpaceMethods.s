@@ -450,7 +450,7 @@ function convertToClass( cls,src )
 
   _.assert( !_.instanceIs( this ) );
   _.assert( _.constructorIs( cls ) );
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
   if( src.constructor === cls )
   return src;
@@ -565,7 +565,7 @@ function fromScalar( scalar,dims )
 
   _.assert( !this.instanceIs() );
   _.assert( _.arrayIs( dims ) );
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.numberIs( scalar );
 
   var result = new this.Self
@@ -585,7 +585,7 @@ function fromScalarForReading( scalar,dims )
 
   _.assert( !this.instanceIs() );
   _.assert( _.arrayIs( dims ) );
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.numberIs( scalar );
 
   var buffer = this.array.makeArrayOfLength( 1 );
@@ -791,7 +791,7 @@ function fromAxisAndAngle( axis,angle )
   var z = axis.eGet( 2 );
 
   _.assert( axis.length === 3 );
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
   var s = Math.sin( angle );
   var c = Math.cos( angle );
@@ -864,7 +864,7 @@ function fromAxisAndAngleWithScale( axis,angle )
   var z = axis.eGet( 2 ) / m;
 
   _.assert( axis.length === 3 );
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
   var s = Math.sin( angle );
   var c = Math.cos( angle );
@@ -1036,7 +1036,7 @@ function spacePow( exponent )
 function mul_static( dst,srcs )
 {
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( _.arrayIs( srcs ) );
   _.assert( srcs.length >= 2 );
 
@@ -1173,7 +1173,7 @@ function mul2Matrices( src1,src2 )
 {
   var dst = this;
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
   return dst.Self.mul2Matrices( dst,src1,src2 );
 }
@@ -2037,7 +2037,7 @@ function _pivotRook( i,o )
 {
   var self = this;
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( o.pivots )
 
   var row1 = self.rowVectorGet( i ).subarray( i );
@@ -2323,7 +2323,7 @@ function _solveTriangleWithRoutine( args,onSolve )
   var y = args[ 2 ];
 
   _.assert( args.length === 3 );
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( y );
 
   if( _.spaceIs( y ) )

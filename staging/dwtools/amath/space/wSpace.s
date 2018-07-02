@@ -294,7 +294,7 @@ function _copy( src,resetting )
 {
   var self = this;
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
   var it = _._cloner( self._traverseAct,{ src : src, dst : self, /*resetting : resetting,*/ technique : 'object' } );
 
@@ -369,7 +369,7 @@ function clone()
 function copyTo( dst,src )
 {
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
   if( dst === src )
   return dst;
@@ -715,7 +715,7 @@ function _strideInRowGet()
 function stridesForDimensions( dims,transposing )
 {
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( _.arrayIs( dims ) );
   _.assert( _.boolLike( transposing ) );
   _.assert( dims[ 0 ] >= 0 );
@@ -1412,7 +1412,7 @@ function _flatAtomIndexFromIndexNd( indexNd,strides )
 {
   var result = 0;
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( _.arrayIs( indexNd ) );
   _.assert( _.arrayIs( strides ) );
   _.assert( indexNd.length === strides.length );
@@ -1940,7 +1940,7 @@ function atomWiseWithAssign( onAtom,args )
   var self = this;
   var result;
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( self.dims.length === 2, 'not implemented' );
 
   var op = Object.create( null );
@@ -2518,7 +2518,7 @@ function atomFlatGet( index )
 function atomFlatSet( index,value )
 {
   var i = this.offset+index;
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( _.numberIs( index ) );
   _.assert( i < this.buffer.length );
   _.assert( this.occupiedRange[ 0 ] <= i && i < this.occupiedRange[ 1 ] );
@@ -2546,7 +2546,7 @@ function atomSet( index,value )
 {
   var i = this.flatAtomIndexFrom( index );
   _.assert( _.numberIs( value ) );
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( i < this.buffer.length );
   _.assert( this.occupiedRange[ 0 ] <= i && i < this.occupiedRange[ 1 ] );
   _.assert( index[ 0 ] < this.dims[ 0 ] );
@@ -2704,7 +2704,7 @@ function eSet( index,srcElement )
   var self = this;
   var selfElement = self.eGet( index );
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
   vector.assign( selfElement,srcElement );
 
@@ -2719,7 +2719,7 @@ function elementsSwap( i1,i2 )
 
   _.assert( 0 <= i1 && i1 < self.length );
   _.assert( 0 <= i2 && i2 < self.length );
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
   if( i1 === i2 )
   return self;
@@ -2738,7 +2738,7 @@ function lineVectorGet( d,index )
 {
   var self = this;
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( self.dims.length === 2 );
 
   if( d === 0 )
@@ -2851,7 +2851,7 @@ function rowSet( rowIndex,srcRow )
   var self = this;
   var selfRow = self.rowVectorGet( rowIndex );
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
   vector.assign( selfRow,srcRow );
 
@@ -2864,7 +2864,7 @@ function rowsSwap( i1,i2 )
 {
   var self = this;
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
   return self.linesSwap( 0,i1,i2 );
 }
@@ -2897,7 +2897,7 @@ function colSet( index,srcCol )
   var self = this;
   var selfCol = self.colVectorGet( index );
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
   vector.assign( selfCol,srcCol );
 
@@ -2910,7 +2910,7 @@ function colsSwap( i1,i2 )
 {
   var self = this;
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
   return self.linesSwap( 1,i1,i2 );
 }
@@ -3002,7 +3002,7 @@ function _vectorPivotDimension( v,current,expected )
 
 function vectorPivotForward( vector,pivot )
 {
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( _.arrayIs( pivot ) );
 
   if( _.spaceIs( vector ) )
@@ -3023,7 +3023,7 @@ function vectorPivotForward( vector,pivot )
 
 function vectorPivotBackward( vector,pivot )
 {
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( _.arrayIs( pivot ) );
 
   if( _.spaceIs( vector ) )

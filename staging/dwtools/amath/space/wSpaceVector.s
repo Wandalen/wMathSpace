@@ -193,7 +193,7 @@ function declareAtomWiseHomogeneousWithScalarRoutines( routine,rname )
 {
   var op = routine.operation;
 
-  _.assert( arguments.length === 2, 'expects exactly two argument' );
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
   if( op.reducing )
   return;
@@ -366,7 +366,7 @@ function declareAtomWiseHomogeneousRoutine( routine,name )
       usingExtraSrcs : dop.usingExtraSrcs,
     });
 
-    // _.assert( arguments.length === 2, 'expects exactly two argument' );
+    // _.assert( arguments.length === 2, 'expects exactly two arguments' );
     // _.assert( _.arrayIs( srcs ) );
     // var result = self.Self.atomWiseHomogeneousZip
     // ({
