@@ -85,9 +85,9 @@ function experiment( test )
 function env( test )
 {
 
-  test.shouldBe( _.routineIs( space ) );
-  test.shouldBe( _.objectIs( vector ) );
-  test.shouldBe( _.objectIs( avector ) );
+  test.is( _.routineIs( space ) );
+  test.is( _.objectIs( vector ) );
+  test.is( _.objectIs( avector ) );
 
 }
 
@@ -110,8 +110,8 @@ function clone( test )
 
   var b = a.clone();
   test.identical( a,b );
-  test.shouldBe( a.buffer !== b.buffer );
-  test.shouldBe( a.buffer === buffer );
+  test.is( a.buffer !== b.buffer );
+  test.is( a.buffer === buffer );
 
   test.identical( a.size,24 );
   test.identical( a.sizeOfElementStride,12 );
@@ -287,8 +287,10 @@ function construct( test )
 
   var b = new _.Space({ buffer : new Float32Array(), inputTransposing : true });
   b.copyDeserializing( cloned );
+  debugger;
   test.identical( b,a );
-  test.shouldBe( a.buffer !== b.buffer );
+  debugger;
+  test.is( a.buffer !== b.buffer );
 
   test.identical( a.buffer.length,8 );
   test.identical( a.size,12 );
@@ -391,7 +393,7 @@ function construct( test )
   var b = new _.Space({ buffer : new Float32Array(), inputTransposing : true });
   b.copyDeserializing( cloned );
   test.identical( b,a );
-  test.shouldBe( a.buffer !== b.buffer );
+  test.is( a.buffer !== b.buffer );
 
   debugger;
 
@@ -456,6 +458,8 @@ function make( test )
   o.offset = 0;
   this._make( test,o );
 
+  return; xxx
+
   o.offset = undefined;
   this._make( test,o );
 
@@ -507,7 +511,9 @@ function _make( test,o )
   var a1 = m.atomFlatGet( 5 );
   var a2 = m.atomGet([ 1,1 ]);
 
+  // debugger;
   test.identical( r1,o.vec([ 4,5,6 ]) );
+  // debugger;
   test.identical( r1,r2 );
   test.identical( c1,o.vec([ 3,6 ]) );
   test.identical( c1,c2 );
@@ -516,6 +522,8 @@ function _make( test,o )
   test.identical( a2, 5 );
   test.identical( m.reduceToSumAtomWise(), 21 );
   test.identical( m.reduceToProductAtomWise(), 720 );
+
+  return; xxx
 
   test.description = 'matrix with dimensions without stride, non transposing'; //
 
@@ -1676,7 +1684,7 @@ function _make( test,o )
   test.identical( m.reduceToProductAtomWise(), 720 );
 
   test.identical( m.strides, null );
-  test.shouldBe( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof Float32Array );
 
   test.description = 'copy buffer from scalar'; //
 
@@ -1710,8 +1718,8 @@ function _make( test,o )
     inputTransposing : 1,
   });
 
-  test.shouldBe( m.buffer.length-( o.offset||0 ) === 9 );
-  test.shouldBe( m.buffer instanceof Float32Array );
+  test.is( m.buffer.length-( o.offset||0 ) === 9 );
+  test.is( m.buffer instanceof Float32Array );
 
   var expected = space.make([ 3,3 ]).copy
   ([
@@ -1728,8 +1736,8 @@ function _make( test,o )
   ]);
 
   test.identical( m,expected );
-  test.shouldBe( m.buffer.length === 9+( o.offset||0 ) );
-  test.shouldBe( m.buffer instanceof Float32Array );
+  test.is( m.buffer.length === 9+( o.offset||0 ) );
+  test.is( m.buffer instanceof Float32Array );
 
   m.copy
   ( new Uint32Array([
@@ -1739,9 +1747,9 @@ function _make( test,o )
   ]));
 
   test.identical( m,expected );
-  test.shouldBe( m.buffer.length === 9+( o.offset||0 ) );
-  test.shouldBe( m.offset === ( o.offset||0 ) );
-  test.shouldBe( m.buffer instanceof Float32Array );
+  test.is( m.buffer.length === 9+( o.offset||0 ) );
+  test.is( m.offset === ( o.offset||0 ) );
+  test.is( m.buffer instanceof Float32Array );
 
   m.copy
   ({
@@ -1754,10 +1762,10 @@ function _make( test,o )
     ]),
   });
 
-  test.isNotIdentical( m,expected );
-  test.shouldBe( m.buffer.length === 9 );
-  test.shouldBe( m.offset === 0 );
-  test.shouldBe( m.buffer instanceof Uint32Array );
+  test.notIdentical( m,expected );
+  test.is( m.buffer.length === 9 );
+  test.is( m.offset === 0 );
+  test.is( m.buffer instanceof Uint32Array );
 
   test.description = 'bad buffer'; //
 
@@ -1808,7 +1816,7 @@ function makeHelper( test )
   test.identical( m.strideInRow,3 );
 
   test.identical( m.strides,null );
-  test.shouldBe( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof Float32Array );
 
   test.description = 'square with buffer'; //
 
@@ -1855,7 +1863,7 @@ function makeHelper( test )
   test.identical( m.reduceToProductAtomWise(), 362880 );
   test.identical( m.determinant(),0 );
 
-  test.shouldBe( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof Float32Array );
   test.identical( m.strides,null );
 
   var buffer = new Uint32Array
@@ -1866,7 +1874,7 @@ function makeHelper( test )
   ]);
   var m = space.makeSquare( buffer );
   test.identical( m.determinant(),0 );
-  test.shouldBe( m.buffer instanceof Uint32Array );
+  test.is( m.buffer instanceof Uint32Array );
 
   test.description = 'square with length'; //
 
@@ -1888,7 +1896,7 @@ function makeHelper( test )
   test.identical( m.strideOfRow,1 );
   test.identical( m.strideInRow,3 );
 
-  test.shouldBe( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof Float32Array );
   test.identical( m.strides,null );
 
   test.description = 'diagonal'; //
@@ -1930,7 +1938,7 @@ function makeHelper( test )
   test.identical( m.reduceToProductAtomWise(), 0 );
   test.identical( m.determinant(),6 );
 
-  test.shouldBe( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof Float32Array );
   test.identical( m.strides,null );
 
   test.description = 'identity'; //
@@ -1972,7 +1980,7 @@ function makeHelper( test )
   test.identical( m.reduceToProductAtomWise(), 0 );
   test.identical( m.determinant(),1 );
 
-  test.shouldBe( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof Float32Array );
   test.identical( m.strides,null );
 
   test.description = 'identity, not square, 2x3'; //
@@ -2013,7 +2021,7 @@ function makeHelper( test )
   test.identical( m.reduceToSumAtomWise(), 2 );
   test.identical( m.reduceToProductAtomWise(), 0 );
 
-  test.shouldBe( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof Float32Array );
   test.identical( m.strides,null );
 
   test.description = 'identity, not square, 3x2'; //
@@ -2054,7 +2062,7 @@ function makeHelper( test )
   test.identical( m.reduceToSumAtomWise(), 2 );
   test.identical( m.reduceToProductAtomWise(), 0 );
 
-  test.shouldBe( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof Float32Array );
   test.identical( m.strides,null );
 
   test.description = 'zeroed'; //
@@ -2096,7 +2104,7 @@ function makeHelper( test )
   test.identical( m.reduceToProductAtomWise(), 0 );
   test.identical( m.determinant(),0 );
 
-  test.shouldBe( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof Float32Array );
   test.identical( m.strides,null );
 
   //
@@ -2124,7 +2132,7 @@ function makeHelper( test )
     test.identical( m.reduceToProductAtomWise(), 1 );
     debugger;
     test.identical( m.determinant(),0 );
-    test.shouldBe( m.buffer instanceof Float32Array );
+    test.is( m.buffer instanceof Float32Array );
 
     if( Config.debug )
     {
@@ -2194,7 +2202,7 @@ function makeLine( test )
     test.identical( m.strideInRow,3 );
 
     test.identical( m.strides,null );
-    test.shouldBe( m.buffer instanceof Float32Array );
+    test.is( m.buffer instanceof Float32Array );
 
   }
 
@@ -2218,7 +2226,7 @@ function makeLine( test )
     test.identical( m.strideInRow,1 );
 
     test.identical( m.strides,null );
-    test.shouldBe( m.buffer instanceof Float32Array );
+    test.is( m.buffer instanceof Float32Array );
 
   }
 
@@ -2293,7 +2301,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
 
-  test.shouldBe( v._vectorBuffer !== m.buffer );
+  test.is( v._vectorBuffer !== m.buffer );
 
   test.description = 'make col from vector with Float32Array'; //
 
@@ -2317,7 +2325,7 @@ function makeLine( test )
   test.identical( m.strideInRow,2 );
 
   test.identical( m.strides,[ 2,2 ] );
-  test.shouldBe( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof Float32Array );
 
   var r1 = m.rowVectorGet( 1 );
   var r2 = m.lineVectorGet( 1,1 );
@@ -2337,7 +2345,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
 
-  test.shouldBe( v._vectorBuffer === m.buffer );
+  test.is( v._vectorBuffer === m.buffer );
 
   test.description = 'make col zeroed'; //
 
@@ -2436,7 +2444,7 @@ function makeLine( test )
   test.identical( a2, 2 );
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
-  test.shouldBe( m === om );
+  test.is( m === om );
 
   test.description = 'make col zeroed from col'; //
 
@@ -2463,7 +2471,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 0 );
   test.identical( m.reduceToProductAtomWise(), 0 );
 
-  test.shouldBe( m !== om );
+  test.is( m !== om );
 
   test.description = 'make row'; //
 
@@ -2536,7 +2544,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
 
-  test.shouldBe( v._vectorBuffer !== m.buffer );
+  test.is( v._vectorBuffer !== m.buffer );
 
   test.description = 'make row from vector with Float32Array'; //
 
@@ -2560,7 +2568,7 @@ function makeLine( test )
   test.identical( m.strideInRow,2 );
 
   test.identical( m.strides,[ 2,2 ] );
-  test.shouldBe( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof Float32Array );
 
   var r1 = m.rowVectorGet( 0 );
   var r2 = m.lineVectorGet( 1,0 );
@@ -2678,7 +2686,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
 
-  test.shouldBe( m === om );
+  test.is( m === om );
 
   test.description = 'make row zeroed from row'; //
 
@@ -2705,7 +2713,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 0 );
   test.identical( m.reduceToProductAtomWise(), 0 );
 
-  test.shouldBe( m !== om );
+  test.is( m !== om );
 
 }
 
@@ -2720,13 +2728,13 @@ function _makeSimilar( test,o )
   m.buffer = o.arrayMake([ 1,2,3,4,5,6 ]);
 
   var got = m.makeSimilar();
-  test.shouldBe( got.buffer.constructor === m.buffer.constructor );
+  test.is( got.buffer.constructor === m.buffer.constructor );
   test.identical( got.dims, m.dims );
   test.identical( got._stridesEffective, [ 1,2 ] );
   test.identical( got.strides, null );
 
   var got = space.makeSimilar( m );
-  test.shouldBe( got.buffer.constructor === m.buffer.constructor );
+  test.is( got.buffer.constructor === m.buffer.constructor );
   test.identical( got.dims, m.dims );
   test.identical( got._stridesEffective, [ 1,2 ] );
   test.identical( got.strides, null );
@@ -2751,13 +2759,13 @@ function _makeSimilar( test,o )
   });
 
   var got = m.makeSimilar();
-  test.shouldBe( got.buffer.constructor === m.buffer.constructor );
+  test.is( got.buffer.constructor === m.buffer.constructor );
   test.identical( got.dims, m.dims );
   test.identical( got._stridesEffective, [ 1,2 ] );
   test.identical( got.strides, null );
 
   var got = space.makeSimilar( m );
-  test.shouldBe( got.buffer.constructor === m.buffer.constructor );
+  test.is( got.buffer.constructor === m.buffer.constructor );
   test.identical( got.dims, m.dims );
   test.identical( got._stridesEffective, [ 1,2 ] );
   test.identical( got.strides, null );
@@ -2782,13 +2790,13 @@ function _makeSimilar( test,o )
   });
 
   var got = m.makeSimilar( [ 3,4 ] );
-  test.shouldBe( got.buffer.constructor === m.buffer.constructor );
+  test.is( got.buffer.constructor === m.buffer.constructor );
   test.identical( got.dims, [ 3,4 ] );
   test.identical( got._stridesEffective, [ 1,3 ] );
   test.identical( got.strides, null );
 
   var got = space.makeSimilar( m,[ 3,4 ] );
-  test.shouldBe( got.buffer.constructor === m.buffer.constructor );
+  test.is( got.buffer.constructor === m.buffer.constructor );
   test.identical( got.dims, [ 3,4 ] );
   test.identical( got._stridesEffective, [ 1,3 ] );
   test.identical( got.strides, null );
@@ -2797,38 +2805,38 @@ function _makeSimilar( test,o )
 
   var src = o.arrayMake([ 1,2,3 ]);
   var got = space.makeSimilar( src );
-  test.shouldBe( got.constructor === src.constructor );
+  test.is( got.constructor === src.constructor );
   test.identical( got.length , src.length );
 
   test.description = o.name + ' . from array with dims'; //
 
   var src = o.arrayMake([ 1,2,3 ]);
   var got = space.makeSimilar( src,[ 5,1 ] );
-  test.shouldBe( got.constructor === src.constructor );
+  test.is( got.constructor === src.constructor );
   test.identical( got.length , 5 );
 
   test.description = o.name + ' . from vector'; //
 
   var src = vector.from( o.arrayMake([ 1,2,3 ]) );
   var got = space.makeSimilar( src );
-  test.shouldBe( _.vectorIs( src ) );
+  test.is( _.vectorIs( src ) );
   test.identical( got.length , src.length );
 
   var src = vector.fromSubArrayWithStride( o.arrayMake([ -1,1,-1,2,-1,3,-1 ]),1,3,1 );
   var got = space.makeSimilar( src );
-  test.shouldBe( _.vectorIs( src ) );
+  test.is( _.vectorIs( src ) );
   test.identical( got.length , src.length );
 
   test.description = o.name + ' . from vector with dims'; //
 
   var src = vector.from( o.arrayMake([ 1,2,3 ]) );
   var got = space.makeSimilar( src,[ 5,1 ] );
-  test.shouldBe( _.vectorIs( src ) );
+  test.is( _.vectorIs( src ) );
   test.identical( got.length , 5 );
 
   var src = vector.fromSubArrayWithStride( o.arrayMake([ -1,1,-1,2,-1,3,-1 ]),1,3,1 );
   var got = space.makeSimilar( src,[ 5,1 ] );
-  test.shouldBe( _.vectorIs( src ) );
+  test.is( _.vectorIs( src ) );
   test.identical( got.length , 5 );
 
   test.description = o.name + ' . bad arguments'; //
@@ -2901,7 +2909,7 @@ function from( test )
 
   var v = vector.fromSubArrayWithStride( new Float32Array([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
   var got = space._bufferFrom( v );
-  test.shouldBe( got === v );
+  test.is( got === v );
 
   test.description = 'fromScalarForReading scalar'; //
 
@@ -3112,12 +3120,12 @@ function tempBorrow( test )
   var t3 = space.tempBorrow( m );
   var t3 = space.tempBorrow( m.dims );
 
-  test.shouldBe( t1 === t2 );
-  test.shouldBe( t1 === t3 );
+  test.is( t1 === t2 );
+  test.is( t1 === t3 );
 
-  test.shouldBe( t1.buffer.constructor === Float32Array );
-  test.shouldBe( t2.buffer.constructor === Float32Array );
-  test.shouldBe( t3.buffer.constructor === Float32Array );
+  test.is( t1.buffer.constructor === Float32Array );
+  test.is( t2.buffer.constructor === Float32Array );
+  test.is( t3.buffer.constructor === Float32Array );
 
   test.description = 'should give another temp'; //
 
@@ -3132,15 +3140,15 @@ function tempBorrow( test )
   var t4 = space.tempBorrow( m );
   var t5 = space.tempBorrow( m.dims );
 
-  test.shouldBe( t1 !== t2 );
-  test.shouldBe( t2 === t3 );
-  test.shouldBe( t2 === t4 );
-  test.shouldBe( t1 === t5 );
+  test.is( t1 !== t2 );
+  test.is( t2 === t3 );
+  test.is( t2 === t4 );
+  test.is( t1 === t5 );
 
-  test.shouldBe( t2.buffer.constructor === Int32Array );
-  test.shouldBe( t3.buffer.constructor === Int32Array );
-  test.shouldBe( t4.buffer.constructor === Int32Array );
-  test.shouldBe( t5.buffer.constructor === Float32Array );
+  test.is( t2.buffer.constructor === Int32Array );
+  test.is( t3.buffer.constructor === Int32Array );
+  test.is( t4.buffer.constructor === Int32Array );
+  test.is( t5.buffer.constructor === Float32Array );
 
   test.description = 'with dims'; //
 
@@ -3151,9 +3159,9 @@ function tempBorrow( test )
 
   test.identical( t1.dims,[ 4,4 ] );
   test.identical( t2.dims,[ 4,4 ] );
-  test.shouldBe( t1.buffer.constructor === Int32Array );
-  test.shouldBe( t2.buffer.constructor === Int32Array );
-  test.shouldBe( t1 !== t2 );
+  test.is( t1.buffer.constructor === Int32Array );
+  test.is( t2.buffer.constructor === Int32Array );
+  test.is( t1 !== t2 );
 
   test.description = 'with dims from space'; //
 
@@ -3165,9 +3173,9 @@ function tempBorrow( test )
 
   test.identical( t1.dims,[ 4,4 ] );
   test.identical( t2.dims,[ 4,4 ] );
-  test.shouldBe( t1.buffer.constructor === Int32Array );
-  test.shouldBe( t2.buffer.constructor === Int32Array );
-  test.shouldBe( t1 !== t2 );
+  test.is( t1.buffer.constructor === Int32Array );
+  test.is( t2.buffer.constructor === Int32Array );
+  test.is( t1 !== t2 );
 
   test.description = 'without dims'; //
 
@@ -3178,9 +3186,9 @@ function tempBorrow( test )
 
   test.identical( t1.dims,[ 3,2 ] );
   test.identical( t2.dims,[ 3,2 ] );
-  test.shouldBe( t1.buffer.constructor === Int32Array );
-  test.shouldBe( t2.buffer.constructor === Int32Array );
-  test.shouldBe( t1 !== t2 );
+  test.is( t1.buffer.constructor === Int32Array );
+  test.is( t2.buffer.constructor === Int32Array );
+  test.is( t1 !== t2 );
 
   test.description = 'without space'; //
 
@@ -3189,9 +3197,9 @@ function tempBorrow( test )
 
   test.identical( t1.dims,[ 4,4 ] );
   test.identical( t2.dims,[ 4,4 ] );
-  test.shouldBe( t1.buffer.constructor === Float32Array );
-  test.shouldBe( t2.buffer.constructor === Float32Array );
-  test.shouldBe( t1 !== t2 );
+  test.is( t1.buffer.constructor === Float32Array );
+  test.is( t2.buffer.constructor === Float32Array );
+  test.is( t1 !== t2 );
 
 }
 
@@ -3206,7 +3214,7 @@ function copyClone( test )
   m2 = m1.clone();
 
   test.identical( m1,m2 );
-  test.shouldBe( m1.buffer !== m2.buffer );
+  test.is( m1.buffer !== m2.buffer );
 
   test.description = 'clone 0x0'; //
 
@@ -3215,7 +3223,7 @@ function copyClone( test )
 
   test.identical( m2.dims,[ 0,0 ] );
   test.identical( m1,m2 );
-  test.shouldBe( m1.buffer !== m2.buffer );
+  test.is( m1.buffer !== m2.buffer );
 
   test.description = 'clone 3x0'; //
 
@@ -3224,7 +3232,7 @@ function copyClone( test )
 
   test.identical( m2.dims,[ 3,0 ] );
   test.identical( m1,m2 );
-  test.shouldBe( m1.buffer !== m2.buffer );
+  test.is( m1.buffer !== m2.buffer );
 
   test.description = 'clone 0x3'; //
 
@@ -3233,7 +3241,7 @@ function copyClone( test )
 
   test.identical( m2.dims,[ 0,3 ] );
   test.identical( m1,m2 );
-  test.shouldBe( m1.buffer !== m2.buffer );
+  test.is( m1.buffer !== m2.buffer );
 
   test.description = 'copy 3x3'; //
 
@@ -3242,7 +3250,7 @@ function copyClone( test )
   m2.copy( m1 );
 
   test.identical( m1,m2 );
-  test.shouldBe( m1.buffer !== m2.buffer );
+  test.is( m1.buffer !== m2.buffer );
 
   test.description = 'copy 3x3 itself'; //
 
@@ -3260,7 +3268,7 @@ function copyClone( test )
 
   test.identical( m2.dims,[ 0,0 ] );
   test.identical( m1,m2 );
-  test.shouldBe( m1.buffer !== m2.buffer );
+  test.is( m1.buffer !== m2.buffer );
 
   test.description = 'copy 3x0'; //
 
@@ -3270,7 +3278,7 @@ function copyClone( test )
 
   test.identical( m2.dims,[ 3,0 ] );
   test.identical( m1,m2 );
-  test.shouldBe( m1.buffer !== m2.buffer );
+  test.is( m1.buffer !== m2.buffer );
 
   test.description = 'copy 0x3'; //
 
@@ -3280,7 +3288,7 @@ function copyClone( test )
 
   test.identical( m2.dims,[ 0,3 ] );
   test.identical( m1,m2 );
-  test.shouldBe( m1.buffer !== m2.buffer );
+  test.is( m1.buffer !== m2.buffer );
 
   test.description = 'copy 0x0 itself'; //
 
@@ -3304,7 +3312,7 @@ function _convertToClass( test,o )
   var src = space.make([ 2,2 ]);
   space.buffer = o.arrayMake([ 1,2,3,4 ]);
   var got = space.convertToClass( space,src );
-  test.shouldBe( got === src );
+  test.is( got === src );
 
   test.description = o.name + ' . ' + 'space to vector with class'; //
 
@@ -3346,7 +3354,7 @@ function _convertToClass( test,o )
   var got = space.convertToClass( o.arrayMake([]).constructor,src );
   debugger;
   test.identical( got,expected );
-  test.shouldBe( got === src );
+  test.is( got === src );
 
   test.description = o.name + ' . ' + 'vector to space with class'; //
 
@@ -3363,7 +3371,7 @@ function _convertToClass( test,o )
   debugger;
   var got = space.convertToClass( vec([]).constructor,src );
   test.identical( got,expected );
-  test.shouldBe( got === src );
+  test.is( got === src );
 
   test.description = o.name + ' . ' + 'vector to array with class'; //
 
@@ -3426,7 +3434,7 @@ function _copyTo( test,o )
 
   var got = space.copyTo( dst,src );
   test.identical( got,expected );
-  test.shouldBe( dst === got );
+  test.is( dst === got );
 
   test.description = o.name + ' . ' + 'space to vector'; //
 
@@ -3436,7 +3444,7 @@ function _copyTo( test,o )
 
   var got = space.copyTo( dst,src );
   test.identical( got,expected );
-  test.shouldBe( dst === got );
+  test.is( dst === got );
 
   test.description = o.name + ' . ' + 'space to space'; //
 
@@ -3446,7 +3454,7 @@ function _copyTo( test,o )
 
   var got = space.copyTo( dst,src );
   test.identical( got,expected );
-  test.shouldBe( dst === got );
+  test.is( dst === got );
 
   test.description = o.name + ' . ' + 'vector to array'; //
 
@@ -3456,7 +3464,7 @@ function _copyTo( test,o )
 
   var got = space.copyTo( dst,src );
   test.identical( got,expected );
-  test.shouldBe( dst === got );
+  test.is( dst === got );
 
   test.description = o.name + ' . ' + 'vector to vector'; //
 
@@ -3466,7 +3474,7 @@ function _copyTo( test,o )
 
   var got = space.copyTo( dst,src );
   test.identical( got,expected );
-  test.shouldBe( dst === got );
+  test.is( dst === got );
 
   test.description = o.name + ' . ' + 'vector to space'; //
 
@@ -3476,7 +3484,7 @@ function _copyTo( test,o )
 
   var got = space.copyTo( dst,src );
   test.identical( got,expected );
-  test.shouldBe( dst === got );
+  test.is( dst === got );
 
   test.description = o.name + ' . ' + 'array to array'; //
 
@@ -3486,7 +3494,7 @@ function _copyTo( test,o )
 
   var got = space.copyTo( dst,src );
   test.identical( got,expected );
-  test.shouldBe( dst === got );
+  test.is( dst === got );
 
   test.description = o.name + ' . ' + 'array to vector'; //
 
@@ -3496,7 +3504,7 @@ function _copyTo( test,o )
 
   var got = space.copyTo( dst,src );
   test.identical( got,expected );
-  test.shouldBe( dst === got );
+  test.is( dst === got );
 
   test.description = o.name + ' . ' + 'array to space'; //
 
@@ -3506,7 +3514,7 @@ function _copyTo( test,o )
 
   var got = space.copyTo( dst,src );
   test.identical( got,expected );
-  test.shouldBe( dst === got );
+  test.is( dst === got );
 
   test.description = o.name + ' . ' + 'space to itself'; //
 
@@ -3515,7 +3523,7 @@ function _copyTo( test,o )
 
   var got = space.copyTo( src,src );
   test.identical( got,expected );
-  test.shouldBe( src === got );
+  test.is( src === got );
 
   test.description = o.name + ' . ' + 'vector to itself'; //
 
@@ -3524,7 +3532,7 @@ function _copyTo( test,o )
 
   var got = space.copyTo( src,src );
   test.identical( got,expected );
-  test.shouldBe( src === got );
+  test.is( src === got );
 
   test.description = o.name + ' . ' + 'array to itself'; //
 
@@ -3533,7 +3541,7 @@ function _copyTo( test,o )
 
   var got = space.copyTo( src,src );
   test.identical( got,expected );
-  test.shouldBe( src === got );
+  test.is( src === got );
 
   test.description = o.name + ' . ' + 'bad arguments'; //
 
@@ -3548,13 +3556,13 @@ function _copyTo( test,o )
   test.shouldThrowErrorSync( () => space.copyTo( o.arrayMake([ 1 ]) ) );
   test.shouldThrowErrorSync( () => space.copyTo( vec( o.arrayMake([ 1 ]) ) ) );
 
-  test.shouldThrowErrorSync( () => space.copyTo( space.makeCol( o.arrayMake([ 1 ]) ) ),null );
-  test.shouldThrowErrorSync( () => space.copyTo( o.arrayMake([ 1 ]) ),null );
-  test.shouldThrowErrorSync( () => space.copyTo( vec( o.arrayMake([ 1 ]) ) ),null );
+  test.shouldThrowErrorSync( () => space.copyTo( space.makeCol( o.arrayMake([ 1 ]) ),null ) );
+  test.shouldThrowErrorSync( () => space.copyTo( o.arrayMake([ 1 ]),null ) );
+  test.shouldThrowErrorSync( () => space.copyTo( vec( o.arrayMake([ 1 ]) ),null ) );
 
-  test.shouldThrowErrorSync( () => space.copyTo( space.makeCol( o.arrayMake([ 1 ]) ) ),[ 3 ],null );
-  test.shouldThrowErrorSync( () => space.copyTo( o.arrayMake([ 1 ]) ),[ 3 ],null );
-  test.shouldThrowErrorSync( () => space.copyTo( vec( o.arrayMake([ 1 ]) ) ),[ 3 ],null );
+  test.shouldThrowErrorSync( () => space.copyTo( space.makeCol( o.arrayMake([ 1 ]) ),[ 3 ],null ) );
+  test.shouldThrowErrorSync( () => space.copyTo( o.arrayMake([ 1 ]),[ 3 ],null ) );
+  test.shouldThrowErrorSync( () => space.copyTo( vec( o.arrayMake([ 1 ]) ),[ 3 ],null ) );
 
 }
 
@@ -3623,11 +3631,11 @@ function copy( test )
   dst.copy( src );
 
   test.identical( dst,src );
-  test.shouldBe( dst.buffer !== src.buffer );
+  test.is( dst.buffer !== src.buffer );
 
   debugger;
 
-  test.shouldBe( src.buffer === b1 );
+  test.is( src.buffer === b1 );
 
   test.identical( src.offset,1 );
   test.identical( src.size,24 );
@@ -3648,7 +3656,7 @@ function copy( test )
 
   debugger;
 
-  test.shouldBe( dst.buffer === b2 );
+  test.is( dst.buffer === b2 );
 
   test.identical( dst.offset,2 );
   test.identical( dst.size,24 );
@@ -3704,9 +3712,9 @@ function copy( test )
 
   dst.copy( src );
   test.identical( dst,expected );
-  test.shouldBe( src.buffer === srcBuffer );
-  test.shouldBe( dst.buffer === dstBuffer );
-  test.shouldBe( src.buffer !== dst.buffer );
+  test.is( src.buffer === srcBuffer );
+  test.is( dst.buffer === dstBuffer );
+  test.is( src.buffer !== dst.buffer );
 
   test.description = 'copy null matrix'; //
 
@@ -3720,9 +3728,9 @@ function copy( test )
 
   dst.copy( src );
   test.identical( dst,expected );
-  test.shouldBe( src.buffer === srcBuffer );
-  test.shouldBe( dst.buffer === dstBuffer );
-  test.shouldBe( src.buffer !== dst.buffer );
+  test.is( src.buffer === srcBuffer );
+  test.is( dst.buffer === dstBuffer );
+  test.is( src.buffer !== dst.buffer );
 
   test.description = 'converting constructor and copy itself'; //
 
@@ -3745,16 +3753,16 @@ function copy( test )
   ]);
 
   test.identical( dst,expected );
-  test.shouldBe( src.buffer === srcBuffer );
-  test.shouldBe( dst.buffer === srcBuffer );
-  test.shouldBe( src === dst );
+  test.is( src.buffer === srcBuffer );
+  test.is( dst.buffer === srcBuffer );
+  test.is( src === dst );
 
   dst.copy( src );
 
   test.identical( dst,expected );
-  test.shouldBe( src.buffer === srcBuffer );
-  test.shouldBe( dst.buffer === srcBuffer );
-  test.shouldBe( src === dst );
+  test.is( src.buffer === srcBuffer );
+  test.is( dst.buffer === srcBuffer );
+  test.is( src === dst );
 
 
   test.description = 'copy via constructor with instance'; //
@@ -3780,9 +3788,9 @@ function copy( test )
 
   dst.copy( src );
   test.identical( dst,expected );
-  test.shouldBe( src.buffer === srcBuffer );
-  test.shouldBe( dst.buffer === dstBuffer );
-  test.shouldBe( src.buffer !== dst.buffer );
+  test.is( src.buffer === srcBuffer );
+  test.is( dst.buffer === dstBuffer );
+  test.is( src.buffer !== dst.buffer );
 
   test.description = 'copy via constructor with map'; //
 
@@ -3803,7 +3811,7 @@ function copy( test )
   ]);
 
   test.identical( dst,expected );
-  test.shouldBe( dst.buffer === buffer );
+  test.is( dst.buffer === buffer );
 
   test.description = 'copy from space with different srides'; //
 
@@ -3869,10 +3877,10 @@ function copy( test )
   test.identical( dst.strides, src.strides );
   test.identical( dst._stridesEffective, src._stridesEffective );
 
-  test.shouldBe( dst.buffer !== src.buffer );
-  test.shouldBe( dst.dims !== src.dims );
-  test.shouldBe( dst.strides === null );
-  test.shouldBe( dst._stridesEffective !== src._stridesEffective );
+  test.is( dst.buffer !== src.buffer );
+  test.is( dst.dims !== src.dims );
+  test.is( dst.strides === null );
+  test.is( dst._stridesEffective !== src._stridesEffective );
 
   test.description = 'copy different size, empty'; //
 
@@ -3892,10 +3900,10 @@ function copy( test )
   test.identical( dst.strides, src.strides );
   test.identical( dst._stridesEffective, src._stridesEffective );
 
-  test.shouldBe( dst.buffer !== src.buffer );
-  test.shouldBe( dst.dims !== src.dims );
-  test.shouldBe( dst.strides === null );
-  test.shouldBe( dst._stridesEffective !== src._stridesEffective );
+  test.is( dst.buffer !== src.buffer );
+  test.is( dst.dims !== src.dims );
+  test.is( dst.strides === null );
+  test.is( dst._stridesEffective !== src._stridesEffective );
 
   /* */
 
@@ -3938,7 +3946,7 @@ function offset( test )
     dims : [ 3,2 ],
   });
 
-  test.shouldBe( m.buffer instanceof Array );
+  test.is( m.buffer instanceof Array );
 
   test.description = 'atomGet'; //
 
@@ -4278,7 +4286,7 @@ function expand( test )
 
   m.expand([ null,null ]);
   test.identical( m,expected );
-  test.shouldBe( buffer === m.buffer );
+  test.is( buffer === m.buffer );
 
   test.description = 'number as argument'; //
 
@@ -5162,7 +5170,7 @@ function partialAccessors( test )
   var expected = space.make([ 0,0 ]);
   var r = m.zero();
   test.identical( m,expected );
-  test.shouldBe( m === r );
+  test.is( m === r );
 
   test.description = 'zero bad arguments'; //
 
@@ -5427,19 +5435,19 @@ function partialAccessors( test )
   var r = m.diagonalSet( 0 );
   test.identical( m.dims,[ 0,0 ] );
   test.identical( m._stridesEffective,[ 1,0 ] );
-  test.shouldBe( m === r );
+  test.is( m === r );
 
   var m = space.make([ 0,0 ]);
   var r = m.diagonalSet( space.make([ 0,3 ]) );
   test.identical( m.dims,[ 0,0 ] );
   test.identical( m._stridesEffective,[ 1,0 ] );
-  test.shouldBe( m === r );
+  test.is( m === r );
 
   var m = space.make([ 0,0 ]);
   var r = m.diagonalSet( space.make([ 3,0 ]) );
   test.identical( m.dims,[ 0,0 ] );
   test.identical( m._stridesEffective,[ 1,0 ] );
-  test.shouldBe( m === r );
+  test.is( m === r );
 
   test.description = 'diagonalSet bad arguments'; //
 
@@ -5483,13 +5491,13 @@ function partialAccessors( test )
   var r = m.identify();
   test.identical( m.dims,[ 0,3 ] );
   test.identical( m._stridesEffective,[ 1,0 ] );
-  test.shouldBe( m === r );
+  test.is( m === r );
 
   var m = space.makeZero([ 3,0 ]);
   var r = m.identify();
   test.identical( m.dims,[ 3,0 ] );
   test.identical( m._stridesEffective,[ 1,3 ] );
-  test.shouldBe( m === r );
+  test.is( m === r );
 
   test.description = 'identify bad arguments'; //
 
@@ -5869,30 +5877,30 @@ function partialAccessors( test )
     var expected = space.make([ 0,0 ]);
     var r = m[ rname ]( 0 );
     test.identical( m.dims,[ 0,3 ] );
-    test.shouldBe( m === r );
+    test.is( m === r );
 
     var m = space.make([ 3,0 ]);
     var expected = space.make([ 0,0 ]);
     var r = m[ rname ]( 0 );
     test.identical( m.dims,[ 3,0 ] );
-    test.shouldBe( m === r );
+    test.is( m === r );
 
     test.description = rname + ' null space by null space'; /* */
 
     var m = space.make([ 0,0 ]);
     var expected = space.make([ 0,0 ]);
     var r = m[ rname ]( space.make([ 0,0 ]) );
-    test.shouldBe( m === r );
+    test.is( m === r );
 
     var m = space.make([ 0,0 ]);
     var expected = space.make([ 0,0 ]);
     var r = m[ rname ]( space.make([ 0,3 ]) );
-    test.shouldBe( m === r );
+    test.is( m === r );
 
     var m = space.make([ 0,0 ]);
     var expected = space.make([ 0,0 ]);
     var r = m[ rname ]( space.make([ 3,0 ]) );
-    test.shouldBe( m === r );
+    test.is( m === r );
 
     /* */
 
@@ -5902,19 +5910,19 @@ function partialAccessors( test )
       var m = space.make([ 0,3 ]);
       var expected = space.make([ 0,0 ]);
       var r = m[ rname ]( space.make([ 0,0 ]) );
-      test.shouldBe( m === r );
+      test.is( m === r );
 
       var m = space.make([ 0,3 ]);
       var expected = space.make([ 0,0 ]);
       var r = m[ rname ]( space.make([ 3,0 ]) );
-      test.shouldBe( m === r );
+      test.is( m === r );
 
     }
 
     var m = space.make([ 0,3 ]);
     var expected = space.make([ 0,0 ]);
     var r = m[ rname ]( space.make([ 0,3 ]) );
-    test.shouldBe( m === r );
+    test.is( m === r );
 
     /* */
 
@@ -5923,18 +5931,18 @@ function partialAccessors( test )
       var m = space.make([ 3,0 ]);
       var expected = space.make([ 0,0 ]);
       var r = m[ rname ]( space.make([ 0,0 ]) );
-      test.shouldBe( m === r );
+      test.is( m === r );
 
       var m = space.make([ 3,0 ]);
       var expected = space.make([ 0,0 ]);
       var r = m[ rname ]( space.make([ 0,3 ]) );
-      test.shouldBe( m === r );
+      test.is( m === r );
     }
 
     var m = space.make([ 3,0 ]);
     var expected = space.make([ 0,0 ]);
     var r = m[ rname ]( space.make([ 3,0 ]) );
-    test.shouldBe( m === r );
+    test.is( m === r );
 
   }
 
@@ -6502,7 +6510,7 @@ function addAtomWise( test )
 
   var r = space.addAtomWise( m1,m2 );
   test.equivalent( r,expected );
-  test.shouldBe( r === m1 );
+  test.is( r === m1 );
 
   test.description = 'addAtomWise 2 spaces with null'; //
 
@@ -6516,7 +6524,7 @@ function addAtomWise( test )
 
   var r = space.addAtomWise( null,m1,m2 );
   test.equivalent( r,expected );
-  test.shouldBe( r !== m1 );
+  test.is( r !== m1 );
 
   test.description = 'addAtomWise 3 spaces into the first src'; //
 
@@ -6530,7 +6538,7 @@ function addAtomWise( test )
 
   var r = space.addAtomWise( null,m1,m2,m3 );
   test.equivalent( r,expected );
-  test.shouldBe( r !== m1 );
+  test.is( r !== m1 );
 
   test.description = 'addAtomWise 3 spaces into the first src'; //
 
@@ -6544,7 +6552,7 @@ function addAtomWise( test )
 
   var r = space.addAtomWise( m1,m2,m3 );
   test.equivalent( r,expected );
-  test.shouldBe( r === m1 );
+  test.is( r === m1 );
 
   test.description = 'addAtomWise space and scalar'; //
 
@@ -6558,7 +6566,7 @@ function addAtomWise( test )
 
   var r = space.addAtomWise( null,m1,10 );
   test.equivalent( r,expected );
-  test.shouldBe( r !== m1 );
+  test.is( r !== m1 );
 
   test.description = 'addAtomWise all sort of arguments'; //
 
@@ -6572,7 +6580,7 @@ function addAtomWise( test )
 
   var r = space.addAtomWise( null,m5,10 );
   test.equivalent( r,expected );
-  test.shouldBe( r !== m5 );
+  test.is( r !== m5 );
 
   var expected = space.make([ 2,1 ]).copy
   ([
@@ -6582,7 +6590,7 @@ function addAtomWise( test )
 
   var r = space.addAtomWise( null,m5,10,v1 );
   test.equivalent( r,expected );
-  test.shouldBe( r !== m5 );
+  test.is( r !== m5 );
 
   var expected = space.make([ 2,1 ]).copy
   ([
@@ -6592,7 +6600,7 @@ function addAtomWise( test )
 
   var r = space.addAtomWise( null,m5,10,v1,a1 );
   test.equivalent( r,expected );
-  test.shouldBe( r !== m5 );
+  test.is( r !== m5 );
 
   test.description = 'addAtomWise all sort of arguments'; //
 
@@ -6606,7 +6614,7 @@ function addAtomWise( test )
 
   var r = space.addAtomWise( m5,10,v1 );
   test.equivalent( r,expected );
-  test.shouldBe( r === m5 );
+  test.is( r === m5 );
 
   remake();
 
@@ -6618,7 +6626,7 @@ function addAtomWise( test )
 
   var r = space.addAtomWise( m5,10,v1,a1 );
   test.equivalent( r,expected );
-  test.shouldBe( r === m5 );
+  test.is( r === m5 );
 
   remake();
 
@@ -6630,7 +6638,7 @@ function addAtomWise( test )
 
   var r = space.addAtomWise( m5,10,v1,a1,m4 );
   test.equivalent( r,expected );
-  test.shouldBe( r === m5 );
+  test.is( r === m5 );
 
   test.description = 'addAtomWise rewriting src argument'; //
 
@@ -6644,7 +6652,7 @@ function addAtomWise( test )
 
   var r = space.addAtomWise( m4,10,v1,a1,m4 );
   test.equivalent( r,expected );
-  test.shouldBe( r === m4 );
+  test.is( r === m4 );
 
 }
 
@@ -6704,7 +6712,7 @@ function subAtomWise( test )
 
   var r = space.subAtomWise( m1,m2 );
   test.equivalent( r,expected );
-  test.shouldBe( r === m1 );
+  test.is( r === m1 );
 
   test.description = '2 spaces with null'; //
 
@@ -6718,7 +6726,7 @@ function subAtomWise( test )
 
   var r = space.subAtomWise( null,m1,m2 );
   test.equivalent( r,expected );
-  test.shouldBe( r !== m1 );
+  test.is( r !== m1 );
 
   test.description = '3 spaces into the first src'; //
 
@@ -6732,7 +6740,7 @@ function subAtomWise( test )
 
   var r = space.subAtomWise( null,m1,m2,m3 );
   test.equivalent( r,expected );
-  test.shouldBe( r !== m1 );
+  test.is( r !== m1 );
 
   test.description = '3 spaces into the first src'; //
 
@@ -6746,7 +6754,7 @@ function subAtomWise( test )
 
   var r = space.subAtomWise( m1,m2,m3 );
   test.equivalent( r,expected );
-  test.shouldBe( r === m1 );
+  test.is( r === m1 );
 
   test.description = 'space and scalar'; //
 
@@ -6760,7 +6768,7 @@ function subAtomWise( test )
 
   var r = space.subAtomWise( null,m1,10 );
   test.equivalent( r,expected );
-  test.shouldBe( r !== m1 );
+  test.is( r !== m1 );
 
   test.description = 'all sort of arguments'; //
 
@@ -6774,7 +6782,7 @@ function subAtomWise( test )
 
   var r = space.subAtomWise( null,m5,10 );
   test.equivalent( r,expected );
-  test.shouldBe( r !== m5 );
+  test.is( r !== m5 );
 
   var expected = space.make([ 2,1 ]).copy
   ([
@@ -6784,7 +6792,7 @@ function subAtomWise( test )
 
   var r = space.subAtomWise( null,m5,10,v1 );
   test.equivalent( r,expected );
-  test.shouldBe( r !== m5 );
+  test.is( r !== m5 );
 
   var expected = space.make([ 2,1 ]).copy
   ([
@@ -6794,7 +6802,7 @@ function subAtomWise( test )
 
   var r = space.subAtomWise( null,m5,10,v1,a1 );
   test.equivalent( r,expected );
-  test.shouldBe( r !== m5 );
+  test.is( r !== m5 );
 
   test.description = 'all sort of arguments'; //
 
@@ -6808,7 +6816,7 @@ function subAtomWise( test )
 
   var r = space.subAtomWise( m5,10,v1 );
   test.equivalent( r,expected );
-  test.shouldBe( r === m5 );
+  test.is( r === m5 );
 
   remake();
 
@@ -6820,7 +6828,7 @@ function subAtomWise( test )
 
   var r = space.subAtomWise( m5,10,v1,a1 );
   test.equivalent( r,expected );
-  test.shouldBe( r === m5 );
+  test.is( r === m5 );
 
   remake();
 
@@ -6832,7 +6840,7 @@ function subAtomWise( test )
 
   var r = space.subAtomWise( m5,10,v1,a1,m4 );
   test.equivalent( r,expected );
-  test.shouldBe( r === m5 );
+  test.is( r === m5 );
 
   test.description = 'rewriting src argument'; //
 
@@ -6846,7 +6854,7 @@ function subAtomWise( test )
 
   var r = space.subAtomWise( m4,10,v1,a1,m4 );
   test.equivalent( r,expected );
-  test.shouldBe( r === m4 );
+  test.is( r === m4 );
 
 }
 
@@ -6862,7 +6870,7 @@ function subAtomWise( test )
 //
 //   var r = space.subAtomWise( null,m1,m2 );
 //   test.equivalent( r,expected );
-//   test.shouldBe( r === m1 );
+//   test.is( r === m1 );
 //
 //   test.description = 'subAtomWise all sort of arguments'; //
 //
@@ -6876,7 +6884,7 @@ function subAtomWise( test )
 //
 //   var r = space.subAtomWise( m5,10,v1,a1,m4 );
 //   test.equivalent( r,expected );
-//   test.shouldBe( r === m5 );
+//   test.is( r === m5 );
 //
 //   return;
 //
@@ -6894,7 +6902,7 @@ function subAtomWise( test )
 //
 //   var r = space.mulAtomWise( null,m1,m2 );
 //   test.equivalent( r,expected );
-//   test.shouldBe( r !== m1 );
+//   test.is( r !== m1 );
 //
 //   test.description = 'mulAtomWise all sort of arguments'; //
 //
@@ -6908,7 +6916,7 @@ function subAtomWise( test )
 //
 //   var r = space.mulAtomWise( m4,10,v1,a1,m4 );
 //   test.equivalent( r,expected );
-//   test.shouldBe( r === m4 );
+//   test.is( r === m4 );
 //
 //   /* */
 //
@@ -6924,7 +6932,7 @@ function subAtomWise( test )
 //
 //   var r = space.divAtomWise( null,m1,m2 );
 //   test.equivalent( r,expected );
-//   test.shouldBe( r !== m1 );
+//   test.is( r !== m1 );
 //
 //   test.description = 'divAtomWise all sort of arguments'; //
 //
@@ -6938,7 +6946,7 @@ function subAtomWise( test )
 //
 //   var r = space.divAtomWise( m4,10,v1,a1,m4 );
 //   test.equivalent( r,expected );
-//   test.shouldBe( r === m4 );
+//   test.is( r === m4 );
 //
 //   //
 //
@@ -7016,7 +7024,7 @@ function subAtomWise( test )
 //
 //   var r = space.addAtomWise( m1,[ m1,m2,m3 ] );
 //   test.equivalent( r,expected );
-//   test.shouldBe( r === m1 );
+//   test.is( r === m1 );
 //
 //   test.description = 'addAtomWise space and scalar'; //
 //
@@ -7301,132 +7309,122 @@ function colRowWiseOperations( test )
   });
 
   space2.bufferNormalize();
-  debugger;
 
-  // var space2 = space.make([ 4,3 ])
-  // .copy
-  // ( new Float64Array([
-  //   10,0,3,
-  //   1,20,0,
-  //   0,2,30,
-  //   5,10,20,
-  // ]));
-
-  test.description = 'reduceToMean'; //
-
-  var c = m32.reduceToMeanRowWise();
-  var r = m32.reduceToMeanColWise();
-  var a = m32.reduceToMeanAtomWise();
-
-  test.identical( c,vec([ 2.5, 3.5, 4.5 ]) );
-  test.identical( r,vec([ 2,5 ]) );
-  test.identical( a,3.5 );
-
-  test.description = 'reduceToMean with output argument'; //
-
-  var c2 = [ 1,1,1 ];
-  var r2 = [ 1 ];
-  m32.reduceToMeanRowWise( c2 );
-  m32.reduceToMeanColWise( r2 );
-
-  test.identical( c,vec( c2 ) );
-  test.identical( r,vec( r2 ) );
-
-  test.description = 'reduceToMean with empty spaces'; //
-
-  var c = empty1.reduceToMeanRowWise();
-  var r = empty1.reduceToMeanColWise();
-  var a = empty1.reduceToMeanAtomWise();
-
-  test.identical( c,vec([ NaN,NaN ]) );
-  test.identical( r,vec([]) );
-  test.identical( a,NaN );
-
-  test.description = 'reduceToMean bad arguments'; //
-
-  function simpleShouldThrowError( f )
-  {
-    test.shouldThrowErrorSync( () => m[ f ]( 1 ) );
-    test.shouldThrowErrorSync( () => m[ f ]( null ) );
-    test.shouldThrowErrorSync( () => m[ f ]( 'x' ) );
-    test.shouldThrowErrorSync( () => m[ f ]( [],1 ) );
-    test.shouldThrowErrorSync( () => m[ f ]( [],[] ) );
-    test.shouldThrowErrorSync( () => m[ f ]( space1.clone() ) );
-  }
-
-  if( Config.debug )
-  {
-
-    simpleShouldThrowError( 'reduceToMeanRowWise' );
-    simpleShouldThrowError( 'reduceToMeanColWise' );
-    simpleShouldThrowError( 'reduceToMeanAtomWise' );
-
-  }
-
-  test.description = 'distributionRangeSummaryColWise'; //
-
-  var expected =
-  [
-    {
-      min : { value : 0, index : 0 },
-      max : { value : 10, index : 2 },
-    },
-    {
-      min : { value : 0, index : 0 },
-      max : { value : 111, index : 3 },
-    },
-    {
-      min : { value : 0, index : 0 },
-      max : { value : 30, index : 2 },
-    },
-  ]
-
-  var r = space1.distributionRangeSummaryColWise();
-  test.contain( r,expected );
-
-  var expected =
-  [
-  ]
-
-  var r = empty1.distributionRangeSummaryColWise();
-  test.identical( r,expected );
-
-  var expected =
-  [
-    {
-      min : { value : NaN, index : -1, container : null },
-      max : { value : NaN, index : -1, container : null },
-      median : NaN,
-    },
-    {
-      min : { value : NaN, index : -1, container : null },
-      max : { value : NaN, index : -1, container : null },
-      median : NaN,
-    },
-  ]
-
-  var r = empty2.distributionRangeSummaryColWise();
-  test.identical( r,expected );
-
-  test.description = 'minmaxColWise'; //
-
-  var expected =
-  {
-    min : new Float64Array([ 0,0,0 ]),
-    max : new Float64Array([ 10,111,30 ]),
-  }
-  var r = space1.minmaxColWise();
-  test.identical( r,expected );
-
-  var expected =
-  {
-    min : new Float64Array([]),
-    max : new Float64Array([]),
-  }
-
-  var r = empty1.minmaxColWise();
-  test.identical( r,expected );
-
+  // test.description = 'reduceToMean'; //
+  //
+  // var c = m32.reduceToMeanRowWise();
+  // var r = m32.reduceToMeanColWise();
+  // var a = m32.reduceToMeanAtomWise();
+  //
+  // test.identical( c,vec([ 2.5, 3.5, 4.5 ]) );
+  // test.identical( r,vec([ 2,5 ]) );
+  // test.identical( a,3.5 );
+  //
+  // test.description = 'reduceToMean with output argument'; //
+  //
+  // var c2 = [ 1,1,1 ];
+  // var r2 = [ 1 ];
+  // m32.reduceToMeanRowWise( c2 );
+  // m32.reduceToMeanColWise( r2 );
+  //
+  // test.identical( c,vec( c2 ) );
+  // test.identical( r,vec( r2 ) );
+  //
+  // test.description = 'reduceToMean with empty spaces'; //
+  //
+  // var c = empty1.reduceToMeanRowWise();
+  // var r = empty1.reduceToMeanColWise();
+  // var a = empty1.reduceToMeanAtomWise();
+  //
+  // test.identical( c,vec([ NaN,NaN ]) );
+  // test.identical( r,vec([]) );
+  // test.identical( a,NaN );
+  //
+  // test.description = 'reduceToMean bad arguments'; //
+  //
+  // function simpleShouldThrowError( f )
+  // {
+  //   test.shouldThrowErrorSync( () => m[ f ]( 1 ) );
+  //   test.shouldThrowErrorSync( () => m[ f ]( null ) );
+  //   test.shouldThrowErrorSync( () => m[ f ]( 'x' ) );
+  //   test.shouldThrowErrorSync( () => m[ f ]( [],1 ) );
+  //   test.shouldThrowErrorSync( () => m[ f ]( [],[] ) );
+  //   test.shouldThrowErrorSync( () => m[ f ]( space1.clone() ) );
+  // }
+  //
+  // if( Config.debug )
+  // {
+  //
+  //   simpleShouldThrowError( 'reduceToMeanRowWise' );
+  //   simpleShouldThrowError( 'reduceToMeanColWise' );
+  //   simpleShouldThrowError( 'reduceToMeanAtomWise' );
+  //
+  // }
+  //
+  // test.description = 'distributionRangeSummaryColWise'; //
+  //
+  // var expected =
+  // [
+  //   {
+  //     min : { value : 0, index : 0 },
+  //     max : { value : 10, index : 2 },
+  //   },
+  //   {
+  //     min : { value : 0, index : 0 },
+  //     max : { value : 111, index : 3 },
+  //   },
+  //   {
+  //     min : { value : 0, index : 0 },
+  //     max : { value : 30, index : 2 },
+  //   },
+  // ]
+  //
+  // var r = space1.distributionRangeSummaryColWise();
+  // test.contain( r,expected );
+  //
+  // var expected =
+  // [
+  // ]
+  //
+  // var r = empty1.distributionRangeSummaryColWise();
+  // test.identical( r,expected );
+  //
+  // var expected =
+  // [
+  //   {
+  //     min : { value : NaN, index : -1, container : null },
+  //     max : { value : NaN, index : -1, container : null },
+  //     median : NaN,
+  //   },
+  //   {
+  //     min : { value : NaN, index : -1, container : null },
+  //     max : { value : NaN, index : -1, container : null },
+  //     median : NaN,
+  //   },
+  // ]
+  //
+  // var r = empty2.distributionRangeSummaryColWise();
+  // test.identical( r,expected );
+  //
+  // test.description = 'minmaxColWise'; //
+  //
+  // var expected =
+  // {
+  //   min : new Float64Array([ 0,0,0 ]),
+  //   max : new Float64Array([ 10,111,30 ]),
+  // }
+  // var r = space1.minmaxColWise();
+  // test.identical( r,expected );
+  //
+  // var expected =
+  // {
+  //   min : new Float64Array([]),
+  //   max : new Float64Array([]),
+  // }
+  //
+  // var r = empty1.minmaxColWise();
+  // test.identical( r,expected );
+  
   var expected =
   {
     min : new Float64Array([ NaN,NaN ]),
@@ -7434,7 +7432,11 @@ function colRowWiseOperations( test )
   }
 
   var r = empty2.minmaxColWise();
+  debugger;
+  var identical = _.entityIdentical( r,expected );
+  debugger;
   test.identical( r,expected );
+  debugger;
 
   test.description = 'distributionRangeSummaryRowWise'; //
 
@@ -7910,7 +7912,7 @@ function mul( test )
   var mul = space.mul( m,[ m,m ] );
   logger.log( mul );
   test.equivalent( mul,expected );
-  test.shouldBe( mul === m );
+  test.is( mul === m );
 
   test.description = 'mul itself 2 times'; //
 
@@ -7926,7 +7928,7 @@ function mul( test )
   var mul = space.mul( m,[ m,m,m ] );
   logger.log( mul );
   test.equivalent( mul,expected );
-  test.shouldBe( mul === m );
+  test.is( mul === m );
 
   test.description = 'mul itself 3 times'; //
 
@@ -7942,7 +7944,7 @@ function mul( test )
   var mul = space.mul( m,[ m,m,m,m ] );
   logger.log( mul );
   test.equivalent( mul,expected );
-  test.shouldBe( mul === m );
+  test.is( mul === m );
 
   test.description = 'mul 3 matrices with dst === src'; //
 
@@ -7959,7 +7961,7 @@ function mul( test )
   var mul = space.mul( m1,[ m1,m2,m2 ] );
   logger.log( mul );
   test.equivalent( mul,expected );
-  test.shouldBe( mul === m1 );
+  test.is( mul === m1 );
 
   test.description = 'mul 3 matrices with dst === src'; //
 
@@ -7976,7 +7978,7 @@ function mul( test )
   var mul = space.mul( m2,[ m1,m2,m2 ] );
   logger.log( mul );
   test.equivalent( mul,expected );
-  test.shouldBe( mul === m2 );
+  test.is( mul === m2 );
 
   test.description = 'mul 4 matrices with dst === src'; //
 
@@ -7993,7 +7995,7 @@ function mul( test )
   var mul = space.mul( m1,[ m1,m2,m2,m1 ] );
   logger.log( mul );
   test.equivalent( mul,expected );
-  test.shouldBe( mul === m1 );
+  test.is( mul === m1 );
 
   test.description = 'mul 4 matrices with dst === src'; //
 
@@ -8010,7 +8012,7 @@ function mul( test )
   var mul = space.mul( m2,[ m1,m2,m2,m1 ] );
   logger.log( mul );
   test.equivalent( mul,expected );
-  test.shouldBe( mul === m2 );
+  test.is( mul === m2 );
 
   test.description = 'matrix array multiplication'; //
 
@@ -8022,7 +8024,7 @@ function mul( test )
   debugger;
   logger.log( mul );
   test.equivalent( mul,expected );
-  test.shouldBe( v === mul );
+  test.is( v === mul );
 
   test.description = 'matrix vector multiplication'; //
 
@@ -8034,7 +8036,7 @@ function mul( test )
   debugger;
   logger.log( mul );
   test.equivalent( mul,expected );
-  test.shouldBe( v === mul );
+  test.is( v === mul );
 
   test.description = 'matrix array matrix multiplication'; //
 
@@ -8045,7 +8047,7 @@ function mul( test )
   var mul = space.mul( v,[ m,v,row,m,v ] );
   logger.log( mul );
   test.equivalent( mul,expected );
-  test.shouldBe( v === mul );
+  test.is( v === mul );
 
   test.description = 'matrix array matrix multiplication'; //
 
@@ -8056,7 +8058,7 @@ function mul( test )
   var mul = space.mul( v,[ m,v,row,m,v,[ 10 ] ] );
   logger.log( mul );
   test.equivalent( mul,expected );
-  test.shouldBe( v === mul );
+  test.is( v === mul );
 
   test.description = 'bad arguments'; //
 
@@ -9094,7 +9096,7 @@ function _solveSimple( test,rname )
   logger.log( 'm',m );
   logger.log( 'x',x );
 
-  test.shouldBe( x !== y );
+  test.is( x !== y );
   test.identical( x,[ -1,-2,+3 ] );
   test.identical( y,oy );
 
@@ -9119,7 +9121,7 @@ function _solveSimple( test,rname )
   logger.log( 'm',m );
   logger.log( 'x',x );
 
-  test.shouldBe( x !== y );
+  test.is( x !== y );
   test.identical( x,vec([ -1,-2,+3 ]) );
   test.identical( y,oy );
 
@@ -9143,7 +9145,7 @@ function _solveSimple( test,rname )
   logger.log( 'm',m );
   logger.log( 'x',x );
 
-  test.shouldBe( x !== y );
+  test.is( x !== y );
   test.identical( x,space.makeCol([ -1,-2,+3 ]) );
   test.identical( y,oy );
 
@@ -9168,8 +9170,8 @@ function _solveSimple( test,rname )
   logger.log( 'm',m );
   logger.log( 'x',x );
 
-  test.shouldBe( x !== y );
-  test.shouldBe( x === ox );
+  test.is( x !== y );
+  test.is( x === ox );
   test.identical( x,[ -1,-2,+3 ] );
   test.identical( y,oy );
 
@@ -9194,8 +9196,8 @@ function _solveSimple( test,rname )
   logger.log( 'm',m );
   logger.log( 'x',x );
 
-  test.shouldBe( x !== y );
-  test.shouldBe( x === ox );
+  test.is( x !== y );
+  test.is( x === ox );
   test.identical( x,vec([ -1,-2,+3 ]) );
   test.identical( y,oy );
 
@@ -9220,8 +9222,8 @@ function _solveSimple( test,rname )
   logger.log( 'm',m );
   logger.log( 'x',x );
 
-  test.shouldBe( x !== y );
-  test.shouldBe( x === ox );
+  test.is( x !== y );
+  test.is( x === ox );
   test.identical( x,space.makeCol([ -1,-2,+3 ]) );
   test.identical( y,oy );
 
@@ -9257,7 +9259,7 @@ function _solveSimple( test,rname )
     +3,-4,
   ]);
 
-  test.shouldBe( x !== y );
+  test.is( x !== y );
   test.identical( x,xEpxpected );
   test.identical( y,oy );
 
@@ -9279,7 +9281,7 @@ function _solveSimple( test,rname )
 
   var xEpxpected = space.make([ 0,2 ]).copy([]);
 
-  test.shouldBe( x !== y );
+  test.is( x !== y );
   test.identical( x,xEpxpected );
   test.identical( y,oy );
 
@@ -9325,7 +9327,7 @@ function _solveComplicated( test,rname )
   logger.log( 'm',m );
   logger.log( 'x',x );
 
-  test.shouldBe( x !== y );
+  test.is( x !== y );
   test.identical( x,[ -0.5,+2.5,-0.5 ] );
   test.identical( y,oy );
 
@@ -9939,8 +9941,6 @@ function polynomExactFor( test )
     test.equivalent( _.avector.polynomApply( polynom , x ) , f( x ) , 1e-3 );
 
   }
-
-  debugger;
 
   test.description = 'polynomExactFor for E( n )'; //
 
