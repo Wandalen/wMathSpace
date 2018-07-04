@@ -1484,7 +1484,7 @@ function equalWith( ins,o )
 {
   debugger; xxx
   var it = equalWith.lookContinue( equalWith, arguments );
-  var result = this._equalAre( src1, src2, it );
+  var result = this._equalAre( it );
   return result;
   // _entityEqualIteratorMake
 
@@ -1498,42 +1498,42 @@ _.routineSupplement( equalWith, _._entityEqual );
 
 //
 
-function _equalAre( src1, src2, it )
+function _equalAre( it )
 {
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 1, 'expects exactly three argument' );
   _.assert( it.context.onNumbersAreEqual );
 
   debugger;
   it.looking = false;
 
-  if( !( src2 instanceof Self ) )
+  if( !( it.src2 instanceof Self ) )
   {
     it.result = false;
     return it.result;
   }
 
-  if( src1.length !== src2.length )
+  if( it.src.length !== it.src2.length )
   {
     it.result = false;
     return it.result;
   }
 
-  if( src1.buffer.constructor !== src2.buffer.constructor )
+  if( it.src.buffer.constructor !== it.src2.buffer.constructor )
   {
     it.result = false;
     return it.result;
   }
 
-  if( !_.arrayIdentical( src1.breadth,src2.breadth )  )
+  if( !_.arrayIdentical( it.src.breadth,it.src2.breadth )  )
   {
     it.result = false;
     return it.result;
   }
 
-  it.result = src1.atomWhile( function( atom,indexNd,indexFlat )
+  it.result = it.src.atomWhile( function( atom,indexNd,indexFlat )
   {
-    var atom2 = src2.atomGet( indexNd );
+    var atom2 = it.src2.atomGet( indexNd );
     return it.context.onNumbersAreEqual( atom,atom2 );
   });
 
@@ -1543,7 +1543,7 @@ function _equalAre( src1, src2, it )
 _.routineSupplement( _equalAre, _._entityEqual );
 
 //
-
+//
 // function identicalWith( src )
 // {
 //   var self = this;
@@ -1567,7 +1567,7 @@ _.routineSupplement( _equalAre, _._entityEqual );
 //   debugger;
 //   return _.arrayIdentical( self.buffer,self.buffer );
 // }
-
+//
 //
 
 function is( src )
