@@ -53,8 +53,8 @@ var arraySlice = Array.prototype.slice;
 var sqrt = Math.sqrt;
 var sqr = _.sqr;
 var vector = _.vector;
-var EPS = _.EPS;
-var EPS2 = _.EPS2;
+var accuracy = _.accuracy;
+var accuracySqr = _.accuracySqr;
 
 _.assert( vector,'wSpace : vector module needed' );
 
@@ -3152,8 +3152,8 @@ var Statics =
 
   array : _.ArrayNameSpaces.Float32,
   withArray : _.ArrayNameSpaces,
-  EPS : EPS,
-  EPS2 : EPS2,
+  accuracy : accuracy,
+  accuracySqr : accuracySqr,
 
 }
 

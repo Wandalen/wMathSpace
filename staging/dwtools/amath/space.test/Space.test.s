@@ -68,7 +68,7 @@ function makeWithOffset( o )
 
 function experiment( test )
 {
-  test.description = 'experiment';
+  test.case = 'experiment';
   test.identical( 1,1 );
 
   var m = space.makeSquare
@@ -96,7 +96,7 @@ function env( test )
 function clone( test )
 {
 
-  test.description = 'make'; /* */
+  test.case = 'make'; /* */
 
   var buffer = new Float32Array([ 1,2,3,4,5,6 ]);
   var a = new _.Space
@@ -106,7 +106,7 @@ function clone( test )
     inputTransposing : 0,
   });
 
-  test.description = 'clone'; /* */
+  test.case = 'clone'; /* */
 
   var b = a.clone();
   test.identical( a,b );
@@ -128,7 +128,7 @@ function clone( test )
   test.identical( a.strideOfRow,1 );
   test.identical( a.strideInRow,3 );
 
-  test.description = 'set buffer'; /* */
+  test.case = 'set buffer'; /* */
 
   a.buffer = new Float32Array([ 11,12,13 ]);
 
@@ -149,7 +149,7 @@ function clone( test )
 
   logger.log( a );
 
-  test.description = 'set dimension'; /* */
+  test.case = 'set dimension'; /* */
 
   a.dims = [ 1,3 ];
 
@@ -170,7 +170,7 @@ function clone( test )
 
   logger.log( a );
 
-  test.description = 'copy buffer and dims'; /* */
+  test.case = 'copy buffer and dims'; /* */
 
   a.dims = [ 1,3 ];
   a.copyResetting({ buffer : new Float32Array([ 3,4,5 ]), dims : [ 3,1 ] });
@@ -192,7 +192,7 @@ function clone( test )
 
   logger.log( a );
 
-  test.description = 'copy dims and buffer'; /* */
+  test.case = 'copy dims and buffer'; /* */
 
   a.dims = [ 1,3 ];
   a.copyResetting({ dims : [ 3,1 ], buffer : new Float32Array([ 3,4,5 ]) });
@@ -221,7 +221,7 @@ function clone( test )
 function construct( test )
 {
 
-  test.description = 'creating'; /* */
+  test.case = 'creating'; /* */
 
   var a = new _.Space
   ({
@@ -250,7 +250,7 @@ function construct( test )
   test.identical( a.strideOfRow,2 );
   test.identical( a.strideInRow,6 );
 
-  test.description = 'serializing clone'; /* */
+  test.case = 'serializing clone'; /* */
 
   var cloned = a.cloneSerializing();
 
@@ -283,7 +283,7 @@ function construct( test )
 
   test.identical( cloned,expected );
 
-    test.description = 'deserializing clone'; /* */
+    test.case = 'deserializing clone'; /* */
 
   var b = new _.Space({ buffer : new Float32Array(), inputTransposing : true });
   b.copyDeserializing( cloned );
@@ -326,7 +326,7 @@ function construct( test )
   test.identical( b.strideOfRow,1 );
   test.identical( b.strideInRow,3 );
 
-  test.description = 'creating'; /* */
+  test.case = 'creating'; /* */
 
   var a = new _.Space
   ({
@@ -355,7 +355,7 @@ function construct( test )
   test.identical( a.strideOfRow,2 );
   test.identical( a.strideInRow,6 );
 
-  test.description = 'serializing clone'; /* */
+  test.case = 'serializing clone'; /* */
 
   var cloned = a.cloneSerializing();
 
@@ -388,7 +388,7 @@ function construct( test )
 
   test.identical( cloned,expected );
 
-  test.description = 'deserializing clone'; /* */
+  test.case = 'deserializing clone'; /* */
 
   var b = new _.Space({ buffer : new Float32Array(), inputTransposing : true });
   b.copyDeserializing( cloned );
@@ -473,7 +473,7 @@ function make( test )
 function _make( test,o )
 {
 
-  test.description = 'matrix with dimensions without stride, transposing'; /* */
+  test.case = 'matrix with dimensions without stride, transposing'; /* */
 
   var m = new space
   ({
@@ -525,7 +525,7 @@ function _make( test,o )
 
   return; xxx
 
-  test.description = 'matrix with dimensions without stride, non transposing'; /* */
+  test.case = 'matrix with dimensions without stride, non transposing'; /* */
 
   var m = new space
   ({
@@ -573,7 +573,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 21 );
   test.identical( m.reduceToProductAtomWise(), 720 );
 
-  test.description = 'column with dimensions without stride, transposing'; /* */
+  test.case = 'column with dimensions without stride, transposing'; /* */
 
   var m = new space
   ({
@@ -622,7 +622,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
 
-  test.description = 'column with dimensions without stride, non transposing'; /* */
+  test.case = 'column with dimensions without stride, non transposing'; /* */
 
   var m = new space
   ({
@@ -671,7 +671,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
 
-  test.description = 'matrix with breadth, transposing'; /* */
+  test.case = 'matrix with breadth, transposing'; /* */
 
   var m = new space
   ({
@@ -719,7 +719,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 21 );
   test.identical( m.reduceToProductAtomWise(), 720 );
 
-  test.description = 'matrix with breadth, non transposing'; /* */
+  test.case = 'matrix with breadth, non transposing'; /* */
 
   var m = new space
   ({
@@ -767,7 +767,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 21 );
   test.identical( m.reduceToProductAtomWise(), 720 );
 
-  test.description = 'construct empty matrix with dims defined'; /* */
+  test.case = 'construct empty matrix with dims defined'; /* */
 
   var m = new space({ buffer : o.arrayMake(), offset : o.offset, inputTransposing : 0, dims : [ 1,0 ] });
 
@@ -798,7 +798,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 0 );
   test.identical( m.reduceToProductAtomWise(), 1 );
 
-  test.description = 'construct empty matrix'; /* */
+  test.case = 'construct empty matrix'; /* */
 
   var m = new space({ buffer : o.arrayMake(), offset : o.offset, inputTransposing : 0/*, dims : [ 1,0 ]*/ });
 
@@ -844,7 +844,7 @@ function _make( test,o )
 
   }
 
-  test.description = 'construct empty matrix with long column, non transposing'; /* */
+  test.case = 'construct empty matrix with long column, non transposing'; /* */
 
   function checkEmptySpaceWithLongColNonTransposing( m )
   {
@@ -907,19 +907,19 @@ function _make( test,o )
   checkEmptySpaceWithLongColNonTransposing( m );
   test.identical( m.strides, null );
 
-  test.description = 'change by empty buffer of empty matrix with long column, non transposing'; /* */
+  test.case = 'change by empty buffer of empty matrix with long column, non transposing'; /* */
 
   m.buffer = new Int32Array();
   logger.log( 'm\n' + _.toStr( m ) );
   checkEmptySpaceWithLongColNonTransposing( m );
 
-  test.description = 'change by empty buffer of empty matrix with long column, non transposing, with copy'; /* */
+  test.case = 'change by empty buffer of empty matrix with long column, non transposing, with copy'; /* */
 
   m.copy({ buffer : o.arrayMake(), offset : o.offset });
   logger.log( 'm\n' + _.toStr( m ) );
   checkEmptySpaceWithLongColNonTransposing( m );
 
-  test.description = 'change buffer of empty matrix with long column, non transposing'; /* */
+  test.case = 'change buffer of empty matrix with long column, non transposing'; /* */
 
   m.copy({ buffer : o.arrayMake([ 1,2,3 ]), offset : o.offset });
   logger.log( 'm\n' + _.toStr( m ) );
@@ -956,7 +956,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
 
-  test.description = 'change buffer of not empty matrix with long column, non transposing'; /* */
+  test.case = 'change buffer of not empty matrix with long column, non transposing'; /* */
 
   m.copy({ buffer : o.arrayMake([ 1,2,3,4,5,6 ]), offset : o.offset });
   logger.log( 'm\n' + _.toStr( m ) );
@@ -993,7 +993,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 21 );
   test.identical( m.reduceToProductAtomWise(), 720 );
 
-  test.description = 'construct empty matrix with long column, transposing'; /* */
+  test.case = 'construct empty matrix with long column, transposing'; /* */
 
   function checkEmptySpaceWithLongColTransposing( m )
   {
@@ -1051,7 +1051,7 @@ function _make( test,o )
   logger.log( 'm\n' + _.toStr( m ) );
   checkEmptySpaceWithLongColTransposing( m );
 
-  test.description = 'change by empty buffer of empty matrix with long column, transposing'; /* */
+  test.case = 'change by empty buffer of empty matrix with long column, transposing'; /* */
 
   var m = new space
   ({
@@ -1063,13 +1063,13 @@ function _make( test,o )
   logger.log( 'm\n' + _.toStr( m ) );
   checkEmptySpaceWithLongColTransposing( m );
 
-  test.description = 'change by empty buffer of empty matrix with long column, transposing, by copy'; /* */
+  test.case = 'change by empty buffer of empty matrix with long column, transposing, by copy'; /* */
 
   m.copy({ buffer : o.arrayMake([]), offset : o.offset });
   logger.log( 'm\n' + _.toStr( m ) );
   checkEmptySpaceWithLongColTransposing( m );
 
-  test.description = 'change buffer of empty matrix with long column, transposing'; /* */
+  test.case = 'change buffer of empty matrix with long column, transposing'; /* */
 
   m.copy({ buffer : o.arrayMake([ 1,2,3 ]), offset : o.offset });
   logger.log( 'm\n' + _.toStr( m ) );
@@ -1106,7 +1106,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
 
-  test.description = 'change buffer of empty matrix with long column, transposing'; /* */
+  test.case = 'change buffer of empty matrix with long column, transposing'; /* */
 
   m.copy({ buffer : o.arrayMake([ 1,2,3,4,5,6 ]), offset : o.offset });
   logger.log( 'm\n' + _.toStr( m ) );
@@ -1143,7 +1143,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 21 );
   test.identical( m.reduceToProductAtomWise(), 720 );
 
-  test.description = 'construct empty matrix with long row, transposing'; /* */
+  test.case = 'construct empty matrix with long row, transposing'; /* */
 
   function checkEmptySpaceWithLongRowTransposing( m )
   {
@@ -1203,7 +1203,7 @@ function _make( test,o )
   checkEmptySpaceWithLongRowTransposing( m );
   test.shouldThrowErrorSync( () => m.buffer = new Int32Array() );
 
-  test.description = 'change by empty buffer of empty matrix with long row, transposing'; /* */
+  test.case = 'change by empty buffer of empty matrix with long row, transposing'; /* */
 
   var m = new space
   ({
@@ -1221,7 +1221,7 @@ function _make( test,o )
   logger.log( 'm\n' + _.toStr( m ) );
   checkEmptySpaceWithLongRowTransposing( m );
 
-  test.description = 'change by non empty buffer of empty matrix with long row, transposing'; /* */
+  test.case = 'change by non empty buffer of empty matrix with long row, transposing'; /* */
 
   m.copy({ buffer : o.arrayMake([ 1,2,3 ]), offset : o.offset });
   logger.log( 'm\n' + _.toStr( m ) );
@@ -1258,7 +1258,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
 
-  test.description = 'change by non empty buffer of non empty matrix with long row, transposing'; /* */
+  test.case = 'change by non empty buffer of non empty matrix with long row, transposing'; /* */
 
   m.copy({ buffer : o.arrayMake([ 1,2,3,4,5,6 ]), offset : o.offset });
   logger.log( 'm\n' + _.toStr( m ) );
@@ -1295,7 +1295,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 21 );
   test.identical( m.reduceToProductAtomWise(), 720 );
 
-  test.description = 'construct empty matrix with long row, non transposing'; /* */
+  test.case = 'construct empty matrix with long row, non transposing'; /* */
 
   function checkEmptySpaceWithLongRowNonTransposing( m )
   {
@@ -1362,7 +1362,7 @@ function _make( test,o )
   var m = space.make([ 0,3 ]);
   test.shouldThrowErrorSync( () => m.buffer = new Int32Array() );
 
-  test.description = 'change by empty buffer of empty matrix with long row, non transposing'; /* */
+  test.case = 'change by empty buffer of empty matrix with long row, non transposing'; /* */
 
   var m = space.make([ 0,3 ]);
   m.growingDimension = 0;
@@ -1370,13 +1370,13 @@ function _make( test,o )
   logger.log( 'm\n' + _.toStr( m ) );
   checkEmptySpaceWithLongRowNonTransposing( m );
 
-  test.description = 'change by empty buffer of empty matrix with long row, non transposing, by copy'; /* */
+  test.case = 'change by empty buffer of empty matrix with long row, non transposing, by copy'; /* */
 
   m.copy({ buffer : o.arrayMake([]), offset : o.offset });
   logger.log( 'm\n' + _.toStr( m ) );
   checkEmptySpaceWithLongRowNonTransposing( m );
 
-  test.description = 'change by non empty buffer of empty matrix with long row, non transposing'; /* */
+  test.case = 'change by non empty buffer of empty matrix with long row, non transposing'; /* */
 
   m.growingDimension = 0;
   m.copy({ buffer : o.arrayMake([ 1,2,3 ]), offset : o.offset });
@@ -1414,7 +1414,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
 
-  test.description = 'change by non empty buffer of non empty matrix with long row, non transposing'; /* */
+  test.case = 'change by non empty buffer of non empty matrix with long row, non transposing'; /* */
 
   m.growingDimension = 0;
   m.copy({ buffer : o.arrayMake([ 1,2,3,4,5,6 ]), offset : o.offset });
@@ -1452,7 +1452,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 21 );
   test.identical( m.reduceToProductAtomWise(), 720 );
 
-  test.description = 'construct matrix with only buffer'; /* */
+  test.case = 'construct matrix with only buffer'; /* */
 
   var m = new space
   ({
@@ -1495,7 +1495,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
 
-  test.description = 'construct matrix without buffer'; /* */
+  test.case = 'construct matrix without buffer'; /* */
 
   if( Config.debug )
   {
@@ -1504,7 +1504,7 @@ function _make( test,o )
 
   }
 
-  test.description = 'construct matrix with buffer and strides'; /* */
+  test.case = 'construct matrix with buffer and strides'; /* */
 
   if( Config.debug )
   {
@@ -1518,7 +1518,7 @@ function _make( test,o )
 
   }
 
-  test.description = 'construct empty matrix with dimensions, non transposing'; /* */
+  test.case = 'construct empty matrix with dimensions, non transposing'; /* */
 
   var m = new space
   ({
@@ -1581,7 +1581,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 21 );
   test.identical( m.reduceToProductAtomWise(), 720 );
 
-  test.description = 'construct empty matrix with dimensions, transposing'; /* */
+  test.case = 'construct empty matrix with dimensions, transposing'; /* */
 
   var m = new space
   ({
@@ -1641,7 +1641,7 @@ function _make( test,o )
   test.identical( m.reduceToSumAtomWise(), 21 );
   test.identical( m.reduceToProductAtomWise(), 720 );
 
-  test.description = 'make then copy'; /* */
+  test.case = 'make then copy'; /* */
 
   var m = space.make([ 2,3 ]).copy
   ([
@@ -1686,7 +1686,7 @@ function _make( test,o )
   test.identical( m.strides, null );
   test.is( m.buffer instanceof Float32Array );
 
-  test.description = 'copy buffer from scalar'; /* */
+  test.case = 'copy buffer from scalar'; /* */
 
   var m = space.makeSquare([ 1,2,3,4 ]);
   var expected = space.makeSquare([ 13,13,13,13 ]);
@@ -1701,7 +1701,7 @@ function _make( test,o )
   m.copy( 13 );
   test.identical( m,expected );
 
-  test.description = 'copy buffer of different type'; /* */
+  test.case = 'copy buffer of different type'; /* */
 
   var b = new Float32Array
   ([
@@ -1767,7 +1767,7 @@ function _make( test,o )
   test.is( m.offset === 0 );
   test.is( m.buffer instanceof Uint32Array );
 
-  test.description = 'bad buffer'; /* */
+  test.case = 'bad buffer'; /* */
 
   test.shouldThrowErrorSync( function()
   {
@@ -1795,7 +1795,7 @@ function _make( test,o )
 function makeHelper( test )
 {
 
-  test.description = 'make'; /* */
+  test.case = 'make'; /* */
 
   var m = space.make([ 3,2 ]);
 
@@ -1818,7 +1818,7 @@ function makeHelper( test )
   test.identical( m.strides,null );
   test.is( m.buffer instanceof Float32Array );
 
-  test.description = 'square with buffer'; /* */
+  test.case = 'square with buffer'; /* */
 
   var buffer =
   [
@@ -1876,7 +1876,7 @@ function makeHelper( test )
   test.identical( m.determinant(),0 );
   test.is( m.buffer instanceof Uint32Array );
 
-  test.description = 'square with length'; /* */
+  test.case = 'square with length'; /* */
 
   var m = space.makeSquare( 3 );
 
@@ -1899,7 +1899,7 @@ function makeHelper( test )
   test.is( m.buffer instanceof Float32Array );
   test.identical( m.strides,null );
 
-  test.description = 'diagonal'; /* */
+  test.case = 'diagonal'; /* */
 
   var m = space.makeDiagonal([ 1,2,3 ]);
 
@@ -1941,7 +1941,7 @@ function makeHelper( test )
   test.is( m.buffer instanceof Float32Array );
   test.identical( m.strides,null );
 
-  test.description = 'identity'; /* */
+  test.case = 'identity'; /* */
 
   m = space.makeIdentity( 3 );
 
@@ -1983,7 +1983,7 @@ function makeHelper( test )
   test.is( m.buffer instanceof Float32Array );
   test.identical( m.strides,null );
 
-  test.description = 'identity, not square, 2x3'; /* */
+  test.case = 'identity, not square, 2x3'; /* */
 
   m = space.makeIdentity([ 2,3 ]);
 
@@ -2024,7 +2024,7 @@ function makeHelper( test )
   test.is( m.buffer instanceof Float32Array );
   test.identical( m.strides,null );
 
-  test.description = 'identity, not square, 3x2'; /* */
+  test.case = 'identity, not square, 3x2'; /* */
 
   m = space.makeIdentity([ 3,2 ]);
 
@@ -2065,7 +2065,7 @@ function makeHelper( test )
   test.is( m.buffer instanceof Float32Array );
   test.identical( m.strides,null );
 
-  test.description = 'zeroed'; /* */
+  test.case = 'zeroed'; /* */
 
   m = space.makeZero( 3 );
 
@@ -2150,27 +2150,27 @@ function makeHelper( test )
 
   }
 
-  test.description = 'square null with buffer'; /* */
+  test.case = 'square null with buffer'; /* */
 
   var m = space.makeSquare([]);
   checkNull( m );
 
-  test.description = 'square null with length'; /* */
+  test.case = 'square null with length'; /* */
 
   var m = space.makeSquare( 0 );
   checkNull( m );
 
-  test.description = 'zeroed null'; /* */
+  test.case = 'zeroed null'; /* */
 
   var m = space.makeZero([ 0,0 ]);
   checkNull( m );
 
-  test.description = 'identity null'; /* */
+  test.case = 'identity null'; /* */
 
   var m = space.makeIdentity([ 0,0 ]);
   checkNull( m );
 
-  test.description = 'diagonal null'; /* */
+  test.case = 'diagonal null'; /* */
 
   var m = space.makeDiagonal([]);
   checkNull( m );
@@ -2230,7 +2230,7 @@ function makeLine( test )
 
   }
 
-  test.description = 'make col'; /* */
+  test.case = 'make col'; /* */
 
   var m = space.makeCol( 3 );
 
@@ -2252,7 +2252,7 @@ function makeLine( test )
 
   checkCol( m );
 
-  test.description = 'make col from buffer'; /* */
+  test.case = 'make col from buffer'; /* */
 
   var m = space.makeCol([ 1,2,3 ]);
 
@@ -2276,7 +2276,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
 
-  test.description = 'make col from vector with Array'; /* */
+  test.case = 'make col from vector with Array'; /* */
 
   var v = vector.fromSubArrayWithStride( [ -1,1,-1,2,-1,3,-1 ],1,3,2 );
   var m = space.makeCol( v );
@@ -2303,7 +2303,7 @@ function makeLine( test )
 
   test.is( v._vectorBuffer !== m.buffer );
 
-  test.description = 'make col from vector with Float32Array'; /* */
+  test.case = 'make col from vector with Float32Array'; /* */
 
   var v = vector.fromSubArrayWithStride( new Float32Array([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
   var m = space.makeCol( v );
@@ -2347,7 +2347,7 @@ function makeLine( test )
 
   test.is( v._vectorBuffer === m.buffer );
 
-  test.description = 'make col zeroed'; /* */
+  test.case = 'make col zeroed'; /* */
 
   var m = space.makeColZeroed( 3 );
 
@@ -2371,7 +2371,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 0 );
   test.identical( m.reduceToProductAtomWise(), 0 );
 
-  test.description = 'make col zeroed from buffer'; /* */
+  test.case = 'make col zeroed from buffer'; /* */
 
   var m = space.makeColZeroed([ 1,2,3 ]);
 
@@ -2395,7 +2395,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 0 );
   test.identical( m.reduceToProductAtomWise(), 0 );
 
-  test.description = 'make col zeroed from vector'; /* */
+  test.case = 'make col zeroed from vector'; /* */
 
   var v = vector.fromSubArrayWithStride( new Float32Array([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
   var m = space.makeColZeroed( v );
@@ -2420,7 +2420,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 0 );
   test.identical( m.reduceToProductAtomWise(), 0 );
 
-  test.description = 'make col from col'; /* */
+  test.case = 'make col from col'; /* */
 
   var om = space.makeCol([ 1,2,3 ]);
   var m = space.makeCol( om );
@@ -2446,7 +2446,7 @@ function makeLine( test )
   test.identical( m.reduceToProductAtomWise(), 6 );
   test.is( m === om );
 
-  test.description = 'make col zeroed from col'; /* */
+  test.case = 'make col zeroed from col'; /* */
 
   var om = space.makeCol([ 1,2,3 ]);
   var m = space.makeColZeroed( om );
@@ -2473,7 +2473,7 @@ function makeLine( test )
 
   test.is( m !== om );
 
-  test.description = 'make row'; /* */
+  test.case = 'make row'; /* */
 
   var m = space.makeRow( 3 );
 
@@ -2495,7 +2495,7 @@ function makeLine( test )
 
   checkRow( m );
 
-  test.description = 'make row from buffer'; /* */
+  test.case = 'make row from buffer'; /* */
 
   var m = space.makeRow([ 1,2,3 ]);
 
@@ -2519,7 +2519,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
 
-  test.description = 'make row from vector with Array'; /* */
+  test.case = 'make row from vector with Array'; /* */
 
   var v = vector.fromSubArrayWithStride( [ -1,1,-1,2,-1,3,-1 ],1,3,2 );
   var m = space.makeRow( v );
@@ -2546,7 +2546,7 @@ function makeLine( test )
 
   test.is( v._vectorBuffer !== m.buffer );
 
-  test.description = 'make row from vector with Float32Array'; /* */
+  test.case = 'make row from vector with Float32Array'; /* */
 
   var v = vector.fromSubArrayWithStride( new Float32Array([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
   var m = space.makeRow( v );
@@ -2588,7 +2588,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 6 );
   test.identical( m.reduceToProductAtomWise(), 6 );
 
-  test.description = 'make row zeroed'; /* */
+  test.case = 'make row zeroed'; /* */
 
   var m = space.makeRowZeroed( 3 );
 
@@ -2612,7 +2612,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 0 );
   test.identical( m.reduceToProductAtomWise(), 0 );
 
-  test.description = 'make row zeroed from buffer'; /* */
+  test.case = 'make row zeroed from buffer'; /* */
 
   var m = space.makeRowZeroed([ 1,2,3 ]);
 
@@ -2636,7 +2636,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 0 );
   test.identical( m.reduceToProductAtomWise(), 0 );
 
-  test.description = 'make row zeroed from vector'; /* */
+  test.case = 'make row zeroed from vector'; /* */
 
   var v = vector.fromSubArrayWithStride( new Float32Array([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
   var m = space.makeRowZeroed( v );
@@ -2661,7 +2661,7 @@ function makeLine( test )
   test.identical( m.reduceToSumAtomWise(), 0 );
   test.identical( m.reduceToProductAtomWise(), 0 );
 
-  test.description = 'make row from row'; /* */
+  test.case = 'make row from row'; /* */
 
   var om = space.makeRow([ 1,2,3 ]);
   var m = space.makeRow( om );
@@ -2688,7 +2688,7 @@ function makeLine( test )
 
   test.is( m === om );
 
-  test.description = 'make row zeroed from row'; /* */
+  test.case = 'make row zeroed from row'; /* */
 
   var om = space.makeRow([ 1,2,3 ]);
   var m = space.makeRowZeroed( om );
@@ -2722,7 +2722,7 @@ function makeLine( test )
 function _makeSimilar( test,o )
 {
 
-  test.description = o.name + ' . simplest from matrix'; //
+  test.case = o.name + ' . simplest from matrix'; //
 
   var m = space.make([ 2,3 ]);
   m.buffer = o.arrayMake([ 1,2,3,4,5,6 ]);
@@ -2739,7 +2739,7 @@ function _makeSimilar( test,o )
   test.identical( got._stridesEffective, [ 1,2 ] );
   test.identical( got.strides, null );
 
-  test.description = o.name + ' . from matrix with offset and stride'; //
+  test.case = o.name + ' . from matrix with offset and stride'; //
 
   var buffer = o.arrayMake
   ([
@@ -2770,7 +2770,7 @@ function _makeSimilar( test,o )
   test.identical( got._stridesEffective, [ 1,2 ] );
   test.identical( got.strides, null );
 
-  test.description = o.name + ' . from matrix with dims, offset and stride'; //
+  test.case = o.name + ' . from matrix with dims, offset and stride'; //
 
   var buffer = o.arrayMake
   ([
@@ -2801,21 +2801,21 @@ function _makeSimilar( test,o )
   test.identical( got._stridesEffective, [ 1,3 ] );
   test.identical( got.strides, null );
 
-  test.description = o.name + ' . from array'; //
+  test.case = o.name + ' . from array'; //
 
   var src = o.arrayMake([ 1,2,3 ]);
   var got = space.makeSimilar( src );
   test.is( got.constructor === src.constructor );
   test.identical( got.length , src.length );
 
-  test.description = o.name + ' . from array with dims'; //
+  test.case = o.name + ' . from array with dims'; //
 
   var src = o.arrayMake([ 1,2,3 ]);
   var got = space.makeSimilar( src,[ 5,1 ] );
   test.is( got.constructor === src.constructor );
   test.identical( got.length , 5 );
 
-  test.description = o.name + ' . from vector'; //
+  test.case = o.name + ' . from vector'; //
 
   var src = vector.from( o.arrayMake([ 1,2,3 ]) );
   var got = space.makeSimilar( src );
@@ -2827,7 +2827,7 @@ function _makeSimilar( test,o )
   test.is( _.vectorIs( src ) );
   test.identical( got.length , src.length );
 
-  test.description = o.name + ' . from vector with dims'; //
+  test.case = o.name + ' . from vector with dims'; //
 
   var src = vector.from( o.arrayMake([ 1,2,3 ]) );
   var got = space.makeSimilar( src,[ 5,1 ] );
@@ -2839,7 +2839,7 @@ function _makeSimilar( test,o )
   test.is( _.vectorIs( src ) );
   test.identical( got.length , 5 );
 
-  test.description = o.name + ' . bad arguments'; //
+  test.case = o.name + ' . bad arguments'; //
 
   if( !Config.debug )
   return;
@@ -2892,26 +2892,26 @@ function makeSimilar( test )
 function from( test )
 {
 
-  test.description = '_bufferFrom from array'; /* */
+  test.case = '_bufferFrom from array'; /* */
 
   var expected = new Float32Array([ 1,2,3 ]);
   var got = space._bufferFrom([ 1,2,3 ]);
   test.identical( got,expected );
 
-  test.description = '_bufferFrom from vector with Array'; /* */
+  test.case = '_bufferFrom from vector with Array'; /* */
 
   var v = vector.fromSubArrayWithStride( [ -1,1,-1,2,-1,3,-1 ],1,3,2 );
   var expected = new Float32Array([ 1,2,3 ]);
   var got = space._bufferFrom( v );
   test.identical( got,expected );
 
-  test.description = '_bufferFrom from vector with Float32Array'; /* */
+  test.case = '_bufferFrom from vector with Float32Array'; /* */
 
   var v = vector.fromSubArrayWithStride( new Float32Array([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
   var got = space._bufferFrom( v );
   test.is( got === v );
 
-  test.description = 'fromScalarForReading scalar'; /* */
+  test.case = 'fromScalarForReading scalar'; /* */
 
   var expected = space.make([ 2,3 ]).copy
   ([
@@ -2927,7 +2927,7 @@ function from( test )
   test.identical( m.dims,[ 2,3 ] );
   test.identical( m._stridesEffective,[ 0,0 ] )
 
-  test.description = 'empty space fromScalarForReading scalar'; /* */
+  test.case = 'empty space fromScalarForReading scalar'; /* */
 
   var expected = space.make([ 0,3 ]);
   var m = space.fromScalarForReading( 1,[ 0,3 ] );
@@ -2942,7 +2942,7 @@ function from( test )
   test.identical( m._stridesEffective,[ 0,0 ] )
   logger.log( m );
 
-  test.description = 'fromForReading scalar'; /* */
+  test.case = 'fromForReading scalar'; /* */
 
   var expected = space.make([ 2,3 ]).copy
   ([
@@ -2958,7 +2958,7 @@ function from( test )
   test.identical( m.dims,[ 2,3 ] );
   test.identical( m._stridesEffective,[ 0,0 ] )
 
-  test.description = 'empty space fromForReading scalar'; /* */
+  test.case = 'empty space fromForReading scalar'; /* */
 
   var expected = space.make([ 0,3 ]);
   var m = space.fromForReading( 1,[ 0,3 ] );
@@ -2973,7 +2973,7 @@ function from( test )
   test.identical( m._stridesEffective,[ 0,0 ] )
   logger.log( m );
 
-  test.description = 'from scalar'; /* */
+  test.case = 'from scalar'; /* */
 
   var expected = space.make([ 2,3 ]).copy
   ([
@@ -2989,7 +2989,7 @@ function from( test )
   test.identical( m.dims,[ 2,3 ] );
   test.identical( m._stridesEffective,[ 1,2 ] )
 
-  test.description = 'empty space from scalar'; /* */
+  test.case = 'empty space from scalar'; /* */
 
   var expected = space.make([ 0,3 ]);
   var m = space.from( 1,[ 0,3 ] );
@@ -3005,7 +3005,7 @@ function from( test )
 
   logger.log( m );
 
-  test.description = 'fromScalar scalar'; /* */
+  test.case = 'fromScalar scalar'; /* */
 
   var expected = space.make([ 2,3 ]).copy
   ([
@@ -3021,7 +3021,7 @@ function from( test )
   test.identical( m.dims,[ 2,3 ] );
   test.identical( m._stridesEffective,[ 1,2 ] )
 
-  test.description = 'empty space fromScalar scalar'; /* */
+  test.case = 'empty space fromScalar scalar'; /* */
 
   var expected = space.make([ 0,3 ]);
   var m = space.fromScalar( 1,[ 0,3 ] );
@@ -3037,7 +3037,7 @@ function from( test )
 
   logger.log( m );
 
-  test.description = 'from space'; /* */
+  test.case = 'from space'; /* */
 
   var expected = space.make([ 2,3 ]).copy
   ([
@@ -3057,7 +3057,7 @@ function from( test )
   var got = space.from( m );
   test.identical( got,expected );
 
-  test.description = 'from array'; /* */
+  test.case = 'from array'; /* */
 
   var expected = space.make([ 3,1 ]);
   expected.buffer = [ 1,2,3,];
@@ -3070,7 +3070,7 @@ function from( test )
   var got = space.from( a,[ 3,1 ] );
   test.identical( got,expected );
 
-  test.description = 'from vector'; /* */
+  test.case = 'from vector'; /* */
 
   var expected = space.make([ 3,1 ]);
   expected.buffer = [ 1,2,3,];
@@ -3083,7 +3083,7 @@ function from( test )
   var got = space.from( a,[ 3,1 ] );
   test.identical( got,expected );
 
-  test.description = 'bad arguments'; /* */
+  test.case = 'bad arguments'; /* */
 
   if( !Config.debug )
   return;
@@ -3108,7 +3108,7 @@ function from( test )
 function tempBorrow( test )
 {
 
-  test.description = 'should give same temp'; /* */
+  test.case = 'should give same temp'; /* */
 
   var m = space.make([ 3,2 ]);
   var t1 = m.tempBorrow();
@@ -3127,7 +3127,7 @@ function tempBorrow( test )
   test.is( t2.buffer.constructor === Float32Array );
   test.is( t3.buffer.constructor === Float32Array );
 
-  test.description = 'should give another temp'; /* */
+  test.case = 'should give another temp'; /* */
 
   var m = space.make([ 3,2 ]);
   m.buffer = new Int32Array( 6 );
@@ -3150,7 +3150,7 @@ function tempBorrow( test )
   test.is( t4.buffer.constructor === Int32Array );
   test.is( t5.buffer.constructor === Float32Array );
 
-  test.description = 'with dims'; /* */
+  test.case = 'with dims'; /* */
 
   var m = space.make([ 3,2 ]);
   m.buffer = new Int32Array( 6 );
@@ -3163,7 +3163,7 @@ function tempBorrow( test )
   test.is( t2.buffer.constructor === Int32Array );
   test.is( t1 !== t2 );
 
-  test.description = 'with dims from space'; /* */
+  test.case = 'with dims from space'; /* */
 
   var m = space.make([ 3,2 ]);
   m.buffer = new Int32Array( 6 );
@@ -3177,7 +3177,7 @@ function tempBorrow( test )
   test.is( t2.buffer.constructor === Int32Array );
   test.is( t1 !== t2 );
 
-  test.description = 'without dims'; /* */
+  test.case = 'without dims'; /* */
 
   var m = space.make([ 3,2 ]);
   m.buffer = new Int32Array( 6 );
@@ -3190,7 +3190,7 @@ function tempBorrow( test )
   test.is( t2.buffer.constructor === Int32Array );
   test.is( t1 !== t2 );
 
-  test.description = 'without space'; /* */
+  test.case = 'without space'; /* */
 
   var t1 = space._tempBorrow( null,[ 4,4 ],0 );
   var t2 = space._tempBorrow( null,[ 4,4 ],1 );
@@ -3208,7 +3208,7 @@ function tempBorrow( test )
 function copyClone( test )
 {
 
-  test.description = 'clone 3x3'; /* */
+  test.case = 'clone 3x3'; /* */
 
   var m1 = space.makeIdentity([ 3,3 ]);
   m2 = m1.clone();
@@ -3216,7 +3216,7 @@ function copyClone( test )
   test.identical( m1,m2 );
   test.is( m1.buffer !== m2.buffer );
 
-  test.description = 'clone 0x0'; /* */
+  test.case = 'clone 0x0'; /* */
 
   var m1 = space.makeIdentity([ 0,0 ]);
   m2 = m1.clone();
@@ -3225,7 +3225,7 @@ function copyClone( test )
   test.identical( m1,m2 );
   test.is( m1.buffer !== m2.buffer );
 
-  test.description = 'clone 3x0'; /* */
+  test.case = 'clone 3x0'; /* */
 
   var m1 = space.makeIdentity([ 3,0 ]);
   m2 = m1.clone();
@@ -3234,7 +3234,7 @@ function copyClone( test )
   test.identical( m1,m2 );
   test.is( m1.buffer !== m2.buffer );
 
-  test.description = 'clone 0x3'; /* */
+  test.case = 'clone 0x3'; /* */
 
   var m1 = space.makeIdentity([ 0,3 ]);
   m2 = m1.clone();
@@ -3243,7 +3243,7 @@ function copyClone( test )
   test.identical( m1,m2 );
   test.is( m1.buffer !== m2.buffer );
 
-  test.description = 'copy 3x3'; /* */
+  test.case = 'copy 3x3'; /* */
 
   var m1 = space.makeIdentity([ 3,3 ]);
   var m2 = space.makeZero([ 3,3 ]);
@@ -3252,7 +3252,7 @@ function copyClone( test )
   test.identical( m1,m2 );
   test.is( m1.buffer !== m2.buffer );
 
-  test.description = 'copy 3x3 itself'; /* */
+  test.case = 'copy 3x3 itself'; /* */
 
   var expected = space.makeIdentity([ 3,3 ]);
   var m1 = space.makeIdentity([ 3,3 ]);
@@ -3260,7 +3260,7 @@ function copyClone( test )
 
   test.identical( m1,expected );
 
-  test.description = 'copy 0x0'; /* */
+  test.case = 'copy 0x0'; /* */
 
   var m1 = space.makeIdentity([ 0,0 ]);
   var m2 = space.makeZero([ 0,0 ]);
@@ -3270,7 +3270,7 @@ function copyClone( test )
   test.identical( m1,m2 );
   test.is( m1.buffer !== m2.buffer );
 
-  test.description = 'copy 3x0'; /* */
+  test.case = 'copy 3x0'; /* */
 
   var m1 = space.makeIdentity([ 3,0 ]);
   var m2 = space.makeZero([ 3,0 ]);
@@ -3280,7 +3280,7 @@ function copyClone( test )
   test.identical( m1,m2 );
   test.is( m1.buffer !== m2.buffer );
 
-  test.description = 'copy 0x3'; /* */
+  test.case = 'copy 0x3'; /* */
 
   var m1 = space.makeIdentity([ 0,3 ]);
   var m2 = space.makeZero([ 0,3 ]);
@@ -3290,7 +3290,7 @@ function copyClone( test )
   test.identical( m1,m2 );
   test.is( m1.buffer !== m2.buffer );
 
-  test.description = 'copy 0x0 itself'; /* */
+  test.case = 'copy 0x0 itself'; /* */
 
   var expected = space.makeIdentity([ 0,0 ]);
   var m1 = space.makeIdentity([ 0,0 ]);
@@ -3307,14 +3307,14 @@ function copyClone( test )
 function _convertToClass( test,o )
 {
 
-  test.description = o.name + ' . ' + 'space to space with class'; //
+  test.case = o.name + ' . ' + 'space to space with class'; //
 
   var src = space.make([ 2,2 ]);
   space.buffer = o.arrayMake([ 1,2,3,4 ]);
   var got = space.convertToClass( space,src );
   test.is( got === src );
 
-  test.description = o.name + ' . ' + 'space to vector with class'; //
+  test.case = o.name + ' . ' + 'space to vector with class'; //
 
   var src = space.makeCol( 3 );
   src.buffer = o.arrayMake([ 1,2,3 ]);
@@ -3323,14 +3323,14 @@ function _convertToClass( test,o )
   debugger;
   test.identical( got,expected );
 
-  test.description = o.name + ' . ' + 'space to array with class'; //
+  test.case = o.name + ' . ' + 'space to array with class'; //
 
   var src = space.makeCol( o.arrayMake([ 1,2,3 ]) );
   var got = space.convertToClass( o.arrayMake([]).constructor,src );
   var expected = o.arrayMake([ 1,2,3 ]);
   test.identical( got,expected );
 
-  test.description = o.name + ' . ' + 'array to space with class'; //
+  test.case = o.name + ' . ' + 'array to space with class'; //
 
   var src = o.arrayMake([ 1,2,3 ]);
   var expected = space.make([ 3,1 ]);
@@ -3338,7 +3338,7 @@ function _convertToClass( test,o )
   var got = space.convertToClass( space,src );
   test.identical( got,expected );
 
-  test.description = o.name + ' . ' + 'array to vector with class'; //
+  test.case = o.name + ' . ' + 'array to vector with class'; //
 
   var src = o.arrayMake([ 1,2,3 ]);
   var expected = vec( o.arrayMake([ 1,2,3 ]) );
@@ -3346,7 +3346,7 @@ function _convertToClass( test,o )
   var got = space.convertToClass( vec([]).constructor,src );
   test.identical( got,expected );
 
-  test.description = o.name + ' . ' + 'array to array with class'; //
+  test.case = o.name + ' . ' + 'array to array with class'; //
 
   var src = o.arrayMake([ 1,2,3 ]);
   var expected = o.arrayMake([ 1,2,3 ]);
@@ -3356,7 +3356,7 @@ function _convertToClass( test,o )
   test.identical( got,expected );
   test.is( got === src );
 
-  test.description = o.name + ' . ' + 'vector to space with class'; //
+  test.case = o.name + ' . ' + 'vector to space with class'; //
 
   var src = vec( o.arrayMake([ 1,2,3 ]) );
   var expected = space.make([ 3,1 ]);
@@ -3364,7 +3364,7 @@ function _convertToClass( test,o )
   var got = space.convertToClass( space,src );
   test.identical( got,expected );
 
-  test.description = o.name + ' . ' + 'vector to vector with class'; //
+  test.case = o.name + ' . ' + 'vector to vector with class'; //
 
   var src = vec( o.arrayMake([ 1,2,3 ]) );
   var expected = vec( o.arrayMake([ 1,2,3 ]) );
@@ -3373,7 +3373,7 @@ function _convertToClass( test,o )
   test.identical( got,expected );
   test.is( got === src );
 
-  test.description = o.name + ' . ' + 'vector to array with class'; //
+  test.case = o.name + ' . ' + 'vector to array with class'; //
 
   var src = vec( o.arrayMake([ 1,2,3 ]) );
   var expected = o.arrayMake([ 1,2,3 ]);
@@ -3382,7 +3382,7 @@ function _convertToClass( test,o )
   debugger;
   test.identical( got,expected );
 
-  test.description = o.name + ' . ' + 'bad arguments'; //
+  test.case = o.name + ' . ' + 'bad arguments'; //
 
   if( !Config.debug )
   return;
@@ -3426,7 +3426,7 @@ function convertToClass( test )
 function _copyTo( test,o )
 {
 
-  test.description = o.name + ' . ' + 'space to array'; //
+  test.case = o.name + ' . ' + 'space to array'; //
 
   var src = space.makeCol( o.arrayMake([ 1,2,3 ]) );
   var dst = o.arrayMake([ 0,0,0 ]);
@@ -3436,7 +3436,7 @@ function _copyTo( test,o )
   test.identical( got,expected );
   test.is( dst === got );
 
-  test.description = o.name + ' . ' + 'space to vector'; //
+  test.case = o.name + ' . ' + 'space to vector'; //
 
   var src = space.makeCol( o.arrayMake([ 1,2,3 ]) );
   var dst = vec( o.arrayMake([ 0,0,0 ]) );
@@ -3446,7 +3446,7 @@ function _copyTo( test,o )
   test.identical( got,expected );
   test.is( dst === got );
 
-  test.description = o.name + ' . ' + 'space to space'; //
+  test.case = o.name + ' . ' + 'space to space'; //
 
   var src = space.makeCol( o.arrayMake([ 1,2,3 ]) );
   var dst = space.makeCol( o.arrayMake([ 0,0,0 ]) );
@@ -3456,7 +3456,7 @@ function _copyTo( test,o )
   test.identical( got,expected );
   test.is( dst === got );
 
-  test.description = o.name + ' . ' + 'vector to array'; //
+  test.case = o.name + ' . ' + 'vector to array'; //
 
   var src = vec( o.arrayMake([ 1,2,3 ]) );
   var dst = o.arrayMake([ 0,0,0 ]);
@@ -3466,7 +3466,7 @@ function _copyTo( test,o )
   test.identical( got,expected );
   test.is( dst === got );
 
-  test.description = o.name + ' . ' + 'vector to vector'; //
+  test.case = o.name + ' . ' + 'vector to vector'; //
 
   var src = vec( o.arrayMake([ 1,2,3 ]) );
   var dst = vec( o.arrayMake([ 0,0,0 ]) );
@@ -3476,7 +3476,7 @@ function _copyTo( test,o )
   test.identical( got,expected );
   test.is( dst === got );
 
-  test.description = o.name + ' . ' + 'vector to space'; //
+  test.case = o.name + ' . ' + 'vector to space'; //
 
   var src = vec( o.arrayMake([ 1,2,3 ]) );
   var dst = space.makeCol( o.arrayMake([ 0,0,0 ]) );
@@ -3486,7 +3486,7 @@ function _copyTo( test,o )
   test.identical( got,expected );
   test.is( dst === got );
 
-  test.description = o.name + ' . ' + 'array to array'; //
+  test.case = o.name + ' . ' + 'array to array'; //
 
   var src = o.arrayMake([ 1,2,3 ]);
   var dst = o.arrayMake([ 0,0,0 ]);
@@ -3496,7 +3496,7 @@ function _copyTo( test,o )
   test.identical( got,expected );
   test.is( dst === got );
 
-  test.description = o.name + ' . ' + 'array to vector'; //
+  test.case = o.name + ' . ' + 'array to vector'; //
 
   var src = o.arrayMake([ 1,2,3 ]);
   var dst = vec( o.arrayMake([ 0,0,0 ]) );
@@ -3506,7 +3506,7 @@ function _copyTo( test,o )
   test.identical( got,expected );
   test.is( dst === got );
 
-  test.description = o.name + ' . ' + 'array to space'; //
+  test.case = o.name + ' . ' + 'array to space'; //
 
   var src = o.arrayMake([ 1,2,3 ]);
   var dst = space.makeCol( o.arrayMake([ 0,0,0 ]) );
@@ -3516,7 +3516,7 @@ function _copyTo( test,o )
   test.identical( got,expected );
   test.is( dst === got );
 
-  test.description = o.name + ' . ' + 'space to itself'; //
+  test.case = o.name + ' . ' + 'space to itself'; //
 
   var src = space.makeCol( o.arrayMake([ 1,2,3 ]) );
   var expected = space.makeCol( o.arrayMake([ 1,2,3 ]) );
@@ -3525,7 +3525,7 @@ function _copyTo( test,o )
   test.identical( got,expected );
   test.is( src === got );
 
-  test.description = o.name + ' . ' + 'vector to itself'; //
+  test.case = o.name + ' . ' + 'vector to itself'; //
 
   var src = vec( o.arrayMake([ 1,2,3 ]) );
   var expected = vec( o.arrayMake([ 1,2,3 ]) );
@@ -3534,7 +3534,7 @@ function _copyTo( test,o )
   test.identical( got,expected );
   test.is( src === got );
 
-  test.description = o.name + ' . ' + 'array to itself'; //
+  test.case = o.name + ' . ' + 'array to itself'; //
 
   var src = o.arrayMake([ 1,2,3 ]);
   var expected = o.arrayMake([ 1,2,3 ]);
@@ -3543,7 +3543,7 @@ function _copyTo( test,o )
   test.identical( got,expected );
   test.is( src === got );
 
-  test.description = o.name + ' . ' + 'bad arguments'; //
+  test.case = o.name + ' . ' + 'bad arguments'; //
 
   if( !Config.debug )
   return;
@@ -3625,7 +3625,7 @@ function copy( test )
   logger.log( 'src',src );
   logger.log( 'dst',dst );
 
-  test.description = 'copy buffer without copying strides and offset'; /* */
+  test.case = 'copy buffer without copying strides and offset'; /* */
 
   debugger;
   dst.copy( src );
@@ -3685,7 +3685,7 @@ function copy( test )
   // test.identical( src2.dims,[ 2,1 ] );
   // test.identical( dst.dims,[ 2,1 ] );
 
-  test.description = 'no buffer move'; /* */
+  test.case = 'no buffer move'; /* */
 
   var src = space.make([ 3,2 ]).copy
   ([
@@ -3716,7 +3716,7 @@ function copy( test )
   test.is( dst.buffer === dstBuffer );
   test.is( src.buffer !== dst.buffer );
 
-  test.description = 'copy null matrix'; /* */
+  test.case = 'copy null matrix'; /* */
 
   var src = space.make([ 0,0 ]);
   var dst = space.make([ 0,0 ]);
@@ -3732,7 +3732,7 @@ function copy( test )
   test.is( dst.buffer === dstBuffer );
   test.is( src.buffer !== dst.buffer );
 
-  test.description = 'converting constructor and copy itself'; /* */
+  test.case = 'converting constructor and copy itself'; /* */
 
   var src = space.make([ 3,2 ]).copy
   ([
@@ -3765,7 +3765,7 @@ function copy( test )
   test.is( src === dst );
 
 
-  test.description = 'copy via constructor with instance'; /* */
+  test.case = 'copy via constructor with instance'; /* */
 
   var src = space.make([ 3,2 ]).copy
   ([
@@ -3792,7 +3792,7 @@ function copy( test )
   test.is( dst.buffer === dstBuffer );
   test.is( src.buffer !== dst.buffer );
 
-  test.description = 'copy via constructor with map'; /* */
+  test.case = 'copy via constructor with map'; /* */
 
   var buffer = new Float32Array
   ([
@@ -3813,7 +3813,7 @@ function copy( test )
   test.identical( dst,expected );
   test.is( dst.buffer === buffer );
 
-  test.description = 'copy from space with different srides'; /* */
+  test.case = 'copy from space with different srides'; /* */
 
   var src1 = space.make([ 3,2 ]).copy
   ([
@@ -3855,7 +3855,7 @@ function copy( test )
   console.log( 'src1',src1.toStr() );
   console.log( 'src2',src2.toStr() );
 
-  test.description = 'copy different size'; /* */
+  test.case = 'copy different size'; /* */
 
   var src = space.make([ 3,2 ]).copy
   ([
@@ -3882,7 +3882,7 @@ function copy( test )
   test.is( dst.strides === null );
   test.is( dst._stridesEffective !== src._stridesEffective );
 
-  test.description = 'copy different size, empty'; /* */
+  test.case = 'copy different size, empty'; /* */
 
   var src = space.make([ 3,2 ]).copy
   ([
@@ -3910,7 +3910,7 @@ function copy( test )
   if( !Config.debug )
   return;
 
-  test.description = 'inconsistant sizes'; /* */
+  test.case = 'inconsistant sizes'; /* */
 
   test.shouldThrowErrorSync( () => space.make([ 3,2 ]).copy( 'x' ) );
 
@@ -3925,7 +3925,7 @@ function copy( test )
 function offset( test )
 {
 
-  test.description = 'init'; /* */
+  test.case = 'init'; /* */
 
   var buffer =
   [
@@ -3948,17 +3948,17 @@ function offset( test )
 
   test.is( m.buffer instanceof Array );
 
-  test.description = 'atomGet'; /* */
+  test.case = 'atomGet'; /* */
 
   test.identical( m.atomGet([ 0,0 ]),1 );
   test.identical( m.atomGet([ 2,1 ]),6 );
 
-  test.description = 'atomFlatGet'; /* */
+  test.case = 'atomFlatGet'; /* */
 
   test.identical( m.atomFlatGet( 0 ),1 );
   test.identical( m.atomFlatGet( 5 ),6 );
 
-  test.description = 'atomSet, atomFlatSet'; /* */
+  test.case = 'atomSet, atomFlatSet'; /* */
 
   var expected = space.make([ 3,2 ]).copy
   ({
@@ -3975,7 +3975,7 @@ function offset( test )
 
   test.identical( m,expected );
 
-  test.description = 'bad arguments'; /* */
+  test.case = 'bad arguments'; /* */
 
   if( !Config.debug )
   return;
@@ -4007,7 +4007,7 @@ function offset( test )
 function stride( test )
 {
 
-  test.description = '2x2 same strides'; /* */
+  test.case = '2x2 same strides'; /* */
 
   var buffer = new Float32Array
   ([
@@ -4038,7 +4038,7 @@ function stride( test )
   test.identical( m._stridesEffective,[ 2,2 ] );
   logger.log( m );
 
-  test.description = '2x3 same strides'; /* */
+  test.case = '2x3 same strides'; /* */
 
   var buffer = new Float32Array
   ([
@@ -4076,7 +4076,7 @@ function _bufferNormalize( o )
 {
   var test = o.test;
 
-  test.description = 'trivial'; /* */
+  test.case = 'trivial'; /* */
 
   var buffer = new Float64Array
   ([
@@ -4126,7 +4126,7 @@ function _bufferNormalize( o )
   test.identical( m.reduceToSumAtomWise(), 21 );
   test.identical( m.reduceToProductAtomWise(), 720 );
 
-  test.description = 'not transposed'; /* */
+  test.case = 'not transposed'; /* */
 
   var buffer = new Float64Array
   ([
@@ -4200,7 +4200,7 @@ function bufferNormalize( test )
 function expand( test )
 {
 
-  test.description = 'left grow'; /* */
+  test.case = 'left grow'; /* */
 
   var expected = space.make([ 3,5 ]).copy
   ([
@@ -4218,7 +4218,7 @@ function expand( test )
   m.expand([ [ 1,null ],[ 2,null ] ]);
   test.identical( m,expected );
 
-  test.description = 'right grow'; /* */
+  test.case = 'right grow'; /* */
 
   var expected = space.make([ 3,5 ]).copy
   ([
@@ -4236,7 +4236,7 @@ function expand( test )
   m.expand([ [ null,1 ],[ null,2 ] ]);
   test.identical( m,expected );
 
-  test.description = 'left shrink'; /* */
+  test.case = 'left shrink'; /* */
 
   var expected = space.make([ 1,2 ]).copy
   ([
@@ -4252,7 +4252,7 @@ function expand( test )
   m.expand([ [ -1,null ],[ -1,null ] ]);
   test.identical( m,expected );
 
-  test.description = 'right shrink'; /* */
+  test.case = 'right shrink'; /* */
 
   var expected = space.make([ 1,2 ]).copy
   ([
@@ -4268,7 +4268,7 @@ function expand( test )
   m.expand([ [ null,-1 ],[ null,-1 ] ]);
   test.identical( m,expected );
 
-  test.description = 'no expand'; /* */
+  test.case = 'no expand'; /* */
 
   var expected = space.make([ 2,3 ]).copy
   ([
@@ -4288,7 +4288,7 @@ function expand( test )
   test.identical( m,expected );
   test.is( buffer === m.buffer );
 
-  test.description = 'number as argument'; /* */
+  test.case = 'number as argument'; /* */
 
   var expected = space.make([ 5,1 ]).copy
   ([
@@ -4309,7 +4309,7 @@ function expand( test )
   m.expand([ [ 1,2 ],-1 ]);
   test.identical( m,expected );
 
-  test.description = 'add rows to empty space'; /* */
+  test.case = 'add rows to empty space'; /* */
 
   var expected = space.make([ 3,3 ]).copy
   ([
@@ -4332,7 +4332,7 @@ function expand( test )
   m.expand([ [ 2,1 ],[ 0,0 ] ]);
   test.identical( m,expected );
 
-  test.description = 'add cols to empty space'; /* */
+  test.case = 'add cols to empty space'; /* */
 
   var expected = space.make([ 3,3 ]).copy
   ([
@@ -4355,7 +4355,7 @@ function expand( test )
   m.expand([ [ 0,0 ],[ 2,1 ] ]);
   test.identical( m,expected );
 
-  test.description = 'bad arguments'; /* */
+  test.case = 'bad arguments'; /* */
 
   space.make([ 3,2 ]).expand([ [ 1,1 ],[ 1,1 ] ]);
   test.shouldThrowErrorSync( () => space.make([ 3,2 ]).expand() );
@@ -4424,7 +4424,7 @@ function _subspace( o )
   test.identical( m,expected )
   test.identical( m.offset,o.offset );
 
-  test.description = 'simple subspace'; /* */
+  test.case = 'simple subspace'; /* */
 
   var m = make();
   var c1 = m.subspace([ all,0 ]);
@@ -4444,7 +4444,7 @@ function _subspace( o )
   var expected = space.makeRow([ 9,10,11,12 ]);
   test.identical( r2,expected );
 
-  test.description = 'modify subspaces'; /* */
+  test.case = 'modify subspaces'; /* */
 
   var expected = space.make([ 3,4 ]).copy
   ([
@@ -4460,7 +4460,7 @@ function _subspace( o )
 
   test.identical( m,expected );
 
-  test.description = 'subspace several columns'; /* */
+  test.case = 'subspace several columns'; /* */
 
   var m = make();
   var expected = space.make([ 3,2 ]).copy
@@ -4473,7 +4473,7 @@ function _subspace( o )
   var sub = m.subspace([ all,[ 1,3 ] ]);
   test.identical( sub,expected );
 
-    test.description = 'modify subspaces'; /* */
+    test.case = 'modify subspaces'; /* */
 
   var expected = space.make([ 3,4 ]).copy
   ([
@@ -4485,7 +4485,7 @@ function _subspace( o )
   sub.mulScalar( 10 );
   test.identical( m,expected );
 
-  test.description = 'subspace several columns'; /* */
+  test.case = 'subspace several columns'; /* */
 
   var m = make();
   var expected = space.make([ 3,2 ]).copy
@@ -4498,7 +4498,7 @@ function _subspace( o )
   var sub = m.subspace([ all,[ 2,4 ] ]);
   test.identical( sub,expected );
 
-    test.description = 'modify subspaces'; /* */
+    test.case = 'modify subspaces'; /* */
 
   var expected = space.make([ 3,4 ]).copy
   ([
@@ -4510,7 +4510,7 @@ function _subspace( o )
   sub.mulScalar( 10 );
   test.identical( m,expected );
 
-  test.description = 'subspace several rows'; /* */
+  test.case = 'subspace several rows'; /* */
 
   var m = make();
   var expected = space.make([ 2,4 ]).copy
@@ -4522,7 +4522,7 @@ function _subspace( o )
   var sub = m.subspace([ [ 0,2 ],all ]);
   test.identical( sub,expected );
 
-  test.description = 'modify subspaces'; /* */
+  test.case = 'modify subspaces'; /* */
 
   var expected = space.make([ 3,4 ]).copy
   ([
@@ -4534,7 +4534,7 @@ function _subspace( o )
   sub.mulScalar( 10 );
   test.identical( m,expected );
 
-  test.description = 'subspace several rows'; /* */
+  test.case = 'subspace several rows'; /* */
 
   var m = make();
   var expected = space.make([ 2,4 ]).copy
@@ -4546,7 +4546,7 @@ function _subspace( o )
   var sub = m.subspace([ [ 1,3 ],all ]);
   test.identical( sub,expected );
 
-  test.description = 'modify subspace'; /* */
+  test.case = 'modify subspace'; /* */
 
   var expected = space.make([ 3,4 ]).copy
   ([
@@ -4558,7 +4558,7 @@ function _subspace( o )
   sub.mulScalar( 10 );
   test.identical( m,expected );
 
-  test.description = 'complex subspace'; /* */
+  test.case = 'complex subspace'; /* */
 
   var m = make();
   var expected = space.make([ 2,2 ]).copy
@@ -4570,7 +4570,7 @@ function _subspace( o )
   var sub = m.subspace([ [ 0,2 ],[ 0,2 ] ]);
   test.identical( sub,expected );
 
-  test.description = 'modify complex subspace'; /* */
+  test.case = 'modify complex subspace'; /* */
 
   var expected = space.make([ 3,4 ]).copy
   ([
@@ -4582,7 +4582,7 @@ function _subspace( o )
   sub.mulScalar( 10 );
   test.identical( m,expected );
 
-  test.description = 'complex subspace'; /* */
+  test.case = 'complex subspace'; /* */
 
   var m = make();
   var expected = space.make([ 2,2 ]).copy
@@ -4594,7 +4594,7 @@ function _subspace( o )
   var sub = m.subspace([ [ 2,4 ],[ 1,3 ] ]);
   test.identical( sub,expected );
 
-  test.description = 'modify complex subspace'; /* */
+  test.case = 'modify complex subspace'; /* */
 
   var expected = space.make([ 3,4 ]).copy
   ([
@@ -4679,7 +4679,7 @@ function accessors( test )
 
   }
 
-  test.description = 'eGet'; /* */
+  test.case = 'eGet'; /* */
 
   remake();
 
@@ -4699,7 +4699,7 @@ function accessors( test )
     test.shouldThrowErrorSync( () => m23.eGet( [ 0 ] ) );
   }
 
-  test.description = 'eSet'; /* */
+  test.case = 'eSet'; /* */
 
   remake();
 
@@ -4735,7 +4735,7 @@ function accessors( test )
     test.shouldThrowErrorSync( () => m32.eSet( [ 0 ],[ 10,20,30 ] ) );
   }
 
-  test.description = 'eSet vector'; /* */
+  test.case = 'eSet vector'; /* */
 
   remake();
 
@@ -4761,7 +4761,7 @@ function accessors( test )
   m23.eSet( 2,ivec([ 30,60 ]) );
   test.identical( m23,expected );
 
-  test.description = 'colVectorGet'; /* */
+  test.case = 'colVectorGet'; /* */
 
   remake();
 
@@ -4781,7 +4781,7 @@ function accessors( test )
     test.shouldThrowErrorSync( () => m23.colVectorGet( [ 0 ] ) );
   }
 
-  test.description = 'lineVectorGet col'; /* */
+  test.case = 'lineVectorGet col'; /* */
 
   remake();
 
@@ -4802,7 +4802,7 @@ function accessors( test )
     test.shouldThrowErrorSync( () => m23.lineVectorGet( [ 0 ] ) );
   }
 
-  test.description = 'colSet'; /* */
+  test.case = 'colSet'; /* */
 
   remake();
 
@@ -4838,7 +4838,7 @@ function accessors( test )
     test.shouldThrowErrorSync( () => m32.colSet( [ 0 ],[ 10,20,30 ] ) );
   }
 
-  test.description = 'colSet vector'; /* */
+  test.case = 'colSet vector'; /* */
 
   remake();
 
@@ -4874,7 +4874,7 @@ function accessors( test )
     test.shouldThrowErrorSync( () => m32.colSet( [ 0 ],ivec([ 10,20,30 ]) ) );
   }
 
-  test.description = 'lineSet col'; /* */
+  test.case = 'lineSet col'; /* */
 
   remake();
 
@@ -4911,7 +4911,7 @@ function accessors( test )
     test.shouldThrowErrorSync( () => m32.lineSet( 0,[ 0 ],[ 10,20,30 ] ) );
   }
 
-  test.description = 'rowVectorGet'; /* */
+  test.case = 'rowVectorGet'; /* */
 
   remake();
 
@@ -4932,7 +4932,7 @@ function accessors( test )
     test.shouldThrowErrorSync( () => m32.rowVectorGet( [ 0 ] ) );
   }
 
-  test.description = 'lineVectorGet row'; /* */
+  test.case = 'lineVectorGet row'; /* */
 
   remake();
 
@@ -4953,7 +4953,7 @@ function accessors( test )
     test.shouldThrowErrorSync( () => m32.lineVectorGet( 1,[ 0 ] ) );
   }
 
-  test.description = 'rowSet'; /* */
+  test.case = 'rowSet'; /* */
 
   remake();
 
@@ -4989,7 +4989,7 @@ function accessors( test )
     test.shouldThrowErrorSync( () => m23.rowSet( [ 0 ],[ 10,20,30 ] ) );
   }
 
-  test.description = 'rowSet vector'; /* */
+  test.case = 'rowSet vector'; /* */
 
   remake();
 
@@ -5025,7 +5025,7 @@ function accessors( test )
     test.shouldThrowErrorSync( () => m23.rowSet( [ 0 ],ivec([ 10,20,30 ]) ) );
   }
 
-  test.description = 'lineSet row'; /* */
+  test.case = 'lineSet row'; /* */
 
   remake();
 
@@ -5062,7 +5062,7 @@ function accessors( test )
     test.shouldThrowErrorSync( () => m23.lineSet( 1,[ 0 ],[ 10,20,30 ] ) );
   }
 
-  test.description = 'atomGet'; /* */
+  test.case = 'atomGet'; /* */
 
   remake();
 
@@ -5088,7 +5088,7 @@ function accessors( test )
 
   }
 
-  test.description = 'atomSet'; /* */
+  test.case = 'atomSet'; /* */
 
   remake();
 
@@ -5120,7 +5120,7 @@ function accessors( test )
 function partialAccessors( test )
 {
 
-  test.description = 'mul'; /* */
+  test.case = 'mul'; /* */
 
   var u = space.make([ 3,3 ]).copy
   ([
@@ -5147,7 +5147,7 @@ function partialAccessors( test )
   logger.log( uxl );
   test.identical( uxl,expected );
 
-  test.description = 'zero'; /* */
+  test.case = 'zero'; /* */
 
   var m = space.make([ 2,3 ]).copy
   ([
@@ -5164,7 +5164,7 @@ function partialAccessors( test )
   m.zero();
   test.identical( m,expected );
 
-  test.description = 'zero empty'; /* */
+  test.case = 'zero empty'; /* */
 
   var m = space.make([ 0,0 ]);
   var expected = space.make([ 0,0 ]);
@@ -5172,7 +5172,7 @@ function partialAccessors( test )
   test.identical( m,expected );
   test.is( m === r );
 
-  test.description = 'zero bad arguments'; /* */
+  test.case = 'zero bad arguments'; /* */
 
   if( Config.debug )
   {
@@ -5181,7 +5181,7 @@ function partialAccessors( test )
     test.shouldThrowErrorSync( () => space.makeIdentity( 3 ).zero( space.makeIdentity( 3 ) ) );
   }
 
-  test.description = 'diagonalVectorGet 3x4 transposed'; /* */
+  test.case = 'diagonalVectorGet 3x4 transposed'; /* */
 
   var buffer =
   [
@@ -5204,7 +5204,7 @@ function partialAccessors( test )
   var diagonal = m.diagonalVectorGet();
   test.identical( diagonal,expected );
 
-  test.description = 'diagonalVectorGet 3x4 not transposed'; /* */
+  test.case = 'diagonalVectorGet 3x4 not transposed'; /* */
 
   var buffer =
   [
@@ -5228,14 +5228,14 @@ function partialAccessors( test )
   var diagonal = m.diagonalVectorGet();
   test.identical( diagonal,expected );
 
-  test.description = 'diagonalVectorGet null row'; /* */
+  test.case = 'diagonalVectorGet null row'; /* */
 
   var m = space.make([ 0,4 ]);
   var expected = fvec([]);
   var diagonal = m.diagonalVectorGet();
   test.identical( diagonal,expected );
 
-  test.description = 'diagonalVectorGet 4x3 transposed'; /* */
+  test.case = 'diagonalVectorGet 4x3 transposed'; /* */
 
   var buffer =
   [
@@ -5259,7 +5259,7 @@ function partialAccessors( test )
   var diagonal = m.diagonalVectorGet();
   test.identical( diagonal,expected );
 
-  test.description = 'diagonalVectorGet 4x3 not transposed'; /* */
+  test.case = 'diagonalVectorGet 4x3 not transposed'; /* */
 
   var buffer =
   [
@@ -5282,14 +5282,14 @@ function partialAccessors( test )
   var diagonal = m.diagonalVectorGet();
   test.identical( diagonal,expected );
 
-  test.description = 'diagonalVectorGet null column'; /* */
+  test.case = 'diagonalVectorGet null column'; /* */
 
   var m = space.make([ 4,0 ]);
   var expected = fvec([]);
   var diagonal = m.diagonalVectorGet();
   test.identical( diagonal,expected );
 
-  test.description = 'diagonalVectorGet bad arguments'; /* */
+  test.case = 'diagonalVectorGet bad arguments'; /* */
 
   if( Config.debug )
   {
@@ -5298,7 +5298,7 @@ function partialAccessors( test )
     test.shouldThrowErrorSync( () => space.makeIdentity( 3 ).diagonalVectorGet( space.makeIdentity( 3 ) ) );
   }
 
-  test.description = 'diagonalSet vector'; /* */
+  test.case = 'diagonalSet vector'; /* */
 
   var m = space.make([ 2,3 ]).copy
   ([
@@ -5315,7 +5315,7 @@ function partialAccessors( test )
   m.diagonalSet( ivec([ 11,22 ]) );
   test.identical( m,expected );
 
-  test.description = 'diagonalSet 2x3'; /* */
+  test.case = 'diagonalSet 2x3'; /* */
 
   var m = space.make([ 2,3 ]).copy
   ([
@@ -5341,7 +5341,7 @@ function partialAccessors( test )
   m.diagonalSet( 0 );
   test.identical( m,expected );
 
-  test.description = 'diagonalSet 3x2'; /* */
+  test.case = 'diagonalSet 3x2'; /* */
 
   var m = space.make([ 3,2 ]).copy
   ([
@@ -5370,7 +5370,7 @@ function partialAccessors( test )
   m.diagonalSet( 0 );
   test.identical( m,expected );
 
-  test.description = 'diagonalSet from another space'; /* */
+  test.case = 'diagonalSet from another space'; /* */
 
   var m1 = space.make([ 3,4 ]).copy
   ([
@@ -5429,7 +5429,7 @@ function partialAccessors( test )
   m1.diagonalSet( m2 );
   test.identical( m1,expected );
 
-  test.description = 'diagonalSet 0x0'; /* */
+  test.case = 'diagonalSet 0x0'; /* */
 
   var m = space.make([ 0,0 ]);
   var r = m.diagonalSet( 0 );
@@ -5449,7 +5449,7 @@ function partialAccessors( test )
   test.identical( m._stridesEffective,[ 1,0 ] );
   test.is( m === r );
 
-  test.description = 'diagonalSet bad arguments'; /* */
+  test.case = 'diagonalSet bad arguments'; /* */
 
   if( Config.debug )
   {
@@ -5458,7 +5458,7 @@ function partialAccessors( test )
     test.shouldThrowErrorSync( () => space.makeIdentity( 3 ).diagonalSet( space.makeIdentity( 2 ) ) );
   }
 
-  test.description = 'identify 3x2'; /* */
+  test.case = 'identify 3x2'; /* */
 
   var m = space.makeZero([ 3,2 ]);
 
@@ -5472,7 +5472,7 @@ function partialAccessors( test )
   m.identify();
   test.identical( m,expected );
 
-  test.description = 'identify 2x3'; /* */
+  test.case = 'identify 2x3'; /* */
 
   var m = space.makeZero([ 2,3 ]);
 
@@ -5485,7 +5485,7 @@ function partialAccessors( test )
   m.identify();
   test.identical( m,expected );
 
-  test.description = 'identify 0x0'; /* */
+  test.case = 'identify 0x0'; /* */
 
   var m = space.makeZero([ 0,3 ]);
   var r = m.identify();
@@ -5499,7 +5499,7 @@ function partialAccessors( test )
   test.identical( m._stridesEffective,[ 1,3 ] );
   test.is( m === r );
 
-  test.description = 'identify bad arguments'; /* */
+  test.case = 'identify bad arguments'; /* */
 
   if( Config.debug )
   {
@@ -5507,7 +5507,7 @@ function partialAccessors( test )
     test.shouldThrowErrorSync( () => space.makeIdentity( 3 ).identify( [ 1,1 ] ) );
   }
 
-  test.description = 'triangleLowerSet 3x4'; /* */
+  test.case = 'triangleLowerSet 3x4'; /* */
 
   var expected = space.make([ 3,4 ]).copy
   ([
@@ -5553,7 +5553,7 @@ function partialAccessors( test )
   m.triangleLowerSet( m2 );
   test.identical( m,expected );
 
-  test.description = 'triangleLowerSet 4x3'; /* */
+  test.case = 'triangleLowerSet 4x3'; /* */
 
   var expected = space.make([ 4,3 ]).copy
   ([
@@ -5603,7 +5603,7 @@ function partialAccessors( test )
   m.triangleLowerSet( m2 );
   test.identical( m,expected );
 
-  test.description = 'triangleLowerSet 4x1'; /* */
+  test.case = 'triangleLowerSet 4x1'; /* */
 
   var buffer = new Float32Array
   ([
@@ -5642,7 +5642,7 @@ function partialAccessors( test )
   m.triangleLowerSet( m2 );
   test.identical( m,expected );
 
-  test.description = 'triangleLowerSet 1x4'; /* */
+  test.case = 'triangleLowerSet 1x4'; /* */
 
   var buffer = new Float32Array
   ([
@@ -5672,7 +5672,7 @@ function partialAccessors( test )
   m.triangleLowerSet( m2 );
   test.identical( m,expected );
 
-  test.description = 'triangleLowerSet bad arguments'; /* */
+  test.case = 'triangleLowerSet bad arguments'; /* */
 
   if( Config.debug )
   {
@@ -5689,7 +5689,7 @@ function partialAccessors( test )
 
   }
 
-  test.description = 'triangleUpperSet 4x3'; /* */
+  test.case = 'triangleUpperSet 4x3'; /* */
 
   var expected = space.make([ 4,3 ]).copy
   ([
@@ -5737,7 +5737,7 @@ function partialAccessors( test )
   m.triangleUpperSet( m2 );
   test.identical( m,expected );
 
-  test.description = 'triangleUpperSet 3x4'; /* */
+  test.case = 'triangleUpperSet 3x4'; /* */
 
   var expected = space.make([ 3,4 ]).copy
   ([
@@ -5783,7 +5783,7 @@ function partialAccessors( test )
   m.triangleUpperSet( m2 );
   test.identical( m,expected );
 
-  test.description = 'triangleUpperSet 1x4'; /* */
+  test.case = 'triangleUpperSet 1x4'; /* */
 
   var buffer = new Float32Array
   ([
@@ -5813,7 +5813,7 @@ function partialAccessors( test )
   m.triangleUpperSet( m2 );
   test.identical( m,expected );
 
-  test.description = 'triangleUpperSet 4x1'; /* */
+  test.case = 'triangleUpperSet 4x1'; /* */
 
   var buffer = new Float32Array
   ([
@@ -5849,7 +5849,7 @@ function partialAccessors( test )
   m.triangleUpperSet( m2 );
   test.identical( m,expected );
 
-  test.description = 'triangleUpperSet bad arguments'; /* */
+  test.case = 'triangleUpperSet bad arguments'; /* */
 
   if( Config.debug )
   {
@@ -5866,12 +5866,12 @@ function partialAccessors( test )
 
   }
 
-  test.description = 'triangleSet null space'; /* */
+  test.case = 'triangleSet null space'; /* */
 
   function triangleSetNull( rname )
   {
 
-    test.description = rname + ' null space by scalar'; /* */
+    test.case = rname + ' null space by scalar'; /* */
 
     var m = space.make([ 0,3 ]);
     var expected = space.make([ 0,0 ]);
@@ -5885,7 +5885,7 @@ function partialAccessors( test )
     test.identical( m.dims,[ 3,0 ] );
     test.is( m === r );
 
-    test.description = rname + ' null space by null space'; /* */
+    test.case = rname + ' null space by null space'; /* */
 
     var m = space.make([ 0,0 ]);
     var expected = space.make([ 0,0 ]);
@@ -5949,7 +5949,7 @@ function partialAccessors( test )
   triangleSetNull( 'triangleLowerSet' );
   triangleSetNull( 'triangleUpperSet' );
 
-  test.description = 'bad arguments'; /* */
+  test.case = 'bad arguments'; /* */
 
   function shouldThrowError( name )
   {
@@ -5979,7 +5979,7 @@ function partialAccessors( test )
 function lineSwap( test )
 {
 
-  test.description = 'rowsSwap'; /* */
+  test.case = 'rowsSwap'; /* */
 
   var m = space.make([ 4,3 ]).copy
   ([
@@ -6000,12 +6000,12 @@ function lineSwap( test )
   m.rowsSwap( 3,0 ).rowsSwap( 0,3 ).rowsSwap( 1,2 ).rowsSwap( 0,0 );
   test.identical( m,expected );
 
-  test.description = 'rowsSwap row with itself'; /* */
+  test.case = 'rowsSwap row with itself'; /* */
 
   m.rowsSwap( 0,0 );
   test.identical( m,expected );
 
-  test.description = 'linesSwap'; /* */
+  test.case = 'linesSwap'; /* */
 
   var m = space.make([ 4,3 ]).copy
   ([
@@ -6026,12 +6026,12 @@ function lineSwap( test )
   m.linesSwap( 0,3,0 ).linesSwap( 0,0,3 ).linesSwap( 0,1,2 ).linesSwap( 0,0,0 );
   test.identical( m,expected );
 
-  test.description = 'linesSwap row with itself'; /* */
+  test.case = 'linesSwap row with itself'; /* */
 
   m.linesSwap( 0,0,0 );
   test.identical( m,expected );
 
-  test.description = 'colsSwap'; /* */
+  test.case = 'colsSwap'; /* */
 
   var m = space.make([ 3,4 ]).copy
   ([
@@ -6050,12 +6050,12 @@ function lineSwap( test )
   m.colsSwap( 0,3 ).colsSwap( 3,0 ).colsSwap( 1,2 ).colsSwap( 0,0 );
   test.identical( m,expected );
 
-  test.description = 'colsSwap row with itself'; /* */
+  test.case = 'colsSwap row with itself'; /* */
 
   m.colsSwap( 0,0 );
   test.identical( m,expected );
 
-  test.description = 'linesSwap'; /* */
+  test.case = 'linesSwap'; /* */
 
   var m = space.make([ 3,4 ]).copy
   ([
@@ -6074,12 +6074,12 @@ function lineSwap( test )
   m.linesSwap( 1,0,3 ).linesSwap( 1,3,0 ).linesSwap( 1,1,2 ).linesSwap( 0,0,0 );
   test.identical( m,expected );
 
-  test.description = 'linesSwap row with itself'; /* */
+  test.case = 'linesSwap row with itself'; /* */
 
   m.linesSwap( 1,0,0 );
   test.identical( m,expected );
 
-  test.description = 'elementsSwap'; /* */
+  test.case = 'elementsSwap'; /* */
 
   var m = space.make([ 3,4 ]).copy
   ([
@@ -6098,12 +6098,12 @@ function lineSwap( test )
   m.elementsSwap( 0,3 ).elementsSwap( 3,0 ).elementsSwap( 1,2 ).elementsSwap( 0,0 );
   test.identical( m,expected );
 
-  test.description = 'elementsSwap row with itself'; /* */
+  test.case = 'elementsSwap row with itself'; /* */
 
   m.elementsSwap( 0,0 );
   test.identical( m,expected );
 
-  test.description = 'bad arguments'; /* */
+  test.case = 'bad arguments'; /* */
 
   if( !Config.debug )
   return;
@@ -6131,7 +6131,7 @@ function lineSwap( test )
 function pivot( test )
 {
 
-  test.description = 'simple row pivot'; /* */
+  test.case = 'simple row pivot'; /* */
 
   var expected = space.make([ 2,3 ]).copy
   ([
@@ -6167,7 +6167,7 @@ function pivot( test )
   test.identical( m,original );
   test.identical( pivots,pivotsExpected );
 
-  test.description = 'complex row pivot'; /* */
+  test.case = 'complex row pivot'; /* */
 
   var expected = space.make([ 3,2 ]).copy
   ([
@@ -6205,7 +6205,7 @@ function pivot( test )
   test.identical( m,original );
   test.identical( pivots,pivotsExpected );
 
-  test.description = 'vectorPivot space'; /* */
+  test.case = 'vectorPivot space'; /* */
 
   var expected = space.make([ 3,2 ]).copy
   ([
@@ -6234,7 +6234,7 @@ function pivot( test )
   test.identical( m,original );
   test.identical( pivot,pivotExpected );
 
-  test.description = 'vectorPivot vector'; /* */
+  test.case = 'vectorPivot vector'; /* */
 
   var expected = vec([ 3,1,2 ]);
   var a = vec([ 1,2,3 ]);
@@ -6251,7 +6251,7 @@ function pivot( test )
   test.identical( a,original );
   test.identical( pivot,pivotExpected );
 
-  test.description = 'vectorPivot array'; /* */
+  test.case = 'vectorPivot array'; /* */
 
   var expected = [ 3,1,2 ];
   var a = [ 1,2,3 ];
@@ -6268,7 +6268,7 @@ function pivot( test )
   test.identical( a,original );
   test.identical( pivot,pivotExpected );
 
-  test.description = 'no pivots'; /* */
+  test.case = 'no pivots'; /* */
 
   var expected = space.make([ 2,3 ]).copy
   ([
@@ -6296,7 +6296,7 @@ function pivot( test )
   m.pivotBackward( pivots );
   test.identical( m,original );
 
-  test.description = 'complex col pivot'; /* */
+  test.case = 'complex col pivot'; /* */
 
   var expected = space.make([ 2,3 ]).copy
   ([
@@ -6324,7 +6324,7 @@ function pivot( test )
   m.pivotBackward( pivots );
   test.identical( m,original );
 
-  test.description = 'complex col pivot'; /* */
+  test.case = 'complex col pivot'; /* */
 
   var expected = space.make([ 2,3 ]).copy
   ([
@@ -6352,7 +6352,7 @@ function pivot( test )
   m.pivotBackward( pivots );
   test.identical( m,original );
 
-  test.description = 'complex col pivot'; /* */
+  test.case = 'complex col pivot'; /* */
 
   var expected = space.make([ 2,3 ]).copy
   ([
@@ -6380,7 +6380,7 @@ function pivot( test )
   m.pivotBackward( pivots );
   test.identical( m,original );
 
-  test.description = 'mixed pivot'; /* */
+  test.case = 'mixed pivot'; /* */
 
   var expected = space.make([ 2,3 ]).copy
   ([
@@ -6416,7 +6416,7 @@ function pivot( test )
   test.identical( m,original );
   test.identical( pivots,pivotsExpected );
 
-  test.description = 'partially defined pivot'; /* */
+  test.case = 'partially defined pivot'; /* */
 
   var expected = space.make([ 2,3 ]).copy
   ([
@@ -6498,7 +6498,7 @@ function addAtomWise( test )
 
   }
 
-  test.description = 'addAtomWise 2 spaces'; /* */
+  test.case = 'addAtomWise 2 spaces'; /* */
 
   remake();
 
@@ -6512,7 +6512,7 @@ function addAtomWise( test )
   test.equivalent( r,expected );
   test.is( r === m1 );
 
-  test.description = 'addAtomWise 2 spaces with null'; /* */
+  test.case = 'addAtomWise 2 spaces with null'; /* */
 
   remake();
 
@@ -6526,7 +6526,7 @@ function addAtomWise( test )
   test.equivalent( r,expected );
   test.is( r !== m1 );
 
-  test.description = 'addAtomWise 3 spaces into the first src'; /* */
+  test.case = 'addAtomWise 3 spaces into the first src'; /* */
 
   remake();
 
@@ -6540,7 +6540,7 @@ function addAtomWise( test )
   test.equivalent( r,expected );
   test.is( r !== m1 );
 
-  test.description = 'addAtomWise 3 spaces into the first src'; /* */
+  test.case = 'addAtomWise 3 spaces into the first src'; /* */
 
   remake();
 
@@ -6554,7 +6554,7 @@ function addAtomWise( test )
   test.equivalent( r,expected );
   test.is( r === m1 );
 
-  test.description = 'addAtomWise space and scalar'; /* */
+  test.case = 'addAtomWise space and scalar'; /* */
 
   remake();
 
@@ -6568,7 +6568,7 @@ function addAtomWise( test )
   test.equivalent( r,expected );
   test.is( r !== m1 );
 
-  test.description = 'addAtomWise all sort of arguments'; /* */
+  test.case = 'addAtomWise all sort of arguments'; /* */
 
   remake();
 
@@ -6602,7 +6602,7 @@ function addAtomWise( test )
   test.equivalent( r,expected );
   test.is( r !== m5 );
 
-  test.description = 'addAtomWise all sort of arguments'; /* */
+  test.case = 'addAtomWise all sort of arguments'; /* */
 
   remake();
 
@@ -6640,7 +6640,7 @@ function addAtomWise( test )
   test.equivalent( r,expected );
   test.is( r === m5 );
 
-  test.description = 'addAtomWise rewriting src argument'; /* */
+  test.case = 'addAtomWise rewriting src argument'; /* */
 
   remake();
 
@@ -6700,7 +6700,7 @@ function subAtomWise( test )
 
   }
 
-  test.description = '2 spaces'; /* */
+  test.case = '2 spaces'; /* */
 
   remake();
 
@@ -6714,7 +6714,7 @@ function subAtomWise( test )
   test.equivalent( r,expected );
   test.is( r === m1 );
 
-  test.description = '2 spaces with null'; /* */
+  test.case = '2 spaces with null'; /* */
 
   remake();
 
@@ -6728,7 +6728,7 @@ function subAtomWise( test )
   test.equivalent( r,expected );
   test.is( r !== m1 );
 
-  test.description = '3 spaces into the first src'; /* */
+  test.case = '3 spaces into the first src'; /* */
 
   remake();
 
@@ -6742,7 +6742,7 @@ function subAtomWise( test )
   test.equivalent( r,expected );
   test.is( r !== m1 );
 
-  test.description = '3 spaces into the first src'; /* */
+  test.case = '3 spaces into the first src'; /* */
 
   remake();
 
@@ -6756,7 +6756,7 @@ function subAtomWise( test )
   test.equivalent( r,expected );
   test.is( r === m1 );
 
-  test.description = 'space and scalar'; /* */
+  test.case = 'space and scalar'; /* */
 
   remake();
 
@@ -6770,7 +6770,7 @@ function subAtomWise( test )
   test.equivalent( r,expected );
   test.is( r !== m1 );
 
-  test.description = 'all sort of arguments'; /* */
+  test.case = 'all sort of arguments'; /* */
 
   remake();
 
@@ -6804,7 +6804,7 @@ function subAtomWise( test )
   test.equivalent( r,expected );
   test.is( r !== m5 );
 
-  test.description = 'all sort of arguments'; /* */
+  test.case = 'all sort of arguments'; /* */
 
   remake();
 
@@ -6842,7 +6842,7 @@ function subAtomWise( test )
   test.equivalent( r,expected );
   test.is( r === m5 );
 
-  test.description = 'rewriting src argument'; /* */
+  test.case = 'rewriting src argument'; /* */
 
   remake();
 
@@ -6858,7 +6858,7 @@ function subAtomWise( test )
 
 }
 
-//   test.description = 'subAtomWise 2 spaces'; /* */
+//   test.case = 'subAtomWise 2 spaces'; /* */
 //
 //   remake();
 //
@@ -6872,7 +6872,7 @@ function subAtomWise( test )
 //   test.equivalent( r,expected );
 //   test.is( r === m1 );
 //
-//   test.description = 'subAtomWise all sort of arguments'; /* */
+//   test.case = 'subAtomWise all sort of arguments'; /* */
 //
 //   remake();
 //
@@ -6890,7 +6890,7 @@ function subAtomWise( test )
 //
 //   /* */
 //
-//   test.description = 'mulAtomWise 2 spaces'; /* */
+//   test.case = 'mulAtomWise 2 spaces'; /* */
 //
 //   remake();
 //
@@ -6904,7 +6904,7 @@ function subAtomWise( test )
 //   test.equivalent( r,expected );
 //   test.is( r !== m1 );
 //
-//   test.description = 'mulAtomWise all sort of arguments'; /* */
+//   test.case = 'mulAtomWise all sort of arguments'; /* */
 //
 //   remake();
 //
@@ -6920,7 +6920,7 @@ function subAtomWise( test )
 //
 //   /* */
 //
-//   test.description = 'divAtomWise 2 spaces'; /* */
+//   test.case = 'divAtomWise 2 spaces'; /* */
 //
 //   remake();
 //
@@ -6934,7 +6934,7 @@ function subAtomWise( test )
 //   test.equivalent( r,expected );
 //   test.is( r !== m1 );
 //
-//   test.description = 'divAtomWise all sort of arguments'; /* */
+//   test.case = 'divAtomWise all sort of arguments'; /* */
 //
 //   remake();
 //
@@ -6997,7 +6997,7 @@ function subAtomWise( test )
 //
 //   }
 //
-//   test.description = 'addAtomWise 2 spaces'; /* */
+//   test.case = 'addAtomWise 2 spaces'; /* */
 //
 //   remake();
 //
@@ -7012,7 +7012,7 @@ function subAtomWise( test )
 //   debugger;
 //   test.equivalent( r,expected );
 //
-//   test.description = 'addAtomWise 3 spaces into the first src'; /* */
+//   test.case = 'addAtomWise 3 spaces into the first src'; /* */
 //
 //   remake();
 //
@@ -7026,7 +7026,7 @@ function subAtomWise( test )
 //   test.equivalent( r,expected );
 //   test.is( r === m1 );
 //
-//   test.description = 'addAtomWise space and scalar'; /* */
+//   test.case = 'addAtomWise space and scalar'; /* */
 //
 //   remake();
 //
@@ -7039,7 +7039,7 @@ function subAtomWise( test )
 //   var r = space.addAtomWise( null,[ m1,10 ] );
 //   test.equivalent( r,expected );
 //
-//   test.description = 'addAtomWise all sort of arguments'; /* */
+//   test.case = 'addAtomWise all sort of arguments'; /* */
 //
 //   remake();
 //
@@ -7057,7 +7057,7 @@ function subAtomWise( test )
 //
 //   /* */
 //
-//   test.description = 'subAtomWise 2 spaces'; /* */
+//   test.case = 'subAtomWise 2 spaces'; /* */
 //
 //   remake();
 //
@@ -7070,7 +7070,7 @@ function subAtomWise( test )
 //   var r = space.subAtomWise( null,[ m1,m2 ] );
 //   test.equivalent( r,expected );
 //
-//   test.description = 'subAtomWise all sort of arguments'; /* */
+//   test.case = 'subAtomWise all sort of arguments'; /* */
 //
 //   remake();
 //
@@ -7085,7 +7085,7 @@ function subAtomWise( test )
 //
 //   /* */
 //
-//   test.description = 'mulAtomWise 2 spaces'; /* */
+//   test.case = 'mulAtomWise 2 spaces'; /* */
 //
 //   remake();
 //
@@ -7098,7 +7098,7 @@ function subAtomWise( test )
 //   var r = space.mulAtomWise( null,[ m1,m2 ] );
 //   test.equivalent( r,expected );
 //
-//   test.description = 'mulAtomWise all sort of arguments'; /* */
+//   test.case = 'mulAtomWise all sort of arguments'; /* */
 //
 //   remake();
 //
@@ -7113,7 +7113,7 @@ function subAtomWise( test )
 //
 //   /* */
 //
-//   test.description = 'divAtomWise 2 spaces'; /* */
+//   test.case = 'divAtomWise 2 spaces'; /* */
 //
 //   remake();
 //
@@ -7126,7 +7126,7 @@ function subAtomWise( test )
 //   var r = space.divAtomWise( null,[ m1,m2 ] );
 //   test.equivalent( r,expected );
 //
-//   test.description = 'divAtomWise all sort of arguments'; /* */
+//   test.case = 'divAtomWise all sort of arguments'; /* */
 //
 //   remake();
 //
@@ -7157,7 +7157,7 @@ function homogeneousWithScalarRoutines( test )
     return m;
   }
 
-  test.description = 'assignScalar'; /* */
+  test.case = 'assignScalar'; /* */
 
   var m = make();
   var expected = space.make([ 3,2 ]).copy
@@ -7170,7 +7170,7 @@ function homogeneousWithScalarRoutines( test )
   m.assignScalar( 5 );
   test.identical( m,expected );
 
-  test.description = 'addScalar'; /* */
+  test.case = 'addScalar'; /* */
 
   var m = make();
   var expected = space.make([ 3,2 ]).copy
@@ -7183,7 +7183,7 @@ function homogeneousWithScalarRoutines( test )
   m.addScalar( 5 );
   test.identical( m,expected );
 
-  test.description = 'subScalar'; /* */
+  test.case = 'subScalar'; /* */
 
   var m = make();
   var expected = space.make([ 3,2 ]).copy
@@ -7196,7 +7196,7 @@ function homogeneousWithScalarRoutines( test )
   m.subScalar( 5 );
   test.identical( m,expected );
 
-  test.description = 'mulScalar'; /* */
+  test.case = 'mulScalar'; /* */
 
   var m = make();
   var expected = space.make([ 3,2 ]).copy
@@ -7209,7 +7209,7 @@ function homogeneousWithScalarRoutines( test )
   m.mulScalar( 5 );
   test.identical( m,expected );
 
-  test.description = 'divScalar'; /* */
+  test.case = 'divScalar'; /* */
 
   var m = make();
   var expected = space.make([ 3,2 ]).copy
@@ -7222,7 +7222,7 @@ function homogeneousWithScalarRoutines( test )
   m.divScalar( 5 );
   test.identical( m,expected );
 
-  test.description = 'bad arguments'; /* */
+  test.case = 'bad arguments'; /* */
 
   function shouldThrowError( name )
   {
@@ -7255,7 +7255,7 @@ function homogeneousWithScalarRoutines( test )
 function colRowWiseOperations( test )
 {
 
-  test.description = 'data'; /* */
+  test.case = 'data'; /* */
 
   var buffer = new Int32Array
   ([
@@ -7310,7 +7310,7 @@ function colRowWiseOperations( test )
 
   space2.bufferNormalize();
 
-  test.description = 'reduceToMean'; /* */
+  test.case = 'reduceToMean'; /* */
 
   var c = m32.reduceToMeanRowWise();
   var r = m32.reduceToMeanColWise();
@@ -7320,7 +7320,7 @@ function colRowWiseOperations( test )
   test.identical( r,vec([ 2,5 ]) );
   test.identical( a,3.5 );
 
-  test.description = 'reduceToMean with output argument'; /* */
+  test.case = 'reduceToMean with output argument'; /* */
 
   var c2 = [ 1,1,1 ];
   var r2 = [ 1 ];
@@ -7330,7 +7330,7 @@ function colRowWiseOperations( test )
   test.identical( c,vec( c2 ) );
   test.identical( r,vec( r2 ) );
 
-  test.description = 'reduceToMean with empty spaces'; /* */
+  test.case = 'reduceToMean with empty spaces'; /* */
 
   var c = empty1.reduceToMeanRowWise();
   var r = empty1.reduceToMeanColWise();
@@ -7340,7 +7340,7 @@ function colRowWiseOperations( test )
   test.identical( r,vec([]) );
   test.identical( a,NaN );
 
-  test.description = 'reduceToMean bad arguments'; /* */
+  test.case = 'reduceToMean bad arguments'; /* */
 
   function simpleShouldThrowError( f )
   {
@@ -7361,7 +7361,7 @@ function colRowWiseOperations( test )
 
   }
 
-  test.description = 'distributionRangeSummaryColWise'; /* */
+  test.case = 'distributionRangeSummaryColWise'; /* */
 
   var expected =
   [
@@ -7406,7 +7406,7 @@ function colRowWiseOperations( test )
   var r = empty2.distributionRangeSummaryColWise();
   test.identical( r,expected );
 
-  test.description = 'minmaxColWise'; /* */
+  test.case = 'minmaxColWise'; /* */
 
   var expected =
   {
@@ -7435,7 +7435,7 @@ function colRowWiseOperations( test )
   var identical = _.entityIdentical( r,expected );
   test.identical( r,expected );
 
-  test.description = 'distributionRangeSummaryRowWise'; /* */
+  test.case = 'distributionRangeSummaryRowWise'; /* */
 
   var expected =
   [
@@ -7484,7 +7484,7 @@ function colRowWiseOperations( test )
   var r = empty2.distributionRangeSummaryRowWise();
   test.identical( r,expected );
 
-  test.description = 'minmaxRowWise'; /* */
+  test.case = 'minmaxRowWise'; /* */
 
   var expected =
   {
@@ -7512,7 +7512,7 @@ function colRowWiseOperations( test )
   var r = empty2.minmaxRowWise();
   test.identical( r,expected );
 
-  test.description = 'reduceToSumColWise'; /* */
+  test.case = 'reduceToSumColWise'; /* */
 
   var sum = space1.reduceToSumColWise();
   test.identical( sum,vec([ 12,133,44 ]) );
@@ -7523,7 +7523,7 @@ function colRowWiseOperations( test )
   var sum = empty2.reduceToSumColWise();
   test.identical( sum,vec([ 0,0 ]) );
 
-  test.description = 'reduceToSumRowWise'; /* */
+  test.case = 'reduceToSumRowWise'; /* */
 
   var sum = space1.reduceToSumRowWise();
   test.identical( sum,vec([ 0,6,60,123 ]) );
@@ -7534,7 +7534,7 @@ function colRowWiseOperations( test )
   var sum = empty2.reduceToSumRowWise();
   test.identical( sum,vec([]) );
 
-  test.description = 'reduceToMaxColWise'; /* */
+  test.case = 'reduceToMaxColWise'; /* */
 
   var max = space1.reduceToMaxColWise();
   max = _.entitySelect( max,'*.value' );
@@ -7550,7 +7550,7 @@ function colRowWiseOperations( test )
   max = _.entitySelect( max,'*.value' );
   test.identical( max,[ -Infinity,-Infinity ] );
 
-  test.description = 'reduceToMaxValueColWise'; /* */
+  test.case = 'reduceToMaxValueColWise'; /* */
 
   var max = space1.reduceToMaxValueColWise();
   test.identical( max,vec([ 10,111,30 ]) );
@@ -7561,7 +7561,7 @@ function colRowWiseOperations( test )
   var max = empty2.reduceToMaxValueColWise();
   test.identical( max,vec([ -Infinity,-Infinity ]) );
 
-  test.description = 'reduceToMaxRowWise'; /* */
+  test.case = 'reduceToMaxRowWise'; /* */
 
   var max = space1.reduceToMaxRowWise();
   max = _.entitySelect( max,'*.value' );
@@ -7577,7 +7577,7 @@ function colRowWiseOperations( test )
   max = _.entitySelect( max,'*.value' );
   test.identical( max,[] );
 
-  test.description = 'reduceToMaxValueRowWise'; /* */
+  test.case = 'reduceToMaxValueRowWise'; /* */
 
   var max = space1.reduceToMaxValueRowWise();
   test.identical( max,vec([ 0,3,30,111 ]) );
@@ -7616,7 +7616,7 @@ function colRowWiseOperations( test )
 function mul( test )
 {
 
-  test.description = 'data'; /* */
+  test.case = 'data'; /* */
 
   var buffer = new Int32Array
   ([
@@ -7632,7 +7632,7 @@ function mul( test )
     inputTransposing : 1,
   });
 
-  test.description = 'm3';
+  test.case = 'm3';
   test.identical( m3.determinant(),0 );
 
   var m3a = space.makeSquare
@@ -7642,7 +7642,7 @@ function mul( test )
     3, 6, 8,
   ]);
 
-  test.description = 'm3a';
+  test.case = 'm3a';
   test.identical( m3a.determinant(),2 );
 
   var m3b = space.makeSquare
@@ -7658,7 +7658,7 @@ function mul( test )
   var cb = ra.clone().transpose();
   var rb = ca.clone().transpose();
 
-  test.description = 'm3 mul m3'; /* */
+  test.case = 'm3 mul m3'; /* */
 
   var mul = space.mul( null,[ m3,m3 ] );
   logger.log( 'mul\n' + _.toStr( mul ) );
@@ -7673,7 +7673,7 @@ function mul( test )
 
   test.equivalent( mul,expected );
 
-  test.description = 'm3a * m3b'; /* */
+  test.case = 'm3a * m3b'; /* */
 
   var mul = space.mul( null,[ m3a,m3b ] );
   logger.log( 'mul\n' + _.toStr( mul ) );
@@ -7697,7 +7697,7 @@ function mul( test )
     test.identical( m.reduceToProductAtomWise(), 0 );
   }
 
-  test.description = 'identity * ca'; /* */
+  test.case = 'identity * ca'; /* */
 
   var identity = space.makeIdentity( 3 );
   var mul = space.mul( null,[ identity,ca ] );
@@ -7705,7 +7705,7 @@ function mul( test )
   test.equivalent( mul,expected );
   identityMuled( mul,identity );
 
-  test.description = 'identity * cb'; /* */
+  test.case = 'identity * cb'; /* */
 
   var identity = space.makeIdentity( 3 );
   var mul = space.mul( null,[ identity,cb ] );
@@ -7713,7 +7713,7 @@ function mul( test )
   test.equivalent( mul,expected );
   identityMuled( mul,identity );
 
-  test.description = 'ra * identity'; /* */
+  test.case = 'ra * identity'; /* */
 
   var identity = space.makeIdentity( 3 );
   var mul = space.mul( null,[ ra,identity ] );
@@ -7721,7 +7721,7 @@ function mul( test )
   test.equivalent( mul,expected );
   identityMuled( mul,identity );
 
-  test.description = 'rb * identity'; /* */
+  test.case = 'rb * identity'; /* */
 
   var identity = space.makeIdentity( 3 );
   var mul = space.mul( null,[ rb,identity ] );
@@ -7729,7 +7729,7 @@ function mul( test )
   test.equivalent( mul,expected );
   identityMuled( mul,identity );
 
-  test.description = 'm3 * ca'; /* */
+  test.case = 'm3 * ca'; /* */
 
   var mul = space.mul( null,[ m3,ca ] );
   var expected = space.makeCol([ 0,4,4 ]);
@@ -7739,7 +7739,7 @@ function mul( test )
   test.identical( m3.reduceToSumAtomWise(), 6 );
   test.identical( m3.reduceToProductAtomWise(), 4608 );
 
-  test.description = 'm3 * ca'; /* */
+  test.case = 'm3 * ca'; /* */
 
   var mul = space.mul( null,[ m3,cb ] );
   var expected = space.makeCol([ 0,4,4 ]);
@@ -7751,7 +7751,7 @@ function mul( test )
   test.identical( m3.reduceToSumAtomWise(), 6 );
   test.identical( m3.reduceToProductAtomWise(), 4608 );
 
-  test.description = 'ra * m3'; /* */
+  test.case = 'ra * m3'; /* */
 
   var mul = space.mul( null,[ ra,m3 ] );
   var expected = space.makeRow([ 10,5,0 ]);
@@ -7762,7 +7762,7 @@ function mul( test )
   test.identical( m3.reduceToSumAtomWise(), 6 );
   test.identical( m3.reduceToProductAtomWise(), 4608 );
 
-  test.description = 'rb * m3'; /* */
+  test.case = 'rb * m3'; /* */
 
   var mul = space.mul( null,[ rb,m3 ] );
   var expected = space.makeRow([ 10,5,0 ]);
@@ -7777,22 +7777,22 @@ function mul( test )
 
   var expected = space.makeRow([ 14 ]);
 
-  test.description = 'ra * ca';
+  test.case = 'ra * ca';
 
   var mul = space.mul( null,[ ra,ca ] );
   test.equivalent( mul,expected );
 
-  test.description = 'ra * cb';
+  test.case = 'ra * cb';
 
   var mul = space.mul( null,[ ra,cb ] );
   test.equivalent( mul,expected );
 
-  test.description = 'rb * ca';
+  test.case = 'rb * ca';
 
   var mul = space.mul( null,[ rb,ca ] );
   test.equivalent( mul,expected );
 
-  test.description = 'rb * cb';
+  test.case = 'rb * cb';
 
   var mul = space.mul( null,[ rb,cb ] );
   test.equivalent( mul,expected );
@@ -7806,23 +7806,23 @@ function mul( test )
     3, 6, 9,
   ]);
 
-  test.description = 'ca * ra';
+  test.case = 'ca * ra';
   var mul = space.mul( null,[ ca,ra ] );
   test.equivalent( mul,expected );
 
-  test.description = 'ca * rb';
+  test.case = 'ca * rb';
   var mul = space.mul( null,[ ca,rb ] );
   test.equivalent( mul,expected );
 
-  test.description = 'cb * ra';
+  test.case = 'cb * ra';
   var mul = space.mul( null,[ cb,ra ] );
   test.equivalent( mul,expected );
 
-  test.description = 'cb * rb';
+  test.case = 'cb * rb';
   var mul = space.mul( null,[ cb,rb ] );
   test.equivalent( mul,expected );
 
-  test.description = 'data'; /* */
+  test.case = 'data'; /* */
 
   var m1 = space.make([ 4,3 ]).copy
   ([
@@ -7841,7 +7841,7 @@ function mul( test )
   var t1 = m1.clone().transpose();
   var t2 = m2.clone().transpose();
 
-  test.description = '4x3 * 3x4'; /* */
+  test.case = '4x3 * 3x4'; /* */
 
   var expected = space.make([ 4,4 ]).copy
   ([
@@ -7855,7 +7855,7 @@ function mul( test )
   logger.log( mul );
   test.equivalent( mul,expected );
 
-  test.description = '3x4 * 4x3'; /* */
+  test.case = '3x4 * 4x3'; /* */
 
   var expected = space.make([ 3,3 ]).copy
   ([
@@ -7868,7 +7868,7 @@ function mul( test )
   logger.log( mul );
   test.equivalent( mul,expected );
 
-  test.description = '3x4 * 4x3'; /* */
+  test.case = '3x4 * 4x3'; /* */
 
   var expected = space.make([ 3,3 ]).copy
   ([
@@ -7881,7 +7881,7 @@ function mul( test )
   logger.log( mul );
   test.equivalent( mul,expected );
 
-  test.description = '4x3 * 4x3t'; /* */
+  test.case = '4x3 * 4x3t'; /* */
 
   var expected = space.make([ 4,4 ]).copy
   ([
@@ -7895,7 +7895,7 @@ function mul( test )
   logger.log( mul );
   test.equivalent( mul,expected );
 
-  test.description = 'mul itself'; /* */
+  test.case = 'mul itself'; /* */
 
   var m = m3b.clone();
 
@@ -7911,7 +7911,7 @@ function mul( test )
   test.equivalent( mul,expected );
   test.is( mul === m );
 
-  test.description = 'mul itself 2 times'; /* */
+  test.case = 'mul itself 2 times'; /* */
 
   var m = m3b.clone();
 
@@ -7927,7 +7927,7 @@ function mul( test )
   test.equivalent( mul,expected );
   test.is( mul === m );
 
-  test.description = 'mul itself 3 times'; /* */
+  test.case = 'mul itself 3 times'; /* */
 
   var m = m3b.clone();
 
@@ -7943,7 +7943,7 @@ function mul( test )
   test.equivalent( mul,expected );
   test.is( mul === m );
 
-  test.description = 'mul 3 matrices with dst === src'; /* */
+  test.case = 'mul 3 matrices with dst === src'; /* */
 
   var m1 = m3a.clone();
   var m2 = m3b.clone();
@@ -7960,7 +7960,7 @@ function mul( test )
   test.equivalent( mul,expected );
   test.is( mul === m1 );
 
-  test.description = 'mul 3 matrices with dst === src'; /* */
+  test.case = 'mul 3 matrices with dst === src'; /* */
 
   var m1 = m3a.clone();
   var m2 = m3b.clone();
@@ -7977,7 +7977,7 @@ function mul( test )
   test.equivalent( mul,expected );
   test.is( mul === m2 );
 
-  test.description = 'mul 4 matrices with dst === src'; /* */
+  test.case = 'mul 4 matrices with dst === src'; /* */
 
   var m1 = m3a.clone();
   var m2 = m3b.clone();
@@ -7994,7 +7994,7 @@ function mul( test )
   test.equivalent( mul,expected );
   test.is( mul === m1 );
 
-  test.description = 'mul 4 matrices with dst === src'; /* */
+  test.case = 'mul 4 matrices with dst === src'; /* */
 
   var m1 = m3a.clone();
   var m2 = m3b.clone();
@@ -8011,7 +8011,7 @@ function mul( test )
   test.equivalent( mul,expected );
   test.is( mul === m2 );
 
-  test.description = 'matrix array multiplication'; /* */
+  test.case = 'matrix array multiplication'; /* */
 
   var m = m3a.clone();
   var v = [ 1,2,3 ];
@@ -8023,7 +8023,7 @@ function mul( test )
   test.equivalent( mul,expected );
   test.is( v === mul );
 
-  test.description = 'matrix vector multiplication'; /* */
+  test.case = 'matrix vector multiplication'; /* */
 
   var m = m3a.clone();
   var v = vec([ 1,2,3 ]);
@@ -8035,7 +8035,7 @@ function mul( test )
   test.equivalent( mul,expected );
   test.is( v === mul );
 
-  test.description = 'matrix array matrix multiplication'; /* */
+  test.case = 'matrix array matrix multiplication'; /* */
 
   var m = m3a.clone();
   var v = [ 1,2,3 ];
@@ -8046,7 +8046,7 @@ function mul( test )
   test.equivalent( mul,expected );
   test.is( v === mul );
 
-  test.description = 'matrix array matrix multiplication'; /* */
+  test.case = 'matrix array matrix multiplication'; /* */
 
   var m = m3a.clone();
   var v = [ 1,2,3 ];
@@ -8057,7 +8057,7 @@ function mul( test )
   test.equivalent( mul,expected );
   test.is( v === mul );
 
-  test.description = 'bad arguments'; /* */
+  test.case = 'bad arguments'; /* */
 
   if( !Config.debug )
   return;
@@ -8090,7 +8090,7 @@ function furthestClosest( test )
     4,5,6,
   ]);
 
-  test.description = 'simplest furthest'; /* */
+  test.case = 'simplest furthest'; /* */
 
   var expected = { index : 2, distance : sqrt( sqr( 3 ) + sqr( 6 ) ) };
   var got = m.furthest([ 0,0 ]);
@@ -8108,7 +8108,7 @@ function furthestClosest( test )
   var got = m.furthest([ 2,5 ]);
   test.equivalent( got,expected );
 
-  test.description = 'simplest closest'; /* */
+  test.case = 'simplest closest'; /* */
 
   var expected = { index : 0, distance : sqrt( sqr( 1 ) + sqr( 4 ) ) };
   var got = m.closest([ 0,0 ]);
@@ -8137,7 +8137,7 @@ function furthestClosest( test )
 function matrxHomogenousApply( test )
 {
 
-  test.description = 'matrixHomogenousApply 2d'; /* */
+  test.case = 'matrixHomogenousApply 2d'; /* */
 
   var m = space.make([ 3,3 ]).copy
   ([
@@ -8154,7 +8154,7 @@ function matrxHomogenousApply( test )
   m.matrixHomogenousApply( position );
   test.equivalent( position,[ 5,7 ] );
 
-  test.description = 'fromTransformations'; /* */
+  test.case = 'fromTransformations'; /* */
 
   var m = space.make([ 4,4 ]);
 
@@ -8174,7 +8174,7 @@ function matrxHomogenousApply( test )
 function determinant( test )
 {
 
-  test.description = 'simplest determinant'; /* */
+  test.case = 'simplest determinant'; /* */
 
   var m = new space
   ({
@@ -8189,7 +8189,7 @@ function determinant( test )
   test.identical( m.dims,[ 2,2 ] );
   test.identical( m._stridesEffective,[ 2,1 ] );
 
-  test.description = 'matrix with zero determinant'; /* */
+  test.case = 'matrix with zero determinant'; /* */
 
   var buffer = new Int32Array
   ([
@@ -8212,7 +8212,7 @@ function determinant( test )
 
   /* */
 
-  test.description = 'matrix with negative determinant'; /* */
+  test.case = 'matrix with negative determinant'; /* */
 
   var m = new space
   ({
@@ -8229,7 +8229,7 @@ function determinant( test )
   var d = m.determinant();
   test.identical( d,-8 );
 
-  test.description = '3x3 matrix with -30 determinant' //
+  test.case = '3x3 matrix with -30 determinant' //
 
   var buffer = new Int32Array
   ([
@@ -8248,7 +8248,7 @@ function determinant( test )
 
   test.identical( d,-30 );
 
-  test.description = '2x2 matrix with -2 determinant, column first' //
+  test.case = '2x2 matrix with -2 determinant, column first' //
 
   var m = new space
   ({
@@ -8260,7 +8260,7 @@ function determinant( test )
   var d = m.determinant();
   test.identical( d,-2 );
 
-    test.description = '2x2 matrix with -2 determinant, row first' //
+    test.case = '2x2 matrix with -2 determinant, row first' //
 
   var m = new space
   ({
@@ -8272,7 +8272,7 @@ function determinant( test )
   var d = m.determinant();
   test.identical( d,-2 );
 
-  test.description = '3x3 matrix' //
+  test.case = '3x3 matrix' //
 
   var buffer = new Int32Array
   ([
@@ -8309,7 +8309,7 @@ function determinant( test )
 function triangulate( test )
 {
 
-  test.description = 'triangulateGausian simple1'; /* */
+  test.case = 'triangulateGausian simple1'; /* */
 
   var m = space.make([ 3,4 ]).copy
   ([
@@ -8325,10 +8325,12 @@ function triangulate( test )
     +0,+0,+2,-4,
   ]);
 
+  test.equivalent( 1,1 );
+
   m.triangulateGausian();
   test.equivalent( m,expected );
 
-  test.description = 'triangulateGausianNormal simple1'; /* */
+  test.case = 'triangulateGausianNormal simple1'; /* */
 
   var m = space.make([ 3,4 ]).copy
   ([
@@ -8347,7 +8349,7 @@ function triangulate( test )
   m.triangulateGausianNormal();
   test.equivalent( m,expected );
 
-  test.description = 'triangulateGausianNormal simple2'; /* */
+  test.case = 'triangulateGausianNormal simple2'; /* */
 
   var m = space.make([ 3,4 ]).copy
   ([
@@ -8356,6 +8358,7 @@ function triangulate( test )
     -2,-11,-11,1,
   ]);
 
+  debugger;
   var expected = space.make([ 3,4 ]).copy
   ([
     +1,-2,+2,+1.0,
@@ -8364,9 +8367,11 @@ function triangulate( test )
   ]);
 
   m.triangulateGausianNormal();
+  debugger;
   test.equivalent( m,expected );
+  debugger;
 
-  test.description = 'triangulateGausian simple2'; /* */
+  test.case = 'triangulateGausian simple2'; /* */
 
   var m = space.make([ 3,4 ]).copy
   ([
@@ -8385,7 +8390,7 @@ function triangulate( test )
   m.triangulateGausian();
   test.equivalent( m,expected );
 
-  test.description = 'triangulateGausian with y argument'; /* */
+  test.case = 'triangulateGausian with y argument'; /* */
 
   var mexpected = space.make([ 3,3 ]).copy
   ([
@@ -8409,7 +8414,7 @@ function triangulate( test )
   test.equivalent( m,mexpected );
   test.equivalent( y,yexpected );
 
-  test.description = 'triangulateGausianNormal with y argument'; /* */
+  test.case = 'triangulateGausianNormal with y argument'; /* */
 
   var mexpected = space.make([ 3,3 ]).copy
   ([
@@ -8430,10 +8435,10 @@ function triangulate( test )
   var y = space.makeCol([ 1,1,1 ]);
 
   m.triangulateGausianNormal( y );
-  test.equivalent( m,mexpected );
-  test.equivalent( y,yexpected );
+  test.equivalent( m, mexpected );
+  test.equivalent( y, yexpected );
 
-  test.description = 'triangulateGausian with y argument'; /* */
+  test.case = 'triangulateGausian with y argument'; /* */
 
   var mexpected = space.make([ 3,3 ]).copy
   ([
@@ -8457,7 +8462,7 @@ function triangulate( test )
   test.equivalent( m,mexpected );
   test.equivalent( y,yexpected );
 
-  test.description = 'triangulateGausian ( nrow < ncol ) with y argument'; /* */
+  test.case = 'triangulateGausian ( nrow < ncol ) with y argument'; /* */
 
   var mexpected = space.make([ 4,3 ]).copy
   ([
@@ -8483,7 +8488,7 @@ function triangulate( test )
   test.equivalent( m,mexpected );
   test.equivalent( y,yexpected );
 
-  test.description = 'triangulateGausianNormal ( nrow < ncol ) with y argument'; /* */
+  test.case = 'triangulateGausianNormal ( nrow < ncol ) with y argument'; /* */
 
   var mexpected = space.make([ 4,3 ]).copy
   ([
@@ -8509,7 +8514,7 @@ function triangulate( test )
   test.equivalent( m,mexpected );
   test.equivalent( y,yexpected );
 
-  test.description = 'triangulateLu'; /* */
+  test.case = 'triangulateLu'; /* */
 
   var m = space.make([ 3,3 ]).copy
   ([
@@ -8553,7 +8558,7 @@ function triangulate( test )
   test.equivalent( l,ll );
   test.equivalent( u,uu );
 
-  test.description = 'triangulateLuNormal'; /* */
+  test.case = 'triangulateLuNormal'; /* */
 
   var m = space.make([ 3,3 ]).copy
   ([
@@ -8597,7 +8602,7 @@ function triangulate( test )
   test.equivalent( l,ll );
   test.equivalent( u,uu );
 
-  test.description = 'triangulateLu'; /* */
+  test.case = 'triangulateLu'; /* */
 
   var m = space.make([ 3,3 ]).copy
   ([
@@ -8641,7 +8646,7 @@ function triangulate( test )
   test.equivalent( l,ll );
   test.equivalent( u,uu );
 
-  test.description = 'triangulateLuNormal'; /* */
+  test.case = 'triangulateLuNormal'; /* */
 
   var m = space.make([ 3,3 ]).copy
   ([
@@ -8687,7 +8692,7 @@ function triangulate( test )
   test.equivalent( l,ll );
   test.equivalent( u,uu );
 
-  test.description = 'triangulateLu ( nrow < ncol ) with y argument'; /* */
+  test.case = 'triangulateLu ( nrow < ncol ) with y argument'; /* */
 
   var mexpected = space.make([ 4,3 ]).copy
   ([
@@ -8734,18 +8739,18 @@ function triangulate( test )
     +0,+0,+0,
   ]);
 
-  test.description = 'l and u should be';
+  test.case = 'l and u should be';
 
   test.equivalent( l,ll );
   test.equivalent( u,uu );
 
-  test.description = 'l*u should be same as original m';
+  test.case = 'l*u should be same as original m';
 
   u = u.subspace([ [ 0,3 ],all ]);
   var mul = space.mul( null,[ l,u ] );
   test.equivalent( mul,original );
 
-  test.description = 'triangulateLuNormal ( nrow < ncol )'; /* */
+  test.case = 'triangulateLuNormal ( nrow < ncol )'; /* */
 
   var mexpected = space.make([ 4,3 ]).copy
   ([
@@ -8790,18 +8795,18 @@ function triangulate( test )
     +0,+0,+0,
   ]);
 
-  test.description = 'l and u should be';
+  test.case = 'l and u should be';
 
   test.equivalent( l,ll );
   test.equivalent( u,uu );
 
-  test.description = 'l*u should be same as original m';
+  test.case = 'l*u should be same as original m';
 
   u = u.subspace([ [ 0,3 ],all ]);
   var mul = space.mul( null,[ l,u ] );
   test.equivalent( mul,original );
 
-  test.description = 'triangulateLu ( nrow > ncol )'; /* */
+  test.case = 'triangulateLu ( nrow > ncol )'; /* */
 
   var mexpected = space.make([ 2,3 ]).copy
   ([
@@ -8838,18 +8843,18 @@ function triangulate( test )
     +0,+2,-4,
   ]);
 
-  test.description = 'l and u should be';
+  test.case = 'l and u should be';
 
   test.equivalent( l,ll );
   test.equivalent( u,uu );
 
-  test.description = 'l*u should be same as original m';
+  test.case = 'l*u should be same as original m';
 
   u = u.expand([ [ 0,1 ],null ]);
   var mul = space.mul( null,[ l,u ] );
   test.equivalent( mul,original );
 
-  test.description = 'triangulateLuNormal ( nrow > ncol )'; /* */
+  test.case = 'triangulateLuNormal ( nrow > ncol )'; /* */
 
   var mexpected = space.make([ 2,3 ]).copy
   ([
@@ -8886,12 +8891,12 @@ function triangulate( test )
     +0,+1,-2,
   ]);
 
-  test.description = 'l and u should be';
+  test.case = 'l and u should be';
 
   test.equivalent( l,ll );
   test.equivalent( u,uu );
 
-  test.description = 'l*u should be same as original m';
+  test.case = 'l*u should be same as original m';
 
   u = u.expand([ [ 0,1 ],null ]);
   var mul = space.mul( null,[ l,u ] );
@@ -8899,12 +8904,14 @@ function triangulate( test )
 
 }
 
+triangulate.accuracy = [ _.accuracy * 1e+2, 1e-1 ];
+
 //
 
 function solveTriangulated( test )
 {
 
-  test.description = 'solveTriangleLower'; /* */
+  test.case = 'solveTriangleLower'; /* */
 
   var m = space.makeSquare
   ([
@@ -8928,7 +8935,7 @@ function solveTriangulated( test )
   var x = space.solveTriangleLower( null,m,y );
   test.equivalent( x,expected );
 
-  test.description = 'solveTriangleUpper'; /* */
+  test.case = 'solveTriangleUpper'; /* */
 
   var m = space.makeSquare
   ([
@@ -8952,7 +8959,7 @@ function solveTriangulated( test )
   var x = space.solveTriangleUpper( null,m,y );
   test.equivalent( x,expected );
 
-  test.description = 'solveTriangleLowerNormal'; /* */
+  test.case = 'solveTriangleLowerNormal'; /* */
 
   var m = space.makeSquare
   ([
@@ -8976,7 +8983,7 @@ function solveTriangulated( test )
   var x = space.solveTriangleLowerNormal( null,m,y );
   test.equivalent( x,expected );
 
-  test.description = 'solveTriangleUpperNormal'; /* */
+  test.case = 'solveTriangleUpperNormal'; /* */
 
   var m = space.makeSquare
   ([
@@ -9002,7 +9009,7 @@ function solveTriangulated( test )
 
   test.equivalent( x,expected );
 
-  test.description = 'solveWithTriangles u'; /* */
+  test.case = 'solveWithTriangles u'; /* */
 
   var m = space.makeSquare
   ([
@@ -9017,7 +9024,7 @@ function solveTriangulated( test )
 
   test.equivalent( x,expected );
 
-  test.description = 'solveWithTriangles u'; /* */
+  test.case = 'solveWithTriangles u'; /* */
 
   var m = space.makeSquare
   ([
@@ -9032,7 +9039,7 @@ function solveTriangulated( test )
 
   test.equivalent( x,expected );
 
-  test.description = 'system triangulateLu'; /* */
+  test.case = 'system triangulateLu'; /* */
 
   var expected = space.makeSquare
   ([
@@ -9052,7 +9059,7 @@ function solveTriangulated( test )
   logger.log( 'm',m );
   test.identical( m,expected )
 
-  test.description = 'system solve'; /* */
+  test.case = 'system solve'; /* */
 
   var m = space.makeSquare
   ([
@@ -9076,7 +9083,7 @@ function solveTriangulated( test )
 function _solveSimple( test,rname )
 {
 
-  test.description = rname + ' . y array . solve 3x3 system'; //
+  test.case = rname + ' . y array . solve 3x3 system'; //
 
   var m = space.makeSquare
   ([
@@ -9101,7 +9108,7 @@ function _solveSimple( test,rname )
   test.identical( y2,oy );
 
   // return;
-  test.description = rname + ' . y vector . solve 3x3 system'; //
+  test.case = rname + ' . y vector . solve 3x3 system'; //
 
   var m = space.makeSquare
   ([
@@ -9125,7 +9132,7 @@ function _solveSimple( test,rname )
   var y2 = space.mul( null,[ om,x ] );
   test.identical( y2,y );
 
-  test.description = rname + ' . y space . solve 3x3 system'; //
+  test.case = rname + ' . y space . solve 3x3 system'; //
 
   var m = space.makeSquare
   ([
@@ -9149,7 +9156,7 @@ function _solveSimple( test,rname )
   var y2 = space.mul( null,[ om,x ] );
   test.identical( y2,y );
 
-  test.description = rname + ' . x array . solve 3x3 system'; //
+  test.case = rname + ' . x array . solve 3x3 system'; //
 
   var m = space.makeSquare
   ([
@@ -9175,7 +9182,7 @@ function _solveSimple( test,rname )
   var y2 = space.mul( null,[ om,x ] );
   test.identical( y2,[ 7,4,-10 ] );
 
-  test.description = rname + ' . x vector . solve 3x3 system'; //
+  test.case = rname + ' . x vector . solve 3x3 system'; //
 
   var m = space.makeSquare
   ([
@@ -9201,7 +9208,7 @@ function _solveSimple( test,rname )
   var y2 = space.mul( null,[ om,x ] );
   test.identical( y2,vec([ 7,4,-10 ]) );
 
-  test.description = rname + ' . x space . solve 3x3 system'; //
+  test.case = rname + ' . x space . solve 3x3 system'; //
 
   var m = space.makeSquare
   ([
@@ -9227,7 +9234,7 @@ function _solveSimple( test,rname )
   var y2 = space.mul( null,[ om,x ] );
   test.identical( y2,space.makeCol([ 7,4,-10 ]) );
 
-  test.description = rname + ' . y 3x2 space . solve 3x3 system'; //
+  test.case = rname + ' . y 3x2 space . solve 3x3 system'; //
 
   var m = space.makeSquare
   ([
@@ -9263,7 +9270,7 @@ function _solveSimple( test,rname )
   var y2 = space.mul( null,[ om,x ] );
   test.identical( y2,y );
 
-  test.description = rname + ' . y 0x2 space . solve 0x0 system'; //
+  test.case = rname + ' . y 0x2 space . solve 0x0 system'; //
 
   var m = space.makeSquare([]);
   m.toStr();
@@ -9307,7 +9314,7 @@ function solveSimple( test,rname )
 function _solveComplicated( test,rname )
 {
 
-  test.description = rname + ' . y array . solve 3x3 system1'; //
+  test.case = rname + ' . y array . solve 3x3 system1'; //
 
   var m = space.makeSquare
   ([
@@ -9350,7 +9357,7 @@ function solveComplicated( test,rname )
 function solveWithPivoting( test )
 {
 
-  test.description = 'triangulateGausianPivoting 3x4'; /* */
+  test.case = 'triangulateGausianPivoting 3x4'; /* */
 
   var m = space.make([ 3,4 ]).copy
   ([
@@ -9403,7 +9410,7 @@ function solveWithPivoting( test )
   var ey = space.makeCol([ 1,1,0 ]);
   test.identical( y,ey );
 
-  test.description = 'triangulateGausianPivoting'; /* */
+  test.case = 'triangulateGausianPivoting'; /* */
 
   var y = space.makeCol([ 1,2,3 ]);
   var yoriginal = y.clone();
@@ -9517,21 +9524,21 @@ function solveGeneral( test )
 
   function check( m, y, r )
   {
-    var description = test.description;
+    var description = test.case;
 
     for( var d = 0 ; d < m.dims[ 1 ] ; d++ )
     {
-      test.description = description + ' . ' + 'check direction ' + d;
+      test.case = description + ' . ' + 'check direction ' + d;
       checkDimension( m,y,r,d,0 );
       checkDimension( m,y,r,d,+10 );
       checkDimension( m,y,r,d,-10 );
       checkNull( m,r,d );
     }
 
-    test.description = description;
+    test.case = description;
   }
 
-  test.description = 'simple without pivoting'; /* */
+  test.case = 'simple without pivoting'; /* */
 
   var re =
   {
@@ -9575,7 +9582,7 @@ function solveGeneral( test )
 
   check( mo,yo,r );
 
-  test.description = 'simple with pivoting'; /* */
+  test.case = 'simple with pivoting'; /* */
 
   // var re =
   // {
@@ -9639,7 +9646,7 @@ function solveGeneral( test )
 
   check( mo,yo,r );
 
-  test.description = 'simple2'; /* */
+  test.case = 'simple2'; /* */
 
   var expected =
   {
@@ -9673,7 +9680,7 @@ function solveGeneral( test )
 
   check( mo,y,r );
 
-  test.description = 'simple3'; /* */
+  test.case = 'simple3'; /* */
 
   var expected =
   {
@@ -9707,7 +9714,7 @@ function solveGeneral( test )
 
   check( mo,y,r );
 
-  test.description = 'missing rows'; /* */
+  test.case = 'missing rows'; /* */
 
   var expected =
   {
@@ -9741,7 +9748,7 @@ function solveGeneral( test )
 
   check( mo,y,r );
 
-  test.description = 'complicated system'; /* */
+  test.case = 'complicated system'; /* */
 
   var expected =
   {
@@ -9777,7 +9784,7 @@ function solveGeneral( test )
 
   check( mo,y,r );
 
-  test.description = 'missing rows'; /* */
+  test.case = 'missing rows'; /* */
 
   var expected =
   {
@@ -9814,12 +9821,14 @@ function solveGeneral( test )
 
 }
 
+solveGeneral.accuracy = [ _.accuracy * 1e+2, 1e-1 ];
+
 //
 
 function invert( test )
 {
 
-  test.description = 'invertingClone'; /* */
+  test.case = 'invertingClone'; /* */
 
   var expected = space.make([ 3,3 ]).copy
   ([
@@ -9841,7 +9850,7 @@ function invert( test )
   test.equivalent( inverted,expected );
   test.equivalent( m.determinant(),determinant );
 
-  test.description = 'invertingClone'; /* */
+  test.case = 'invertingClone'; /* */
 
   var expected = space.make([ 3,3 ]).copy
   ([
@@ -9863,7 +9872,7 @@ function invert( test )
   test.equivalent( inverted,expected );
   test.equivalent( m.determinant(),determinant );
 
-  test.description = 'invertingClone'; /* */
+  test.case = 'invertingClone'; /* */
 
   var expected = space.make([ 3,3 ]).copy
   ([
@@ -9885,7 +9894,7 @@ function invert( test )
   test.equivalent( inverted,expected ); debugger;
   test.equivalent( m.determinant(),determinant );
 
-  test.description = 'invert'; /* */
+  test.case = 'invert'; /* */
 
   var expected = space.make([ 3,3 ]).copy
   ([
@@ -9909,6 +9918,8 @@ function invert( test )
   test.equivalent( m.determinant(),1/determinant );
 
 }
+
+invert.accuracy = [ _.accuracy * 1e+2, 1e-1 ];
 
 //
 
@@ -9939,7 +9950,7 @@ function polynomExactFor( test )
 
   }
 
-  test.description = 'polynomExactFor for E( n )'; /* */
+  test.case = 'polynomExactFor for E( n )'; /* */
 
   /*
     1, 2, 6, 10, 15, 21, 28, 36
@@ -9967,7 +9978,7 @@ function polynomExactFor( test )
   test.equivalent( polynom,[ 0,-0.5,+0.5 ] );
   checkPolynom( polynom , f );
 
-  test.description = 'polynomExactFor for E( n*n )'; /* */
+  test.case = 'polynomExactFor for E( n*n )'; /* */
 
   f = function( x )
   {
@@ -9988,7 +9999,7 @@ function polynomExactFor( test )
   test.equivalent( polynom,[ 0, 1/6, -1/2, 1/3 ] );
   checkPolynom( polynom , f );
 
-  test.description = 'polynomExactFor for parabola'; /* */
+  test.case = 'polynomExactFor for parabola'; /* */
 
   var points = [ [ -2,-1 ],[ 0,2 ],[ 2,3 ] ];
 
@@ -10004,12 +10015,14 @@ function polynomExactFor( test )
 
 }
 
+polynomExactFor.accuracy = [ _.accuracy * 1e+2, 1e-1 ];
+
 //
 
 function polynomClosestFor( test )
 {
 
-  test.description = 'polynomClosestFor for E( i )'; /* */
+  test.case = 'polynomClosestFor for E( i )'; /* */
 
   var polynom = space.polynomClosestFor
   ({
@@ -10031,7 +10044,7 @@ var Self =
 
   name : 'Math.Space.test',
   silencing : 1,
-
+  enabled : 1,
   // routine : 'construct',
   // verbosity : 7,
 

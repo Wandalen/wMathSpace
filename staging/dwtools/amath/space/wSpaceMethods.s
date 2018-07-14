@@ -2176,7 +2176,7 @@ function _solveWithGaussJordan( o )
     var row1 = o.m.rowVectorGet( r1 );
     var scaler1 = row1.eGet( r1 );
 
-    if( abs( scaler1 ) < this.EPS )
+    if( abs( scaler1 ) < this.accuracy )
     continue;
 
     vector.mulScalar( row1, 1/scaler1 );
@@ -2524,9 +2524,9 @@ function solveGeneral( o )
   for( var r = 0 ; r < nrow ; r++ )
   {
     var row = o.m.rowVectorGet( r );
-    if( abs( row.eGet( r ) ) < this.EPS )
+    if( abs( row.eGet( r ) ) < this.accuracy )
     {
-      if( abs( o.x.atomGet([ r,0 ]) ) < this.EPS )
+      if( abs( o.x.atomGet([ r,0 ]) ) < this.accuracy )
       {
         result.nsolutions = Infinity;
         var termCol = result.kernel.colVectorGet( r );
