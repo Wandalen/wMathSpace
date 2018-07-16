@@ -1,6 +1,6 @@
 (function _wSpaceMethods_s_() {
 
-'use strict';
+'use strict'; /**/
 
 var _ = _global_.wTools;
 var vector = _.vector;
