@@ -1,6 +1,6 @@
 {
   "name": "wmathspace",
-  "version": "0.3.21",
+  "version": "0.3.22",
   "engine": "node >= 6.0.0",
   "description": "Collection of routines for matrix math",
   "author": "Kostiantyn Wandalen <wanalen@willbe.so>",
