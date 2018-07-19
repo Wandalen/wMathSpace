@@ -13,7 +13,7 @@ var sin = Math.sin;
 var cos = Math.cos;
 var sqrt = Math.sqrt;
 var sqr = _.sqr;
-var arraySlice = Array.prototype.slice;
+var longSlice = Array.prototype.slice;
 
 var Parent = null;
 var Self = _global_.wSpace;
@@ -30,7 +30,7 @@ function make( dims )
   var proto = this ? this.Self.prototype : Self.prototype;
 
   _.assert( !this.instanceIs() );
-  _.assert( _.arrayLike( dims ) || _.numberIs( dims ) );
+  _.assert( _.longIs( dims ) || _.numberIs( dims ) );
   _.assert( arguments.length === 1,'make expects single argument array (-dims-)' );
 
   if( _.numberIs( dims ) )
@@ -59,12 +59,12 @@ function makeSquare( buffer )
   var proto = this ? this.Self.prototype : Self.prototype;
 
   var length = buffer;
-  if( _.arrayLike( buffer ) )
+  if( _.longIs( buffer ) )
   length = Math.sqrt( buffer.length );
 
   _.assert( !this.instanceIs() );
   _.assert( _.prototypeIs( this ) || _.constructorIs( this ) );
-  _.assert( _.arrayLike( buffer ) || _.numberIs( buffer ) );
+  _.assert( _.longIs( buffer ) || _.numberIs( buffer ) );
   _.assert( _.numberIsInt( length ),'makeSquare expects square buffer' );
   _.assert( arguments.length === 1, 'expects single argument' );
 
@@ -99,7 +99,7 @@ function makeZero( dims )
   var proto = this ? this.Self.prototype : Self.prototype;
 
   _.assert( !this.instanceIs() );
-  _.assert( _.arrayLike( dims ) || _.numberIs( dims ) );
+  _.assert( _.longIs( dims ) || _.numberIs( dims ) );
   _.assert( arguments.length === 1, 'expects single argument' );
 
   if( _.numberIs( dims ) )
@@ -128,7 +128,7 @@ function makeIdentity( dims )
   var proto = this ? this.Self.prototype : Self.prototype;
 
   _.assert( !this.instanceIs() );
-  _.assert( _.arrayLike( dims ) || _.numberIs( dims ) );
+  _.assert( _.longIs( dims ) || _.numberIs( dims ) );
   _.assert( arguments.length === 1, 'expects single argument' );
 
   if( _.numberIs( dims ) )
@@ -256,7 +256,7 @@ function makeSimilar( m , dims )
   {
 
     var atomsPerSpace = Self.atomsPerSpaceForDimensions( dims );
-    var buffer = _.arrayMakeSimilarZeroed( m.buffer,atomsPerSpace );
+    var buffer = _.longMakeSimilarZeroed( m.buffer,atomsPerSpace );
     /* could possibly be not zeroed */
 
     result = new m.constructor
@@ -267,11 +267,11 @@ function makeSimilar( m , dims )
     });
 
   }
-  else if( _.arrayLike( m ) )
+  else if( _.longIs( m ) )
   {
 
     _.assert( dims[ 1 ] === 1 );
-    result = _.arrayMakeSimilar( m, dims[ 0 ] );
+    result = _.longMakeSimilar( m, dims[ 0 ] );
 
   }
   else if( _.vectorIs( m ) )
@@ -293,7 +293,7 @@ function makeLine( o )
   var proto = this ? this.Self.prototype : Self.prototype;
   var strides = null;
   var offset = 0;
-  var length = ( _.arrayLike( o.buffer ) || _.vectorIs( o.buffer ) ) ? o.buffer.length : o.buffer;
+  var length = ( _.longIs( o.buffer ) || _.vectorIs( o.buffer ) ) ? o.buffer.length : o.buffer;
   var dims = null;
 
   _.assert( !this.instanceIs() );
@@ -2093,7 +2093,7 @@ function _solveOptions( args )
 
   if( o.x === null )
   {
-    if( _.arrayLike( o.y ) )
+    if( _.longIs( o.y ) )
     o.x = o.y.slice();
     else
     o.x = o.y.clone();

@@ -49,7 +49,7 @@ var _ = _global_.wTools;
 var abs = Math.abs;
 var min = Math.min;
 var max = Math.max;
-var arraySlice = Array.prototype.slice;
+var longSlice = Array.prototype.slice;
 var sqrt = Math.sqrt;
 var sqr = _.sqr;
 var vector = _.vector;
@@ -107,7 +107,7 @@ function init( o )
 
       if( o.atomsPerElement !== undefined )
       {
-        _.assert( _.arrayLike( o.buffer ) );
+        _.assert( _.longIs( o.buffer ) );
         // _.assert( !o.dims );
         if( !o.offset )
         o.offset = 0;
@@ -124,7 +124,7 @@ function init( o )
       }
 
       // if( o.dims === undefined && o.strides === undefined )
-      // if( _.arrayLike( o.buffer ) )
+      // if( _.longIs( o.buffer ) )
       // {
       //   if( !o.offset )
       //   o.offset = 0;
@@ -171,7 +171,7 @@ function _traverseAct( it )
 
   /* */
 
-  if( _.arrayLike( src ) )
+  if( _.longIs( src ) )
   {
     dst.copyFromBuffer( src );
     return dst;
@@ -224,14 +224,14 @@ function _traverseAct( it )
     }
     else if( src.buffer && !dst.buffer )
     {
-      dst.buffer = _.arrayMakeSimilar( src.buffer , src.atomsPerSpace );
+      dst.buffer = _.longMakeSimilar( src.buffer , src.atomsPerSpace );
       dst.offset = 0;
       dst.strides = null;
       dst[ stridesEffectiveSymbol ] = dst.stridesForDimensions( src.dims,!!dst.inputTransposing );
     }
     else if( src.buffer && dst.atomsPerSpace !== src.atomsPerSpace )
     {
-      dst.buffer = _.arrayMakeSimilar( src.buffer , src.atomsPerSpace );
+      dst.buffer = _.longMakeSimilar( src.buffer , src.atomsPerSpace );
       dst.offset = 0;
       dst.strides = null;
       dst[ stridesEffectiveSymbol ] = dst.stridesForDimensions( src.dims,!!dst.inputTransposing );
@@ -359,7 +359,7 @@ function clone()
   var dst = _.Copyable.prototype.clone.call( self );
 
   if( dst.buffer === self.buffer )
-  dst[ bufferSymbol ] = _.arraySlice( dst.buffer );
+  dst[ bufferSymbol ] = _.longSlice( dst.buffer );
 
   return dst;
 }
@@ -385,7 +385,7 @@ function copyTo( dst,src )
   {
 
     src = vector.from( src );
-    if( _.arrayLike( dst ) )
+    if( _.longIs( dst ) )
     dst = vector.from( dst );
 
     if( _.vectorIs( dst ) )
@@ -414,7 +414,7 @@ function copyTo( dst,src )
     {
       dst.eSet( it.indexFlat , it.atom );
     });
-    else if( _.arrayLike( dst ) )
+    else if( _.longIs( dst ) )
     src.atomEach( function( it )
     {
       dst[ it.indexFlat ] = it.atom;
@@ -435,7 +435,7 @@ function extractNormalized()
 
   _.assert( arguments.length === 0 );
 
-  result.buffer = _.arrayMakeSimilar( self.buffer , self.atomsPerSpace );
+  result.buffer = _.longMakeSimilar( self.buffer , self.atomsPerSpace );
   result.offset = 0;
   result.strides = self.stridesForDimensions( self.dims,self.inputTransposing );
 
@@ -663,11 +663,11 @@ function _stridesSet( src )
 {
   var self = this;
 
-  // _.assert( _.arrayLike( src ) || _.numberIs( src ) || src === null );
-  _.assert( _.arrayLike( src ) || src === null );
+  // _.assert( _.longIs( src ) || _.numberIs( src ) || src === null );
+  _.assert( _.longIs( src ) || src === null );
 
-  if( _.arrayLike( src ) )
-  src = _.arraySlice( src );
+  if( _.longIs( src ) )
+  src = _.longSlice( src );
 
   self[ stridesSymbol ] = src;
 
@@ -779,7 +779,7 @@ function _bufferSet( src )
   if( _.numberIs( src ) )
   src = this.array.makeArrayOfLength([ src ]);
 
-  _.assert( _.arrayLike( src ) || src === null );
+  _.assert( _.longIs( src ) || src === null );
 
   self[ bufferSymbol ] = src;
 
@@ -812,7 +812,7 @@ function _bufferCopy( src )
   self._changeBegin();
 
   _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.arrayLike( src ) );
+  _.assert( _.longIs( src ) );
   _.assert( self.atomsPerSpace === src.length,'space',self.dims,'should have',self.atomsPerSpace,'atoms, but got',src.length );
 
   // /*
@@ -850,10 +850,10 @@ function bufferCopyTo( dst )
   var atomsPerSpace = self.atomsPerSpace;
 
   if( !dst )
-  dst = _.arrayMakeSimilar( self.buffer, atomsPerSpace );
+  dst = _.longMakeSimilar( self.buffer, atomsPerSpace );
 
   _.assert( arguments.length === 0 || arguments.length === 1 );
-  _.assert( _.arrayLike( dst ) );
+  _.assert( _.longIs( dst ) );
   _.assert( atomsPerSpace === dst.length,'space',self.dims,'should have',atomsPerSpace,'atoms, but got',dst.length );
 
   throw _.err( 'not tested' );
@@ -958,7 +958,7 @@ function _adjustAct()
 
   /* dims */
 
-  _.assert( self.dims === null || _.arrayLike( self.dims ) );
+  _.assert( self.dims === null || _.longIs( self.dims ) );
 
   // if( self.buffer && self.buffer.length === 0 && self.offset === 0 && self.inputTransposing === 0 )
   // debugger;
@@ -974,7 +974,7 @@ function _adjustAct()
       // _.assert( self._dimsWas.length === self.breadth.length+1 );
       _.assert( _.arrayIs( self._dimsWas ) );
       // _.assert( _.arrayIs( self.breadth ) );
-      _.assert( _.arrayLike( self.buffer ) );
+      _.assert( _.longIs( self.buffer ) );
       _.assert( self.offset >= 0 );
 
       var dims = self._dimsWas.slice();
@@ -997,7 +997,7 @@ function _adjustAct()
       _.assert( 0,'Cant deduce dims from strides' );
       // debugger;
       // // _.assert( 0,'not tested' );
-      // _.assert( _.arrayLike( self.strides ) );
+      // _.assert( _.longIs( self.strides ) );
       // _.assert( self.strides[ 0 ] > 1,'not tested' );
       // var dims = self[ dimsSymbol ] = self.strides.slice();
       // dims.splice( 0,1 );
@@ -1005,7 +1005,7 @@ function _adjustAct()
     }
     else
     {
-      _.assert( _.arrayLike( self.buffer ),'expects buffer' );
+      _.assert( _.longIs( self.buffer ),'expects buffer' );
       if( self.buffer.length - self.offset > 0 )
       {
         self[ dimsSymbol ] = [ self.buffer.length - self.offset,1 ];
@@ -1107,9 +1107,9 @@ function _adjustVerify()
 {
   var self = this;
 
-  _.assert( _.arrayLike( self.buffer ),'space needs buffer' );
-  _.assert( _.arrayLike( self.strides ) || self.strides === null );
-  // _.assert( _.arrayLike( self.strides ) || _.numberIs( self.strides ) || self.strides === null );
+  _.assert( _.longIs( self.buffer ),'space needs buffer' );
+  _.assert( _.longIs( self.strides ) || self.strides === null );
+  // _.assert( _.longIs( self.strides ) || _.numberIs( self.strides ) || self.strides === null );
   _.assert( _.numberIs( self.offset ),'space needs offset' );
 
 }
@@ -1129,10 +1129,10 @@ function _adjustValidate()
   _.assert( self.atomsPerElement >= 0 );
   _.assert( self.strideOfElement >= 0 );
 
-  _.assert( _.arrayLike( self.buffer ) );
-  _.assert( _.arrayLike( self.breadth ) );
+  _.assert( _.longIs( self.buffer ) );
+  _.assert( _.longIs( self.breadth ) );
 
-  _.assert( _.arrayLike( self._stridesEffective ) );
+  _.assert( _.longIs( self._stridesEffective ) );
   _.assert( _.numbersAreInt( self._stridesEffective ) );
   _.assert( _.numbersArePositive( self._stridesEffective ) );
   _.assert( self._stridesEffective.length >= 2 );
@@ -1164,7 +1164,7 @@ function _adjustValidate()
 //
 //   _.assert( arguments.length === 3, 'expects exactly three argument' );
 //   _.assert( _.arrayIs( breadth ) );
-//   _.assert( _.arrayLike( buffer ) );
+//   _.assert( _.longIs( buffer ) );
 //   _.assert( offset >= 0 );
 //
 //   var ape = _.avector.reduceToProduct( breadth );
@@ -1257,7 +1257,7 @@ function _dimsSet( src )
     // if( src[ 1 ] === Infinity )
     // debugger;
     // if( src[ 1 ] === Infinity )
-    // self[ stridesEffectiveSymbol ] = _.arraySet( _.arraySlice( self[ stridesEffectiveSymbol ] ),1,Infinity );
+    // self[ stridesEffectiveSymbol ] = _.arraySet( _.longSlice( self[ stridesEffectiveSymbol ] ),1,Infinity );
 
   }
   else
@@ -1321,7 +1321,7 @@ function expand( expand )
 
   var atomsPerSpace = self.atomsPerSpaceForDimensions( dims );
   var strides = self.stridesForDimensions( dims,0 );
-  var buffer = _.arrayMakeSimilarZeroed( self.buffer,atomsPerSpace );
+  var buffer = _.longMakeSimilarZeroed( self.buffer,atomsPerSpace );
 
   /* move data */
 
@@ -1704,7 +1704,7 @@ function _bufferFrom( src )
   var dst = src;
 
   _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.arrayLike( src ) || _.vectorIs( src ) );
+  _.assert( _.longIs( src ) || _.vectorIs( src ) );
 
   if( !_.constructorIsBuffer( proto.array.ArrayType ) )
   return dst;
@@ -1731,7 +1731,7 @@ function bufferNormalize()
 
   _.assert( arguments.length === 0 );
 
-  var buffer = _.arrayMakeSimilar( self.buffer,self.atomsPerSpace );
+  var buffer = _.longMakeSimilar( self.buffer,self.atomsPerSpace );
 
   var i = 0;
   self.atomEach( function( it )
@@ -2317,7 +2317,7 @@ function atomWiseZip( onAtom,dst,srcs )
 function elementEach( onElement )
 {
   var self = this;
-  var args = _.arraySlice( arguments,1 );
+  var args = _.longSlice( arguments,1 );
 
   debugger;
   _.assert( 0,'not tested' );
@@ -2340,7 +2340,7 @@ function elementEach( onElement )
 function elementsZip( onEach,space )
 {
   var self = this;
-  var args = _.arraySlice( arguments,2 );
+  var args = _.longSlice( arguments,2 );
 
   args.unshift( null );
   args.unshift( null );
@@ -2367,14 +2367,14 @@ function _lineEachCollecting( o )
 
   _.assert( self.dims.length === 2 );
   _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( _.arrayLike( o.args ) );
+  _.assert( _.longIs( o.args ) );
   _.assert( o.length >= 0 );
   _.assert( _.boolLike( o.returningNumber ) );
   // _.assert( _.boolIs( o.onEach.returningSelf ) && _.boolIs( o.onEach.returningNew ) && _.boolIs( o.onEach.returningNumber ) )
 
   /* */
 
-  o.args = _.arraySlice( o.args );
+  o.args = _.longSlice( o.args );
 
   if( !o.args[ 0 ] )
   {
@@ -2561,7 +2561,7 @@ function atomsGet( range )
 {
   var self = this;
 
-  _.assert( _.arrayLike( range ) );
+  _.assert( _.longIs( range ) );
   _.assert( range.length === 2 );
   _.assert( self.breadth.length === 1 );
   _.assert( arguments.length === 1, 'expects single argument' );
@@ -2643,7 +2643,7 @@ function elementsInRangeGet( range )
   var self = this
   var result;
 
-  _.assert( _.arrayLike( range ) );
+  _.assert( _.longIs( range ) );
   _.assert( range.length === 2 );
   _.assert( self.breadth.length === 1 );
   _.assert( arguments.length === 1, 'expects single argument' );

@@ -50,7 +50,7 @@ function declareElementsZipRoutine( routine,rname )
   Proto[ name ] = function()
   {
     var self = this;
-    var args = _.arraySlice( arguments );
+    var args = _.longSlice( arguments );
     args.unshift( routine );
 
     debugger;
@@ -314,13 +314,13 @@ function declareAtomWiseHomogeneousRoutine( routine,name )
     if( _.instanceIs( this ) )
     {
       dst = this;
-      args = _.arraySlice( arguments,0 );
+      args = _.longSlice( arguments,0 );
       args.unshift( dst );
     }
     else
     {
       dst = arguments[ 0 ];
-      args = _.arraySlice( arguments,0 );
+      args = _.longSlice( arguments,0 );
     }
 
     var result = self.Self.atomWiseHomogeneous
@@ -346,13 +346,13 @@ function declareAtomWiseHomogeneousRoutine( routine,name )
     if( _.instanceIs( this ) )
     {
       dst = this;
-      args = _.arraySlice( arguments,0 );
+      args = _.longSlice( arguments,0 );
       args.unshift( dst );
     }
     else
     {
       dst = arguments[ 0 ];
-      args = _.arraySlice( arguments,0 );
+      args = _.longSlice( arguments,0 );
     }
 
     var result = self.Self.atomWiseHomogeneous
