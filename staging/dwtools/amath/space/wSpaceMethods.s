@@ -3310,7 +3310,7 @@ zip
 // define class
 // --
 
-var Proto =
+var Extend =
 {
 
   // make
@@ -3338,7 +3338,6 @@ var Proto =
   makeRow : makeRow,
   makeRowZeroed : makeRowZeroed,
 
-
   // convert
 
   convertToClass : convertToClass,
@@ -3357,7 +3356,6 @@ var Proto =
 
   fromEuler : fromEuler,
 
-
   // borrow
 
   _tempBorrow : _tempBorrow,
@@ -3365,7 +3363,6 @@ var Proto =
   tempBorrow1 : tempBorrow1,
   tempBorrow2 : tempBorrow2,
   tempBorrow3 : tempBorrow3,
-
 
   // mul
 
@@ -3375,7 +3372,6 @@ var Proto =
   mulLeft : mulLeft,
   mulRight : mulRight,
 
-
   // partial accessors
 
   zero : zero,
@@ -3384,7 +3380,6 @@ var Proto =
   diagonalVectorGet : diagonalVectorGet,
   triangleLowerSet : triangleLowerSet,
   triangleUpperSet : triangleUpperSet,
-
 
   // transformer
 
@@ -3402,7 +3397,6 @@ var Proto =
   scaleAroundSet : scaleAroundSet,
   scaleApply : scaleApply,
 
-
   // triangulator
 
   _triangulateGausian : _triangulateGausian,
@@ -3415,7 +3409,6 @@ var Proto =
   triangulateLuPivoting : triangulateLuPivoting,
 
   _pivotRook : _pivotRook,
-
 
   // solver
 
@@ -3449,7 +3442,6 @@ var Proto =
   normalProjectionMatrixMake : normalProjectionMatrixMake,
   normalProjectionMatrixGet : normalProjectionMatrixGet,
 
-
   // modeler
 
   _linearModel : _linearModel,
@@ -3457,14 +3449,12 @@ var Proto =
   polynomExactFor : polynomExactFor,
   polynomClosestFor : polynomClosestFor,
 
-
   // projector
 
   formPerspective : formPerspective,
   formFrustum : formFrustum,
   formOrthographic : formOrthographic,
   lookAt : lookAt,
-
 
   // reducer
 
@@ -3478,13 +3468,13 @@ var Proto =
 
   determinant : determinant,
 
-
   //
 
   Statics : Statics,
 
 }
 
-_.classExtend( Self,Proto );
+_.classExtend( Self, Extend );
+_.assert( Self.from === from );
 
 })();
