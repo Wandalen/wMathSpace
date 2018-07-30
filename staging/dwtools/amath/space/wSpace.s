@@ -3460,9 +3460,9 @@ _.assert( _.ArrayNameSpaces.Float32.makeArrayOfLength );
 
 //
 
-_.accessorForbid( Self.prototype,Forbids );
-_.accessorReadOnly( Self.prototype,ReadOnlyAccessors );
-_.accessor( Self.prototype,Accessors );
+_.accessorForbid( Self.prototype, Forbids );
+_.accessorReadOnly( Self.prototype, ReadOnlyAccessors );
+_.accessor( Self.prototype, Accessors );
 
 //
 
