@@ -3208,7 +3208,7 @@ function determinant()
 }
 
 // --
-// relationships
+// relations
 // --
 
 var Statics =
@@ -3476,5 +3476,7 @@ var Extend =
 
 _.classExtend( Self, Extend );
 _.assert( Self.from === from );
+_.assert( Self.mul2Matrices === mul2Matrices_static );
+_.assert( Self.prototype.mul2Matrices === mul2Matrices );
 
 })();

@@ -3041,7 +3041,7 @@ function vectorPivotBackward( vector,pivot )
 }
 
 // --
-// relationships
+// relations
 // --
 
 var offsetSymbol = Symbol.for( 'offset' );
@@ -3426,7 +3426,7 @@ var Proto =
   vectorPivotBackward : vectorPivotBackward,
 
 
-  /* relationships */
+  /* relations */
 
   constructor : Self,
   Composes : Composes,
