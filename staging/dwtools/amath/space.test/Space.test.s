@@ -10042,7 +10042,7 @@ function polynomClosestFor( test )
 var Self =
 {
 
-  name : 'Math.Space.test',
+  name : 'Tools/Math/Space',
   silencing : 1,
   enabled : 1,
   // routine : 'construct',
