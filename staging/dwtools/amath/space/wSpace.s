@@ -517,7 +517,7 @@ function _sizeOfRowStrideGet()
 
 function _sizeOfAtomGet()
 {
-  _.assert( this.buffer );
+  _.assert( !!this.buffer );
   var result = this.buffer.BYTES_PER_ELEMENT;
   _.assert( result >= 0 );
   return result;
