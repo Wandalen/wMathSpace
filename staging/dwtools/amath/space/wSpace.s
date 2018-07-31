@@ -56,7 +56,7 @@ var vector = _.vector;
 var accuracy = _.accuracy;
 var accuracySqr = _.accuracySqr;
 
-_.assert( vector,'wSpace : vector module needed' );
+_.assert( _.objectIs( vector ), 'wSpace : vector module needed' );
 
 var Parent = null;
 var Self = function wSpace( o )
@@ -155,7 +155,7 @@ function _traverseAct( it )
 
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( it.resetting !== undefined );
-  _.assert( it.dst );
+  _.assert( !!it.dst );
   // _.assert( it.dst._changeBegin );
 
   var dst = it.dst;
@@ -969,8 +969,8 @@ function _adjustAct()
     {
       // self[ dimsSymbol ] = self._dimsFromDimsWithoutLength( self.breadth, self.buffer, self.offset );
 
-      // _.assert( self.breadth );
-      _.assert( self._dimsWas );
+      // _.assert( _.arrayIs( self.breadth ) );
+      _.assert( _.arrayIs( self._dimsWas ) );
       // _.assert( self._dimsWas.length === self.breadth.length+1 );
       _.assert( _.arrayIs( self._dimsWas ) );
       // _.assert( _.arrayIs( self.breadth ) );
@@ -1022,7 +1022,7 @@ function _adjustAct()
     }
   }
 
-  _.assert( self.dims );
+  _.assert( _.arrayIs( self.dims ) );
 
   self._dimsWas = self.dims.slice();
 
@@ -1120,7 +1120,7 @@ function _adjustValidate()
 {
   var self = this;
 
-  _.assert( self.breadth );
+  _.assert( _.arrayIs( self.breadth ) );
   _.assert( self.dims.length === self.breadth.length+1 );
   _.assert( _.arrayIs( self.dims ) );
   _.assert( _.arrayIs( self.breadth ) );
@@ -1994,7 +1994,7 @@ function atomWiseHomogeneous( o )
     dims = src.dims;
   }
 
-  _.assert( dims );
+  _.assert( _.arrayIs( dims ) );
 
   /* default handlers*/
 
@@ -3428,7 +3428,7 @@ var Proto =
 
   /* relations */
 
-  constructor : Self,
+  /* constructor * : * Self, */
   Composes : Composes,
   Aggregates : Aggregates,
   Associates : Associates,
@@ -3451,12 +3451,12 @@ _.Copyable.mixin( Self );
 
 //
 
-_.assert( Self.prototype.array );
-_.assert( Self.prototype.withArray );
-_.assert( _.withArray );
-_.assert( _.withArray.Float32 );
-_.assert( _.ArrayNameSpaces.Float32 );
-_.assert( _.ArrayNameSpaces.Float32.makeArrayOfLength );
+_.assert( _.objectIs( Self.prototype.array ) );
+_.assert( _.objectIs( Self.prototype.withArray ) );
+_.assert( _.objectIs( _.withArray ) );
+_.assert( _.objectIs( _.withArray.Float32 ) );
+_.assert( _.objectIs( _.ArrayNameSpaces.Float32 ) );
+_.assert( _.routineIs( _.ArrayNameSpaces.Float32.makeArrayOfLength ) );
 
 //
 

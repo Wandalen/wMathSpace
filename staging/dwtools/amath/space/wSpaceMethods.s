@@ -18,7 +18,7 @@ var longSlice = Array.prototype.slice;
 var Parent = null;
 var Self = _global_.wSpace;
 
-_.assert( vector );
+_.assert( _.objectIs( vector ) );
 _.assert( _.routineIs( Self ),'wSpace is not defined, please include wSpace.s first' );
 
 // --
@@ -613,7 +613,7 @@ function from( src,dims )
 
   if( src === null )
   {
-    _.assert( dims );
+    _.assert( _.arrayIs( dims ) );
     result = this.makeZero( dims );
   }
   else if( src instanceof Self )
@@ -622,7 +622,7 @@ function from( src,dims )
   }
   else if( _.numberIs( src ) )
   {
-    _.assert( dims );
+    _.assert( _.arrayIs( dims ) );
     result = this.fromScalar( src,dims );
   }
   else
@@ -651,7 +651,7 @@ function fromForReading( src,dims )
   }
   else if( _.numberIs( src ) )
   {
-    _.assert( dims );
+    _.assert( _.arrayIs( dims ) );
     result = this.fromScalarForReading( src,dims );
   }
   else

@@ -167,21 +167,18 @@ function declareAtomWiseReducingRoutine( routine , rname )
     return result;
   }
 
-  _.assert( handleAtom.defaults );
-  _.assert( onAtomsBegin0 );
-  _.assert( onAtomsEnd0 );
-  _.assert( onVectorsBegin0 );
-  _.assert( onVectorsEnd0 );
+  _.assert( _.objectIs( handleAtom.defaults ) );
+  _.assert( _.routineIs( onAtomsBegin0 ) );
+  _.assert( _.routineIs( onAtomsEnd0 ) );
+  _.assert( _.routineIs( onVectorsBegin0 ) );
+  _.assert( _.routineIs( onVectorsEnd0 ) );
   _.assert( !Proto[ name ] );
 
   Proto[ name ] = function atomWise()
   {
     var self = this;
-
     _.assert( arguments.length === 0 );
-
     var result = self.atomWiseReduceWithAtomHandler( onBegin,handleAtom,onEnd );
-
     return result;
   }
 
@@ -209,7 +206,7 @@ function declareAtomWiseHomogeneousWithScalarRoutines( routine,rname )
   var name = rname;
 
   _.assert( !Proto[ name ] );
-  _.assert( op );
+  _.assert( _.objectIs( op ) );
   _.assert( _.routineIs( onAtom ) );
 
   /* */
@@ -276,7 +273,7 @@ function declareAtomWiseHomogeneousRoutine( routine,name )
 
   _.assert( _.routineIs( onAtom0 ) );
   _.assert( _.routineIs( onAtom1 ) );
-  _.assert( onAtom0.defaults );
+  _.assert( _.objectIs( onAtom0.defaults ) );
   _.assert( !onAtom1.defaults );
   _.assert( !Statics[ routineName ] );
   _.assert( !Proto[ routineName ] );
@@ -414,7 +411,7 @@ function declareAliases()
   for( var name1 in Aliases )
   {
     var name2 = Aliases[ name1 ];
-    _.assert( Proto[ name1 ] );
+    _.assert( !!Proto[ name1 ] );
     _.assert( !Proto[ name2 ] );
     Proto[ name2 ] = Proto[ name1 ];
   }
@@ -450,25 +447,25 @@ declareAliases();
 
 _.classExtend( Self,Proto );
 
-_.assert( Statics.addAtomWise );
-_.assert( Self.prototype.allFiniteAtomWise );
+_.assert( _.routineIs( Statics.addAtomWise ) );
+_.assert( _.routineIs( Self.prototype.allFiniteAtomWise ) );
 
-_.assert( Self.prototype.reduceToMaxValueColWise );
-_.assert( Self.prototype.reduceToMaxValueRowWise );
-_.assert( Self.prototype.addAtomWise );
-_.assert( Self.prototype.addScalar );
-_.assert( Self.addAtomWise );
+_.assert( _.routineIs( Self.prototype.reduceToMaxValueColWise ) );
+_.assert( _.routineIs( Self.prototype.reduceToMaxValueRowWise ) );
+_.assert( _.routineIs( Self.prototype.addAtomWise ) );
+_.assert( _.routineIs( Self.prototype.addScalar ) );
+_.assert( _.routineIs( Self.addAtomWise ) );
 
 _.assert( !Self.prototype.isValidZip );
 _.assert( !Self.prototype.anyNanZip );
 _.assert( !Self.prototype.allFiniteZip );
 
 _.assert( !Self.prototype.isValidAtomWise );
-_.assert( Self.prototype.anyNanAtomWise );
-_.assert( Self.prototype.allFiniteAtomWise );
+_.assert( _.routineIs( Self.prototype.anyNanAtomWise ) );
+_.assert( _.routineIs( Self.prototype.allFiniteAtomWise ) );
 
 _.assert( !Self.prototype.isValid );
-_.assert( Self.prototype.anyNan );
-_.assert( Self.prototype.allFinite );
+_.assert( _.routineIs( Self.prototype.anyNan ) );
+_.assert( _.routineIs( Self.prototype.allFinite ) );
 
 })();
