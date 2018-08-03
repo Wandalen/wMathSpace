@@ -8,3 +8,4 @@ Collection of functions for matrix math. MathSpace introduces class Space which 
 npm install
 node sample/Sample.s
 ```
+
