@@ -1051,7 +1051,7 @@ function mul_static( dst,srcs )
 
   /* adjust srcs */
 
-  var srcs = srcs.slice();
+  srcs = srcs.slice();
   let dstClone = null;
 
   let odst = dst;
