@@ -3436,7 +3436,7 @@ var Proto =
 
   /* relations */
 
-  
+
   Composes : Composes,
   Aggregates : Aggregates,
   Associates : Associates,
@@ -3448,7 +3448,7 @@ var Proto =
 
 //
 
-_.classMake
+_.classDeclare
 ({
   cls : Self,
   parent : Parent,
@@ -3474,7 +3474,7 @@ _.accessor( Self.prototype, Accessors );
 
 //
 
-_.mapExtendConditional( _.field.mapper.srcOwnPrimitive, Self, Composes );
+_.mapExtendConditional( _.field.mapper.srcOwnPrimitive, Self, Composes ); /* required ??? */
 _global_.wSpace = _.Space = Self;
 
 //
