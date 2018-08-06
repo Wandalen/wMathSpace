@@ -31,7 +31,7 @@ if( typeof module !== 'undefined' )
   }
 
 
-  var _ = _global_.wTools;
+  let _ = _global_.wTools;
 
   _.include( 'wMathScalar' );
   _.include( 'wMathVector' );
@@ -53,21 +53,21 @@ if( typeof module !== 'undefined' )
 
 //
 
-var _ = _global_.wTools;
-var abs = Math.abs;
-var min = Math.min;
-var max = Math.max;
-var longSlice = Array.prototype.slice;
-var sqrt = Math.sqrt;
-var sqr = _.sqr;
-var vector = _.vector;
-var accuracy = _.accuracy;
-var accuracySqr = _.accuracySqr;
+let _ = _global_.wTools;
+let abs = Math.abs;
+let min = Math.min;
+let max = Math.max;
+let longSlice = Array.prototype.slice;
+let sqrt = Math.sqrt;
+let sqr = _.sqr;
+let vector = _.vector;
+let accuracy = _.accuracy;
+let accuracySqr = _.accuracySqr;
 
 _.assert( _.objectIs( vector ), 'wSpace : vector module needed' );
 
-var Parent = null;
-var Self = function wSpace( o )
+let Parent = null;
+let Self = function wSpace( o )
 {
   if( !( this instanceof Self ) )
   if( o instanceof Self )
@@ -83,7 +83,7 @@ var Self = function wSpace( o )
 
 function init( o )
 {
-  var self = this;
+  let self = this;
 
   self._changing = [ 1 ];
 
@@ -166,10 +166,10 @@ function _traverseAct( it )
   _.assert( !!it.dst );
   // _.assert( it.dst._changeBegin );
 
-  var dst = it.dst;
-  var src = it.src;
-  var srcIsInstance = src instanceof Self;
-  var dstIsInstance = dst instanceof Self;
+  let dst = it.dst;
+  let src = it.src;
+  let srcIsInstance = src instanceof Self;
+  let dstIsInstance = dst instanceof Self;
 
   if( src === dst )
   return dst;
@@ -279,8 +279,8 @@ function _traverseAct( it )
     }
     else
     {
-      var extract = it.src.extractNormalized();
-      var newIteration = it.iterationNew();
+      let extract = it.src.extractNormalized();
+      let newIteration = it.iterationNew();
       newIteration.select( 'buffer' );
       newIteration.src = extract.buffer;
       dst.buffer = _._cloneAct( newIteration );
@@ -300,11 +300,11 @@ _traverseAct.defaults = _.mapSupplementOwn( Object.create( _._cloner.defaults ),
 
 function _copy( src,resetting )
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
-  var it = _._cloner( self._traverseAct,{ src : src, dst : self, /*resetting : resetting,*/ technique : 'object' } );
+  let it = _._cloner( self._traverseAct,{ src : src, dst : self, /*resetting : resetting,*/ technique : 'object' } );
 
   self._traverseAct( it );
 
@@ -315,7 +315,7 @@ function _copy( src,resetting )
 
 function copy( src )
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 1, 'expects single argument' );
 
@@ -326,7 +326,7 @@ function copy( src )
 
 function copyResetting( src )
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 1, 'expects single argument' );
 
@@ -337,7 +337,7 @@ function copyResetting( src )
 
 function copyFromScalar( src )
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( _.numberIs( src ) );
@@ -351,7 +351,7 @@ function copyFromScalar( src )
 
 function copyFromBuffer( src )
 {
-  var self = this;
+  let self = this;
   self._bufferCopy( src );
   return self;
 }
@@ -360,11 +360,11 @@ function copyFromBuffer( src )
 
 function clone()
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 0 );
 
-  var dst = _.Copyable.prototype.clone.call( self );
+  let dst = _.Copyable.prototype.clone.call( self );
 
   if( dst.buffer === self.buffer )
   dst[ bufferSymbol ] = _.longSlice( dst.buffer );
@@ -382,9 +382,9 @@ function copyTo( dst,src )
   if( dst === src )
   return dst;
 
-  var odst = dst;
-  var dstDims = Self.dimsOf( dst );
-  var srcDims = Self.dimsOf( src );
+  let odst = dst;
+  let dstDims = Self.dimsOf( dst );
+  let srcDims = Self.dimsOf( src );
 
   _.assert( _.arrayIdentical( srcDims,dstDims ),'(-src-) and (-dst-) should have same dimensions' );
   _.assert( !_.instanceIs( this ) )
@@ -397,10 +397,10 @@ function copyTo( dst,src )
     dst = vector.from( dst );
 
     if( _.vectorIs( dst ) )
-    for( var s = 0 ; s < src.length ; s += 1 )
+    for( let s = 0 ; s < src.length ; s += 1 )
     dst.eSet( s,src.eGet( s ) )
     else if( _.spaceIs( dst ) )
-    for( var s = 0 ; s < src.length ; s += 1 )
+    for( let s = 0 ; s < src.length ; s += 1 )
     dst.atomSet( [ s,0 ],src.eGet( s ) )
     else _.assert( 0,'unknown type of (-dst-)',_.strTypeOf( dst ) );
 
@@ -409,8 +409,8 @@ function copyTo( dst,src )
   else
   {
 
-    var dstDims = Self.dimsOf( dst );
-    var srcDims = Self.dimsOf( src );
+    let dstDims = Self.dimsOf( dst );
+    let srcDims = Self.dimsOf( src );
 
     if( _.spaceIs( dst ) )
     src.atomEach( function( it )
@@ -438,8 +438,8 @@ function copyTo( dst,src )
 
 function extractNormalized()
 {
-  var self = this;
-  var result = Object.create( null );
+  let self = this;
+  let result = Object.create( null );
 
   _.assert( arguments.length === 0 );
 
@@ -449,7 +449,7 @@ function extractNormalized()
 
   self.atomEach( function( it )
   {
-    var i = self._flatAtomIndexFromIndexNd( it.indexNd,result.strides );
+    let i = self._flatAtomIndexFromIndexNd( it.indexNd,result.strides );
     result.buffer[ i ] = it.atom;
   });
 
@@ -462,7 +462,7 @@ function extractNormalized()
 
 function _sizeGet()
 {
-  var result = this.sizeOfAtom*this.atomsPerSpace;
+  let result = this.sizeOfAtom*this.atomsPerSpace;
   _.assert( result >= 0 );
   return result;
 }
@@ -471,7 +471,7 @@ function _sizeGet()
 
 function _sizeOfElementGet()
 {
-  var result = this.sizeOfAtom*this.atomsPerElement;
+  let result = this.sizeOfAtom*this.atomsPerElement;
   _.assert( result >= 0 );
   return result;
 }
@@ -480,7 +480,7 @@ function _sizeOfElementGet()
 
 function _sizeOfElementStrideGet()
 {
-  var result = this.sizeOfAtom*this.strideOfElement;
+  let result = this.sizeOfAtom*this.strideOfElement;
   _.assert( result >= 0 );
   return result;
 }
@@ -489,7 +489,7 @@ function _sizeOfElementStrideGet()
 
 function _sizeOfColGet()
 {
-  var result = this.sizeOfAtom*this.atomsPerCol;
+  let result = this.sizeOfAtom*this.atomsPerCol;
   _.assert( result >= 0 );
   return result;
 }
@@ -498,7 +498,7 @@ function _sizeOfColGet()
 
 function _sizeOfColStrideGet()
 {
-  var result = this.sizeOfAtom*this.strideOfCol;
+  let result = this.sizeOfAtom*this.strideOfCol;
   _.assert( result >= 0 );
   return result;
 }
@@ -507,7 +507,7 @@ function _sizeOfColStrideGet()
 
 function _sizeOfRowGet()
 {
-  var result = this.sizeOfAtom*this.atomsPerRow;
+  let result = this.sizeOfAtom*this.atomsPerRow;
   _.assert( result >= 0 );
   return result;
 }
@@ -516,7 +516,7 @@ function _sizeOfRowGet()
 
 function _sizeOfRowStrideGet()
 {
-  var result = this.sizeOfAtom*this.strideOfRow;
+  let result = this.sizeOfAtom*this.strideOfRow;
   _.assert( result >= 0 );
   return result;
 }
@@ -526,7 +526,7 @@ function _sizeOfRowStrideGet()
 function _sizeOfAtomGet()
 {
   _.assert( !!this.buffer );
-  var result = this.buffer.BYTES_PER_ELEMENT;
+  let result = this.buffer.BYTES_PER_ELEMENT;
   _.assert( result >= 0 );
   return result;
 }
@@ -537,7 +537,7 @@ function _sizeOfAtomGet()
 
 function _atomsPerElementGet()
 {
-  var self = this;
+  let self = this;
   return self[ atomsPerElementSymbol ];
 }
 
@@ -545,8 +545,8 @@ function _atomsPerElementGet()
 
 function _atomsPerColGet()
 {
-  var self = this;
-  var result = self.dims[ 0 ];
+  let self = this;
+  let result = self.dims[ 0 ];
   _.assert( result >= 0 );
   return result;
 }
@@ -555,8 +555,8 @@ function _atomsPerColGet()
 
 function _atomsPerRowGet()
 {
-  var self = this;
-  var result = self.dims[ 1 ];
+  let self = this;
+  let result = self.dims[ 1 ];
   _.assert( result >= 0 );
   return result;
 }
@@ -565,8 +565,8 @@ function _atomsPerRowGet()
 
 function _nrowGet()
 {
-  var self = this;
-  var result = self.dims[ 0 ];
+  let self = this;
+  let result = self.dims[ 0 ];
   _.assert( result >= 0 );
   return result;
 }
@@ -575,8 +575,8 @@ function _nrowGet()
 
 function _ncolGet()
 {
-  var self = this;
-  var result = self.dims[ 1 ];
+  let self = this;
+  let result = self.dims[ 1 ];
   _.assert( result >= 0 );
   return result;
 }
@@ -585,8 +585,8 @@ function _ncolGet()
 
 function _atomsPerSpaceGet()
 {
-  var self = this;
-  var result = self.length === Infinity ? self.atomsPerElement : self.length * self.atomsPerElement;
+  let self = this;
+  let result = self.length === Infinity ? self.atomsPerElement : self.length * self.atomsPerElement;
   _.assert( _.numberIsFinite( result ) );
   _.assert( result >= 0 );
   return result;
@@ -596,12 +596,12 @@ function _atomsPerSpaceGet()
 
 function atomsPerSpaceForDimensions( dims )
 {
-  var result = 1;
+  let result = 1;
 
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( _.arrayIs( dims ) );
 
-  for( var d = dims.length-1 ; d >= 0 ; d-- )
+  for( let d = dims.length-1 ; d >= 0 ; d-- )
   {
     _.assert( dims[ d ] >= 0 )
     result *= dims[ d ];
@@ -636,7 +636,7 @@ function dimsOf( src )
 {
   if( src instanceof Self )
   return src.dims.slice();
-  var result = [ 0,1 ];
+  let result = [ 0,1 ];
   _.assert( src.length >= 0 );
   result[ 0 ] = src.length;
   return result;
@@ -669,7 +669,7 @@ function _stridesEffectiveGet()
 
 function _stridesSet( src )
 {
-  var self = this;
+  let self = this;
 
   // _.assert( _.longIs( src ) || _.numberIs( src ) || src === null );
   _.assert( _.longIs( src ) || src === null );
@@ -729,7 +729,7 @@ function stridesForDimensions( dims,transposing )
   _.assert( dims[ 0 ] >= 0 );
   _.assert( dims[ dims.length-1 ] >= 0 );
 
-  var strides = dims.slice();
+  let strides = dims.slice();
 
   if( transposing )
   {
@@ -737,7 +737,7 @@ function stridesForDimensions( dims,transposing )
     strides.splice( 0,1 );
     _.assert( strides[ 1 ] > 0 );
     _.assert( strides[ strides.length-1 ] > 0 );
-    for( var i = strides.length-2 ; i >= 0 ; i-- )
+    for( let i = strides.length-2 ; i >= 0 ; i-- )
     strides[ i ] = strides[ i ]*strides[ i+1 ];
   }
   else
@@ -746,7 +746,7 @@ function stridesForDimensions( dims,transposing )
     strides.unshift( 1 );
     _.assert( strides[ 0 ] > 0 );
     _.assert( strides[ 1 ] >= 0 );
-    for( var i = 1 ; i < strides.length ; i++ )
+    for( let i = 1 ; i < strides.length ; i++ )
     strides[ i ] = strides[ i ]*strides[ i-1 ];
   }
 
@@ -767,7 +767,7 @@ function stridesRoll( strides )
 
   _.assert( arguments.length === 1, 'expects single argument' ); debugger;
 
-  for( var s = strides.length-2 ; s >= 0 ; s-- )
+  for( let s = strides.length-2 ; s >= 0 ; s-- )
   strides[ s ] = strides[ s+1 ]*strides[ s ];
 
   return strides;
@@ -779,7 +779,7 @@ function stridesRoll( strides )
 
 function _bufferSet( src )
 {
-  var self = this;
+  let self = this;
 
   if( self[ bufferSymbol ] === src )
   return;
@@ -802,7 +802,7 @@ function _bufferSet( src )
 
 function _offsetSet( src )
 {
-  var self = this;
+  let self = this;
 
   _.assert( _.numberIs( src ) );
 
@@ -816,7 +816,7 @@ function _offsetSet( src )
 
 function _bufferCopy( src )
 {
-  var self = this;
+  let self = this;
   self._changeBegin();
 
   _.assert( arguments.length === 1, 'expects single argument' );
@@ -833,9 +833,9 @@ function _bufferCopy( src )
   //   self[ bufferSymbol ] = self.array.makeSimilar( src,src.length );
   // }
 
-  // var i = 0;
-  // for( var c = 0 ; c < self.atomsPerCol ; c++ )
-  // for( var r = 0 ; r < self.atomsPerRow ; r++ )
+  // let i = 0;
+  // for( let c = 0 ; c < self.atomsPerCol ; c++ )
+  // for( let r = 0 ; r < self.atomsPerRow ; r++ )
   // {
   //   self.atomSet( [ c,r ],src[ i ] );
   //   i += 1;
@@ -854,8 +854,8 @@ function _bufferCopy( src )
 
 function bufferCopyTo( dst )
 {
-  var self = this;
-  var atomsPerSpace = self.atomsPerSpace;
+  let self = this;
+  let atomsPerSpace = self.atomsPerSpace;
 
   if( !dst )
   dst = _.longMakeSimilar( self.buffer, atomsPerSpace );
@@ -880,7 +880,7 @@ function bufferCopyTo( dst )
 
 function _changeBegin()
 {
-  var self = this;
+  let self = this;
 
   self._changing[ 0 ] += 1;
 
@@ -890,7 +890,7 @@ function _changeBegin()
 
 function _changeEnd()
 {
-  var self = this;
+  let self = this;
 
   self._changing[ 0 ] -= 1;
   self._sizeChanged();
@@ -901,7 +901,7 @@ function _changeEnd()
 
 function _sizeChanged()
 {
-  var self = this;
+  let self = this;
 
   if( self._changing[ 0 ] )
   return;
@@ -914,7 +914,7 @@ function _sizeChanged()
 
 function _adjust()
 {
-  var self = this;
+  let self = this;
 
   self._adjustVerify();
   self._adjustAct();
@@ -926,8 +926,8 @@ function _adjust()
 
 function _adjustAct()
 {
-  var self = this;
-  var changed = false;
+  let self = this;
+  let changed = false;
 
   // if( self.name === 'aColor' && self.buffer && !self.isInvariant )
   // debugger;
@@ -951,7 +951,7 @@ function _adjustAct()
   if( _.numberIs( self.strides ) )
   {
     debugger;
-    var strides = _.dup( 1,self.breadth.length+1 );
+    let strides = _.dup( 1,self.breadth.length+1 );
     strides[ strides.length-1 ] = self.strides;
     self.strides = self.stridesRoll( strides );
     changed = true;
@@ -985,14 +985,14 @@ function _adjustAct()
       _.assert( _.longIs( self.buffer ) );
       _.assert( self.offset >= 0 );
 
-      var dims = self._dimsWas.slice();
+      let dims = self._dimsWas.slice();
       dims[ self.growingDimension ] = 1;
-      var ape = _.avector.reduceToProduct( dims );
-      var l = ( self.buffer.length - self.offset ) / ape;
+      let ape = _.avector.reduceToProduct( dims );
+      let l = ( self.buffer.length - self.offset ) / ape;
       dims[ self.growingDimension ] = l;
       self[ dimsSymbol ] = dims;
 
-      // var dims = self.breadth.slice();
+      // let dims = self.breadth.slice();
       // dims.push( l );
 
       // _.assert( self.breadth.length === 1,'not tested' );
@@ -1007,7 +1007,7 @@ function _adjustAct()
       // // _.assert( 0,'not tested' );
       // _.assert( _.longIs( self.strides ) );
       // _.assert( self.strides[ 0 ] > 1,'not tested' );
-      // var dims = self[ dimsSymbol ] = self.strides.slice();
+      // let dims = self[ dimsSymbol ] = self.strides.slice();
       // dims.splice( 0,1 );
       // changed = true;
     }
@@ -1049,7 +1049,7 @@ function _adjustAct()
     _.assert( self.dims[ 0 ] >= 0 );
     _.assert( self.dims[ self.dims.length-1 ] >= 0 );
 
-    var strides = self[ stridesEffectiveSymbol ] = self.stridesForDimensions( self.dims,self.inputTransposing );
+    let strides = self[ stridesEffectiveSymbol ] = self.stridesForDimensions( self.dims,self.inputTransposing );
 
   }
 
@@ -1062,15 +1062,15 @@ function _adjustAct()
 
   /* buffer region */
 
-  var dims = self.dims;
-  var offset = self.offset;
-  var occupiedRange = [ 0,0 ];
-  var last;
+  let dims = self.dims;
+  let offset = self.offset;
+  let occupiedRange = [ 0,0 ];
+  let last;
 
   if( self.length !== 0 )
   {
 
-    for( var s = 0 ; s < self._stridesEffective.length ; s++ )
+    for( let s = 0 ; s < self._stridesEffective.length ; s++ )
     {
       if( dims[ s ] === Infinity )
       continue;
@@ -1113,7 +1113,7 @@ function _adjustAct()
 
 function _adjustVerify()
 {
-  var self = this;
+  let self = this;
 
   _.assert( _.longIs( self.buffer ),'space needs buffer' );
   _.assert( _.longIs( self.strides ) || self.strides === null );
@@ -1126,7 +1126,7 @@ function _adjustVerify()
 
 function _adjustValidate()
 {
-  var self = this;
+  let self = this;
 
   _.assert( _.arrayIs( self.breadth ) );
   _.assert( self.dims.length === self.breadth.length+1 );
@@ -1155,12 +1155,12 @@ function _adjustValidate()
   _.assert( self.breadth.length+1 === self._stridesEffective.length );
 
   if( Config.debug )
-  for( var d = 0 ; d < self.dims.length-1 ; d++ )
+  for( let d = 0 ; d < self.dims.length-1 ; d++ )
   _.assert( self.dims[ d ] >= 0 );
 
   if( Config.debug )
   if( self.atomsPerSpace > 0 && _.numberIsFinite( self.length ) )
-  for( var d = 0 ; d < self.dims.length ; d++ )
+  for( let d = 0 ; d < self.dims.length ; d++ )
   _.assert( self.offset + ( self.dims[ d ]-1 )*self._stridesEffective[ d ] <= self.buffer.length,'out of bound' );
 
 }
@@ -1175,9 +1175,9 @@ function _adjustValidate()
 //   _.assert( _.longIs( buffer ) );
 //   _.assert( offset >= 0 );
 //
-//   var ape = _.avector.reduceToProduct( breadth );
-//   var l = ( buffer.length - offset ) / ape;
-//   var dims = breadth.slice();
+//   let ape = _.avector.reduceToProduct( breadth );
+//   let l = ( buffer.length - offset ) / ape;
+//   let dims = breadth.slice();
 //   dims.push( l );
 //
 //   _.assert( breadth.length === 1,'not tested' );
@@ -1191,7 +1191,7 @@ function _adjustValidate()
 
 function _breadthGet()
 {
-  var self = this;
+  let self = this;
   return self[ breadthSymbol ];
 }
 
@@ -1199,7 +1199,7 @@ function _breadthGet()
 
 function _breadthSet( breadth )
 {
-  var self = this;
+  let self = this;
 
   if( _.numberIs( breadth ) )
   breadth = [ breadth ];
@@ -1229,7 +1229,7 @@ function _breadthSet( breadth )
   }
   else
   {
-    var _dimsWas = breadth.slice();
+    let _dimsWas = breadth.slice();
     _dimsWas.push( self._dimsWas ? self._dimsWas[ self._dimsWas.length-1 ] : 0 );
     self[ breadthSymbol ] = _.entityFreeze( breadth.slice() );
     self[ dimsSymbol ] = null;
@@ -1243,7 +1243,7 @@ function _breadthSet( breadth )
 
 function _dimsSet( src )
 {
-  var self = this;
+  let self = this;
 
   // console.log( '_dimsSet' );
 
@@ -1286,7 +1286,7 @@ function _dimsSet( src )
 // function expand( left,right )
 function expand( expand )
 {
-  var self = this;
+  let self = this;
 
   // if( left === null )
   // left = _.dup( 0,self.dims.length );
@@ -1302,8 +1302,8 @@ function expand( expand )
 
   /* */
 
-  var dims = self.dims.slice();
-  for( var i = 0 ; i < dims.length ; i++ )
+  let dims = self.dims.slice();
+  for( let i = 0 ; i < dims.length ; i++ )
   {
     if( !expand[ i ] )
     {
@@ -1327,21 +1327,21 @@ function expand( expand )
   if( self.hasShape( dims ) )
   return self;
 
-  var atomsPerSpace = self.atomsPerSpaceForDimensions( dims );
-  var strides = self.stridesForDimensions( dims,0 );
-  var buffer = _.longMakeSimilarZeroed( self.buffer,atomsPerSpace );
+  let atomsPerSpace = self.atomsPerSpaceForDimensions( dims );
+  let strides = self.stridesForDimensions( dims,0 );
+  let buffer = _.longMakeSimilarZeroed( self.buffer,atomsPerSpace );
 
   /* move data */
 
   self.atomEach( function( it )
   {
-    for( var i = 0 ; i < dims.length ; i++ )
+    for( let i = 0 ; i < dims.length ; i++ )
     {
       it.indexNd[ i ] += expand[ i ][ 0 ];
       if( it.indexNd[ i ] < 0 || it.indexNd[ i ] >= dims[ i ] )
       return;
     }
-    var indexFlat = Self._flatAtomIndexFromIndexNd( it.indexNd , strides );
+    let indexFlat = Self._flatAtomIndexFromIndexNd( it.indexNd , strides );
     _.assert( indexFlat >= 0 );
     _.assert( indexFlat < buffer.length );
     buffer[ indexFlat ] = it.atom;
@@ -1367,8 +1367,8 @@ function shapesAreSame( ins1,ins2 )
 {
   _.assert( !_.instanceIs( this ) );
 
-  var dims1 = this.dimsOf( ins1 );
-  var dims2 = this.dimsOf( ins2 );
+  let dims1 = this.dimsOf( ins1 );
+  let dims2 = this.dimsOf( ins2 );
 
   return _.arrayIdentical( dims1,dims2 );
 }
@@ -1377,7 +1377,7 @@ function shapesAreSame( ins1,ins2 )
 
 function hasShape( src )
 {
-  var self = this;
+  let self = this;
 
   // src = Self.dimsOf( src );
 
@@ -1394,7 +1394,7 @@ function hasShape( src )
 
 function isSquare()
 {
-  var self = this;
+  let self = this;
   _.assert( arguments.length === 0 );
   return self.dims[ 0 ] === self.dims[ 1 ];
 }
@@ -1405,11 +1405,11 @@ function isSquare()
 
 function flatAtomIndexFrom( indexNd )
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 1, 'expects single argument' );
 
-  var result = self._flatAtomIndexFromIndexNd( indexNd,self._stridesEffective );
+  let result = self._flatAtomIndexFromIndexNd( indexNd,self._stridesEffective );
 
   return result + self.offset;
 }
@@ -1418,14 +1418,14 @@ function flatAtomIndexFrom( indexNd )
 
 function _flatAtomIndexFromIndexNd( indexNd,strides )
 {
-  var result = 0;
+  let result = 0;
 
   _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( _.arrayIs( indexNd ) );
   _.assert( _.arrayIs( strides ) );
   _.assert( indexNd.length === strides.length );
 
-  for( var i = 0 ; i < indexNd.length ; i++ )
+  for( let i = 0 ; i < indexNd.length ; i++ )
   {
     result += indexNd[ i ]*strides[ i ];
   }
@@ -1437,19 +1437,19 @@ function _flatAtomIndexFromIndexNd( indexNd,strides )
 
 function flatGranuleIndexFrom( indexNd )
 {
-  var self = this;
-  var result = 0;
-  var stride = 1;
-  var d = self._stridesEffective.length-indexNd.length;
+  let self = this;
+  let result = 0;
+  let stride = 1;
+  let d = self._stridesEffective.length-indexNd.length;
 
   debugger;
 
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( indexNd.length <= self._stridesEffective.length );
 
-  var f = self._stridesEffective.length - indexNd.length;
-  // for( var i = indexNd.length-1 ; i >= 0 ; i-- )
-  for( var i = f ; i < indexNd.length ; i++ )
+  let f = self._stridesEffective.length - indexNd.length;
+  // for( let i = indexNd.length-1 ; i >= 0 ; i-- )
+  for( let i = f ; i < indexNd.length ; i++ )
   {
     stride = self._stridesEffective[ i ];
     result += indexNd[ i-f ]*stride;
@@ -1462,11 +1462,11 @@ function flatGranuleIndexFrom( indexNd )
 
 function transpose()
 {
-  var self = this;
+  let self = this;
   self._changeBegin();
 
-  var dims = self.dims.slice();
-  var strides = self._stridesEffective.slice();
+  let dims = self.dims.slice();
+  let strides = self._stridesEffective.slice();
 
   _.assert( arguments.length === 0 );
   _.assert( dims.length >= 2 );
@@ -1491,13 +1491,13 @@ function transpose()
 function equalWith( ins,o )
 {
   debugger; xxx
-  var it = equalWith.lookContinue( equalWith, arguments );
-  var result = this._equalAre( it );
+  let it = equalWith.lookContinue( equalWith, arguments );
+  let result = this._equalAre( it );
   return result;
   // _entityEqualIteratorMake
 
-  // var self = this;
-  // var o = _._entityEqualIteratorMake( o || Object.create( null ) );
+  // let self = this;
+  // let o = _._entityEqualIteratorMake( o || Object.create( null ) );
   // _.assert( arguments.length <= 2 );
   // return self._equalAre( self,ins,o );
 }
@@ -1541,7 +1541,7 @@ function _equalAre( it )
 
   it.result = it.src.atomWhile( function( atom,indexNd,indexFlat )
   {
-    var atom2 = it.src2.atomGet( indexNd );
+    let atom2 = it.src2.atomGet( indexNd );
     return it.context.onNumbersAreEqual( atom,atom2 );
   });
 
@@ -1554,7 +1554,7 @@ _.routineSupplement( _equalAre, _._entityEqual );
 //
 // function identicalWith( src )
 // {
-//   var self = this;
+//   let self = this;
 //
 //   _.assert( arguments.length === 1, 'expects single argument' );
 //
@@ -1588,18 +1588,18 @@ function is( src )
 
 function toStr( o )
 {
-  var self = this;
-  var result = '';
+  let self = this;
+  let result = '';
 
-  var o = o || Object.create( null );
+  o = o || Object.create( null );
   _.routineOptions( toStr,o );
 
-  var l = self.dims[ 0 ];
-  var atomsPerRow,atomsPerCol;
-  var col,row;
-  var m,c,r,e;
+  let l = self.dims[ 0 ];
+  let atomsPerRow,atomsPerCol;
+  let col,row;
+  let m,c,r,e;
 
-  var isInt = true;
+  let isInt = true;
   self.atomEach( function( it )
   {
     isInt = isInt && _.numberIsInt( it.atom );
@@ -1609,7 +1609,7 @@ function toStr( o )
 
   function eToStr()
   {
-    var e = row.eGet( c );
+    let e = row.eGet( c );
 
     if( isInt )
     {
@@ -1708,8 +1708,8 @@ toStr.defaults.__proto__ = _.toStr.defaults;
 
 function _bufferFrom( src )
 {
-  var proto = this.Self.prototype;
-  var dst = src;
+  let proto = this.Self.prototype;
+  let dst = src;
 
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( _.longIs( src ) || _.vectorIs( src ) );
@@ -1720,7 +1720,7 @@ function _bufferFrom( src )
   if( _.vectorIs( dst ) && _.arrayIs( dst._vectorBuffer ) )
   {
     dst = this.array.makeArrayOfLength( src.length );
-    for( var i = 0 ; i < src.length ; i++ )
+    for( let i = 0 ; i < src.length ; i++ )
     dst[ i ] = src.eGet( i );
   }
   else if( _.arrayIs( dst ) )
@@ -1735,13 +1735,13 @@ function _bufferFrom( src )
 
 function bufferNormalize()
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 0 );
 
-  var buffer = _.longMakeSimilar( self.buffer,self.atomsPerSpace );
+  let buffer = _.longMakeSimilar( self.buffer,self.atomsPerSpace );
 
-  var i = 0;
+  let i = 0;
   self.atomEach( function( it )
   {
     buffer[ i ] = it.atom;
@@ -1761,21 +1761,21 @@ function bufferNormalize()
 
 function subspace( subspace )
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 1,'expects single argument' );
   _.assert( _.arrayIs( subspace ),'expects array (-subspace-)' );
   _.assert( subspace.length <= self.dims.length,'expects array (-subspace-) of length of self.dims' );
 
-  for( var s = subspace.length ; s < self.dims.length ; s++ )
+  for( let s = subspace.length ; s < self.dims.length ; s++ )
   subspace.unshift( all );
 
-  var dims = [];
-  var strides = [];
-  var stride = 1;
-  var offset = Infinity;
+  let dims = [];
+  let strides = [];
+  let stride = 1;
+  let offset = Infinity;
 
-  for( var s = 0 ; s < subspace.length ; s++ )
+  for( let s = 0 ; s < subspace.length ; s++ )
   {
     if( subspace[ s ] === all )
     {
@@ -1802,7 +1802,7 @@ function subspace( subspace )
   offset = 0;
   offset += self.offset;
 
-  var result = new Self
+  let result = new Self
   ({
     buffer : self.buffer,
     offset : offset,
@@ -1820,8 +1820,8 @@ function subspace( subspace )
 
 function atomWhile( o )
 {
-  var self = this;
-  var result = true;
+  let self = this;
+  let result = true;
 
   if( _.routineIs( o ) )
   o = { onAtom : o }
@@ -1830,11 +1830,11 @@ function atomWhile( o )
   _.routineOptions( atomWhile,o );
   _.assert( _.routineIs( o.onAtom ) );
 
-  var dims = self.dims;
+  let dims = self.dims;
 
   function handleEach( indexNd,indexFlat )
   {
-    var value = self.atomGet( indexNd );
+    let value = self.atomGet( indexNd );
     result = o.onAtom.call( self,value,indexNd,indexFlat,o );
     return result;
   }
@@ -1857,8 +1857,8 @@ atomWhile.defaults =
 
 function atomEach( onAtom,args )
 {
-  var self = this;
-  var dims = self.dims;
+  let self = this;
+  let dims = self.dims;
 
   if( args === undefined )
   args = [];
@@ -1871,17 +1871,17 @@ function atomEach( onAtom,args )
   args.unshift( null );
   args.unshift( null );
 
-  var dims0 = dims[ 0 ];
-  var dims1 = dims[ 1 ];
+  let dims0 = dims[ 0 ];
+  let dims1 = dims[ 1 ];
 
   if( dims1 === Infinity )
   dims1 = 1;
 
-  var it = Object.create( null );
+  let it = Object.create( null );
   it.args = args;
-  var indexFlat = 0;
-  for( var c = 0 ; c < dims1 ; c++ )
-  for( var r = 0 ; r < dims0 ; r++ )
+  let indexFlat = 0;
+  for( let c = 0 ; c < dims1 ; c++ )
+  for( let r = 0 ; r < dims0 ; r++ )
   {
     it.indexNd = [ r,c ];
     it.indexFlat = indexFlat;
@@ -1898,15 +1898,15 @@ function atomEach( onAtom,args )
 
 function atomWiseReduceWithFlatVector( onVector )
 {
-  var self = this;
-  var result;
+  let self = this;
+  let result;
 
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( self.strideOfElement === self.atomsPerElement );
 
   debugger;
 
-  var result = onVector( self.asVector() );
+  let result = onVector( self.asVector() );
 
   return result;
 }
@@ -1915,21 +1915,21 @@ function atomWiseReduceWithFlatVector( onVector )
 
 function atomWiseReduceWithAtomHandler( onBegin,onAtom,onEnd )
 {
-  var self = this;
-  var result;
+  let self = this;
+  let result;
 
   _.assert( arguments.length === 3, 'expects exactly three argument' );
   _.assert( self.dims.length === 2, 'not implemented' );
 
-  var op = onBegin
+  let op = onBegin
   ({
     args : [ self ],
     container : self,
     filter : null,
   });
 
-  for( var c = 0 ; c < self.atomsPerCol ; c++ )
-  for( var r = 0 ; r < self.atomsPerRow ; r++ )
+  for( let c = 0 ; c < self.atomsPerCol ; c++ )
+  for( let r = 0 ; r < self.atomsPerRow ; r++ )
   {
     op.key = [ c,r ];
     op.element = self.atomGet([ c,r ]);
@@ -1945,13 +1945,13 @@ function atomWiseReduceWithAtomHandler( onBegin,onAtom,onEnd )
 
 function atomWiseWithAssign( onAtom,args )
 {
-  var self = this;
-  var result;
+  let self = this;
+  let result;
 
   _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( self.dims.length === 2, 'not implemented' );
 
-  var op = Object.create( null );
+  let op = Object.create( null );
   op.key = -1;
   op.args = args;
   op.dstContainer = self;
@@ -1959,8 +1959,8 @@ function atomWiseWithAssign( onAtom,args )
   op.srcElement = null;
   Object.preventExtensions( op );
 
-  for( var c = 0 ; c < self.atomsPerCol ; c++ )
-  for( var r = 0 ; r < self.atomsPerRow ; r++ )
+  for( let c = 0 ; c < self.atomsPerCol ; c++ )
+  for( let r = 0 ; r < self.atomsPerRow ; r++ )
   {
     op.key = [ c,r ];
     op.dstElement = self.atomGet( op.key );
@@ -1974,8 +1974,8 @@ function atomWiseWithAssign( onAtom,args )
 
 function atomWiseHomogeneous( o )
 {
-  var proto = this;
-  var newDst = false;
+  let proto = this;
+  let newDst = false;
 
   _.routineOptions( atomWiseHomogeneous,o );
 
@@ -1991,10 +1991,10 @@ function atomWiseHomogeneous( o )
 
   /* preliminary analysis */
 
-  var dims = null;
-  for( var s = 0 ; s < o.args.length ; s++ )
+  let dims = null;
+  for( let s = 0 ; s < o.args.length ; s++ )
   {
-    var src = o.args[ s ];
+    let src = o.args[ s ];
     if( src instanceof Self )
     if( dims )
     _.assert( _.arrayIdentical( src.dims,dims ) )
@@ -2006,13 +2006,14 @@ function atomWiseHomogeneous( o )
 
   /* default handlers*/
 
+  let op;
   if( !o.onVectorsBegin )
   o.onVectorsBegin = function handleVectorsBeing()
   {
 
     debugger;
 
-    var op = Object.create( null );
+    op = Object.create( null );
     op.key = -1;
     // op.args = [ o.dst,o.srcs ];
     // op.dstContainer = o.dst;
@@ -2059,13 +2060,13 @@ function atomWiseHomogeneous( o )
     o.srcs = o.args.slice( o.usingDstAsSrc ? 0 : 1 );
   }
 
-  var fsrc = o.srcs[ 0 ];
+  let fsrc = o.srcs[ 0 ];
 
   /* srcs allocation */
 
-  for( var s = 0 ; s < o.srcs.length ; s++ )
+  for( let s = 0 ; s < o.srcs.length ; s++ )
   {
-    var src = o.srcs[ s ] = wSpace.from( o.srcs[ s ],dims );
+    let src = o.srcs[ s ] = wSpace.from( o.srcs[ s ],dims );
     _.assert( src instanceof Self );
   }
 
@@ -2082,7 +2083,7 @@ function atomWiseHomogeneous( o )
 
   /* */
 
-  var op = o.onVectorsBegin.call( o.dst,op );
+  op = o.onVectorsBegin.call( o.dst,op );
 
   op.args = o.args;
   op.dstContainer = o.dst;
@@ -2092,11 +2093,11 @@ function atomWiseHomogeneous( o )
 
   /* */
 
-  var brk = 0;
-  for( var c = 0 ; c < fsrc.atomsPerCol ; c++ )
+  let brk = 0;
+  for( let c = 0 ; c < fsrc.atomsPerCol ; c++ )
   {
 
-    for( var r = 0 ; r < fsrc.atomsPerRow ; r++ )
+    for( let r = 0 ; r < fsrc.atomsPerRow ; r++ )
     {
 
       op.key = [ c,r ];
@@ -2126,7 +2127,7 @@ function atomWiseHomogeneous( o )
         brk = 1;
 
       }
-      else for( var s = 1 ; s < op.srcContainers.length ; s++ )
+      else for( let s = 1 ; s < op.srcContainers.length ; s++ )
       {
         debugger;
         // op.srcContainerIndex = s;
@@ -2181,15 +2182,15 @@ atomWiseHomogeneous.defaults =
 
 // function atomWiseHomogeneousZip( o )
 // {
-//   var proto = this;
-//   var newDst = false;
+//   let proto = this;
+//   let newDst = false;
 //
 //   /* preliminary analysis */
 //
-//   var dims = null;
-//   for( var s = 0 ; s < o.srcs.length ; s++ )
+//   let dims = null;
+//   for( let s = 0 ; s < o.srcs.length ; s++ )
 //   {
-//     var src = o.srcs[ s ];
+//     let src = o.srcs[ s ];
 //     if( src instanceof Self )
 //     if( dims )
 //     _.assert( _.arrayIdentical( src.dims,dims ) )
@@ -2205,9 +2206,9 @@ atomWiseHomogeneous.defaults =
 //     newDst = true;
 //   }
 //
-//   for( var s = 0 ; s < o.srcs.length ; s++ )
+//   for( let s = 0 ; s < o.srcs.length ; s++ )
 //   {
-//     var src = o.srcs[ s ] = wSpace.from( o.srcs[ s ],dims );
+//     let src = o.srcs[ s ] = wSpace.from( o.srcs[ s ],dims );
 //     _.assert( src instanceof Self );
 //   }
 //
@@ -2222,8 +2223,8 @@ atomWiseHomogeneous.defaults =
 //
 //   /* */
 //
-//   // var op = o.onVectorsBegin();
-//   var op = Object.create( null );
+//   // let op = o.onVectorsBegin();
+//   let op = Object.create( null );
 //   op.key = -1;
 //   op.args = [ o.dst,o.srcs ];
 //   op.dstContainer = o.dst;
@@ -2238,8 +2239,8 @@ atomWiseHomogeneous.defaults =
 //
 //   /* */
 //
-//   for( var c = 0 ; c < o.dst.atomsPerCol ; c++ )
-//   for( var r = 0 ; r < o.dst.atomsPerRow ; r++ )
+//   for( let c = 0 ; c < o.dst.atomsPerCol ; c++ )
+//   for( let r = 0 ; r < o.dst.atomsPerRow ; r++ )
 //   {
 //     op.key = [ c,r ];
 //     op.dstElement = o.dst.atomGet( op.key );
@@ -2251,7 +2252,7 @@ atomWiseHomogeneous.defaults =
 //     op.srcContainer = o.srcs[ 0 ];
 //     op.dstElement = op.srcContainer.atomGet( op.key );
 //
-//     for( var s = 1 ; s < o.srcs.length ; s++ )
+//     for( let s = 1 ; s < o.srcs.length ; s++ )
 //     {
 //       op.srcContainerIndex = s;
 //       op.srcContainer = o.srcs[ s ];
@@ -2280,13 +2281,13 @@ atomWiseHomogeneous.defaults =
 
 function atomWiseZip( onAtom,dst,srcs )
 {
-  var self = this;
-  var result;
+  let self = this;
+  let result;
 
   _.assert( arguments.length === 3, 'expects exactly three argument' );
   _.assert( self.dims.length === 2, 'not implemented' );
 
-  var op = Object.create( null );
+  let op = Object.create( null );
   op.key = -1;
   op.args = [ dst,srcs ];
   op.dstContainer = self;
@@ -2297,21 +2298,21 @@ function atomWiseZip( onAtom,dst,srcs )
 
   /* */
 
-  for( var s = 0 ; s < srcs.length ; s++ )
+  for( let s = 0 ; s < srcs.length ; s++ )
   {
-    var src = srcs[ s ];
+    let src = srcs[ s ];
     _.assert( srcs[ s ] instanceof Self );
   }
 
   /* */
 
-  for( var c = 0 ; c < self.atomsPerCol ; c++ )
-  for( var r = 0 ; r < self.atomsPerRow ; r++ )
+  for( let c = 0 ; c < self.atomsPerCol ; c++ )
+  for( let r = 0 ; r < self.atomsPerRow ; r++ )
   {
     op.key = [ c,r ];
     op.dstElement = self.atomGet( op.key );
 
-    for( var s = 0 ; s < srcs.length ; s++ )
+    for( let s = 0 ; s < srcs.length ; s++ )
     op.srcElements[ s ] = srcs[ s ].atomGet( op.key );
 
     onAtom.call( self,op );
@@ -2324,8 +2325,8 @@ function atomWiseZip( onAtom,dst,srcs )
 
 function elementEach( onElement )
 {
-  var self = this;
-  var args = _.longSlice( arguments,1 );
+  let self = this;
+  let args = _.longSlice( arguments,1 );
 
   debugger;
   _.assert( 0,'not tested' );
@@ -2333,7 +2334,7 @@ function elementEach( onElement )
   args.unshift( null );
   args.unshift( null );
 
-  for( var i = 0 ; i < self.length ; i++ )
+  for( let i = 0 ; i < self.length ; i++ )
   {
     args[ 0 ] = self.eGet( i );
     args[ 1 ] = i;
@@ -2347,15 +2348,15 @@ function elementEach( onElement )
 
 function elementsZip( onEach,space )
 {
-  var self = this;
-  var args = _.longSlice( arguments,2 );
+  let self = this;
+  let args = _.longSlice( arguments,2 );
 
   args.unshift( null );
   args.unshift( null );
 
   throw _.err( 'Not tested' );
 
-  for( var i = 0 ; i < self.length ; i++ )
+  for( let i = 0 ; i < self.length ; i++ )
   {
     args[ 0 ] = self.eGet( i );
     args[ 1 ] = space.eGet( i );
@@ -2369,9 +2370,9 @@ function elementsZip( onEach,space )
 
 function _lineEachCollecting( o )
 {
-  var self = this;
-  // var returningRow = o.onEach.returningSelf !== false || o.onEach.returningNew !== false;
-  // var returningNumber = o.onEach.returningNumber === true;
+  let self = this;
+  // let returningRow = o.onEach.returningSelf !== false || o.onEach.returningNew !== false;
+  // let returningNumber = o.onEach.returningNumber === true;
 
   _.assert( self.dims.length === 2 );
   _.assert( arguments.length === 1, 'expects single argument' );
@@ -2396,18 +2397,18 @@ function _lineEachCollecting( o )
   if( !_.vectorIs( o.args[ 0 ] ) )
   o.args[ 0 ] = vector.fromArray( o.args[ 0 ] );
 
-  var result = o.args[ 0 ];
+  let result = o.args[ 0 ];
 
   /* */
 
   if( o.returningNumber )
-  for( var i = 0 ; i < o.length ; i++ )
+  for( let i = 0 ; i < o.length ; i++ )
   {
     o.args[ 0 ] = self.lineVectorGet( o.lineOrder,i );
     result.eSet( i,o.onEach.apply( self,o.args ) );
   }
   else
-  for( var i = 0 ; i < o.length ; i++ )
+  for( let i = 0 ; i < o.length ; i++ )
   {
     o.args[ 0 ] = self.lineVectorGet( o.lineOrder,i );
     result[ i ] = o.onEach.apply( self,o.args );
@@ -2431,11 +2432,11 @@ _lineEachCollecting.defaults =
 
 function colEachCollecting( onEach , args , returningNumber )
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 3, 'expects exactly three argument' );
 
-  var result = self._lineEachCollecting
+  let result = self._lineEachCollecting
   ({
     onEach : onEach,
     args : args,
@@ -2451,11 +2452,11 @@ function colEachCollecting( onEach , args , returningNumber )
 
 function rowEachCollecting( onEach , args , returningNumber )
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 3, 'expects exactly three argument' );
 
-  var result = self._lineEachCollecting
+  let result = self._lineEachCollecting
   ({
     onEach : onEach,
     args : args,
@@ -2471,8 +2472,8 @@ function rowEachCollecting( onEach , args , returningNumber )
 
 // function _reduceToScalar( o )
 // {
-//   var self = this;
-//   var onVector = o.onVector;
+//   let self = this;
+//   let onVector = o.onVector;
 //
 //   _.assert( arguments.length === 1, 'expects single argument' );
 //   _.routineOptions( _reduceToScalar,o );
@@ -2481,19 +2482,19 @@ function rowEachCollecting( onEach , args , returningNumber )
 //   /* */
 //
 //   debugger;
-//   var atomsPerRow = self.atomsPerRow;
-//   var rvector = _.vector.zeroes( atomsPerRow );
-//   for( var i = 0 ; i < atomsPerCol ; i++ )
+//   let atomsPerRow = self.atomsPerRow;
+//   let rvector = _.vector.zeroes( atomsPerRow );
+//   for( let i = 0 ; i < atomsPerCol ; i++ )
 //   {
 //     debugger;
-//     var e = onVector.call( self.colVectorGet( i ) );
+//     let e = onVector.call( self.colVectorGet( i ) );
 //     _.assert( _.numberIs( e ) );
 //     rvector.eset( i,e );
 //     debugger;
 //   }
 //
 //   debugger;
-//   var result = onVector.call( rvector );
+//   let result = onVector.call( rvector );
 //
 //   /* */
 //
@@ -2512,12 +2513,12 @@ function rowEachCollecting( onEach , args , returningNumber )
 
 function atomFlatGet( index )
 {
-  var i = this.offset+index;
+  let i = this.offset+index;
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( _.numberIs( index ) );
   _.assert( i < this.buffer.length );
   _.assert( this.occupiedRange[ 0 ] <= i && i < this.occupiedRange[ 1 ] );
-  var result = this.buffer[ i ];
+  let result = this.buffer[ i ];
   return result;
 }
 
@@ -2525,7 +2526,7 @@ function atomFlatGet( index )
 
 function atomFlatSet( index,value )
 {
-  var i = this.offset+index;
+  let i = this.offset+index;
   _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( _.numberIs( index ) );
   _.assert( i < this.buffer.length );
@@ -2538,13 +2539,13 @@ function atomFlatSet( index,value )
 
 function atomGet( index )
 {
-  var i = this.flatAtomIndexFrom( index );
+  let i = this.flatAtomIndexFrom( index );
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( i < this.buffer.length );
   _.assert( this.occupiedRange[ 0 ] <= i && i < this.occupiedRange[ 1 ] );
   _.assert( index[ 0 ] < this.dims[ 0 ] );
   _.assert( index[ 1 ] < this.dims[ 1 ] );
-  var result = this.buffer[ i ];
+  let result = this.buffer[ i ];
   return result;
 }
 
@@ -2552,7 +2553,7 @@ function atomGet( index )
 
 function atomSet( index,value )
 {
-  var i = this.flatAtomIndexFrom( index );
+  let i = this.flatAtomIndexFrom( index );
   _.assert( _.numberIs( value ) );
   _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( i < this.buffer.length );
@@ -2567,7 +2568,7 @@ function atomSet( index,value )
 
 function atomsGet( range )
 {
-  var self = this;
+  let self = this;
 
   _.assert( _.longIs( range ) );
   _.assert( range.length === 2 );
@@ -2577,7 +2578,7 @@ function atomsGet( range )
 
   debugger;
 
-  var result = vector.fromSubArray
+  let result = vector.fromSubArray
   (
     self.buffer,
     self.offset+range[ 0 ],
@@ -2593,8 +2594,8 @@ function atomsGet( range )
 
 function asVector()
 {
-  var self = this
-  var result = null;
+  let self = this
+  let result = null;
 
   _.assert( arguments.length === 0 );
   _.assert( self.strideOfElement === self.atomsPerElement );
@@ -2614,8 +2615,8 @@ function asVector()
 
 function granuleGet( index )
 {
-  var self = this;
-  var atomsPerGranule;
+  let self = this;
+  let atomsPerGranule;
 
   debugger;
   _.assert( 0,'not imlemented' );
@@ -2625,7 +2626,7 @@ function granuleGet( index )
   else
   atomsPerGranule = 1;
 
-  var result = vector.fromSubArray
+  let result = vector.fromSubArray
   (
     this.buffer,
     this.offset + this.flatGranuleIndexFrom( index ),
@@ -2639,8 +2640,8 @@ function granuleGet( index )
 
 function elementSlice( index )
 {
-  var self = this;
-  var result = self.eGet( index );
+  let self = this;
+  let result = self.eGet( index );
   return _.vector.slice( result );
 }
 
@@ -2648,8 +2649,8 @@ function elementSlice( index )
 
 function elementsInRangeGet( range )
 {
-  var self = this
-  var result;
+  let self = this
+  let result;
 
   _.assert( _.longIs( range ) );
   _.assert( range.length === 2 );
@@ -2694,7 +2695,7 @@ function eGet( index )
   _.assert( _.numberIs( index ) );
   _.assert( arguments.length === 1, 'expects single argument' );
 
-  var result = vector.fromSubArrayWithStride
+  let result = vector.fromSubArrayWithStride
   (
     this.buffer,
     this.offset + index*this._stridesEffective[ this._stridesEffective.length-1 ],
@@ -2709,8 +2710,8 @@ function eGet( index )
 
 function eSet( index,srcElement )
 {
-  var self = this;
-  var selfElement = self.eGet( index );
+  let self = this;
+  let selfElement = self.eGet( index );
 
   _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
@@ -2723,7 +2724,7 @@ function eSet( index,srcElement )
 
 function elementsSwap( i1,i2 )
 {
-  var self = this;
+  let self = this;
 
   _.assert( 0 <= i1 && i1 < self.length );
   _.assert( 0 <= i2 && i2 < self.length );
@@ -2732,8 +2733,8 @@ function elementsSwap( i1,i2 )
   if( i1 === i2 )
   return self;
 
-  var v1 = self.eGet( i1 );
-  var v2 = self.eGet( i2 );
+  let v1 = self.eGet( i1 );
+  let v2 = self.eGet( i2 );
 
   vector.swapVectors( v1,v2 );
 
@@ -2744,7 +2745,7 @@ function elementsSwap( i1,i2 )
 
 function lineVectorGet( d,index )
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 2, 'expects exactly two arguments' );
   _.assert( self.dims.length === 2 );
@@ -2762,7 +2763,7 @@ function lineVectorGet( d,index )
 
 function lineSet( d,index,src )
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 3, 'expects exactly three argument' );
   _.assert( self.dims.length === 2 );
@@ -2780,9 +2781,9 @@ function lineSet( d,index,src )
 
 function linesSwap( d,i1,i2 )
 {
-  var self = this;
+  let self = this;
 
-  var ad = d+1;
+  let ad = d+1;
   if( ad > 1 )
   ad = 0;
 
@@ -2794,8 +2795,8 @@ function linesSwap( d,i1,i2 )
   if( i1 === i2 )
   return self;
 
-  var v1 = self.lineVectorGet( ad,i1 );
-  var v2 = self.lineVectorGet( ad,i2 );
+  let v1 = self.lineVectorGet( ad,i1 );
+  let v2 = self.lineVectorGet( ad,i2 );
 
   vector.swapVectors( v1,v2 );
 
@@ -2811,8 +2812,8 @@ function rowVectorOfMatrixGet( matrixIndex,rowIndex )
   throw _.err( 'not tested' );
   _.assert( index < this.dims[ 1 ] );
 
-  var matrixOffset = this.flatGranuleIndexFrom( matrixIndex );
-  var result = vector.fromSubArrayWithStride
+  let matrixOffset = this.flatGranuleIndexFrom( matrixIndex );
+  let result = vector.fromSubArrayWithStride
   (
     this.buffer,
     this.offset + rowIndex*this.strideOfRow + matrixOffset,
@@ -2820,7 +2821,7 @@ function rowVectorOfMatrixGet( matrixIndex,rowIndex )
     this.strideInRow
   );
 
-  // var result = vector.fromSubArrayWithStride
+  // let result = vector.fromSubArrayWithStride
   // (
   //   this.buffer,
   //   this.offset + rowIndex*this._stridesEffective[ 0 ] + matrixOffset,
@@ -2841,7 +2842,7 @@ function rowVectorGet( index )
   _.assert( _.numberIs( index ) );
   _.assert( arguments.length === 1, 'expects single argument' );
 
-  var result = vector.fromSubArrayWithStride
+  let result = vector.fromSubArrayWithStride
   (
     this.buffer,
     this.offset + index*this.strideOfRow,
@@ -2856,8 +2857,8 @@ function rowVectorGet( index )
 
 function rowSet( rowIndex,srcRow )
 {
-  var self = this;
-  var selfRow = self.rowVectorGet( rowIndex );
+  let self = this;
+  let selfRow = self.rowVectorGet( rowIndex );
 
   _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
@@ -2870,7 +2871,7 @@ function rowSet( rowIndex,srcRow )
 
 function rowsSwap( i1,i2 )
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
@@ -2887,7 +2888,7 @@ function colVectorGet( index )
   _.assert( _.numberIs( index ) );
   _.assert( arguments.length === 1, 'expects single argument' );
 
-  var result = vector.fromSubArrayWithStride
+  let result = vector.fromSubArrayWithStride
   (
     this.buffer,
     this.offset + index*this.strideOfCol,
@@ -2902,8 +2903,8 @@ function colVectorGet( index )
 
 function colSet( index,srcCol )
 {
-  var self = this;
-  var selfCol = self.colVectorGet( index );
+  let self = this;
+  let selfCol = self.colVectorGet( index );
 
   _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
@@ -2916,7 +2917,7 @@ function colSet( index,srcCol )
 
 function colsSwap( i1,i2 )
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 2, 'expects exactly two arguments' );
 
@@ -2927,13 +2928,13 @@ function colsSwap( i1,i2 )
 
 function _pivotDimension( d,current,expected )
 {
-  var self = this;
+  let self = this;
 
-  for( var p1 = 0 ; p1 < expected.length ; p1++ )
+  for( let p1 = 0 ; p1 < expected.length ; p1++ )
   {
     if( expected[ p1 ] === current[ p1 ] )
     continue;
-    var p2 = current[ expected[ p1 ] ];
+    let p2 = current[ expected[ p1 ] ];
     _.arraySwap( current,p2,p1 );
     self.linesSwap( d,p2,p1 );
   }
@@ -2947,15 +2948,15 @@ function _pivotDimension( d,current,expected )
 
 function pivotForward( pivots )
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( pivots.length === self.dims.length );
 
-  for( var d = 0 ; d < pivots.length ; d++ )
+  for( let d = 0 ; d < pivots.length ; d++ )
   {
-    var current = _.arrayFromRange([ 0,self.dims[ d ] ]);
-    var expected = pivots[ d ];
+    let current = _.arrayFromRange([ 0,self.dims[ d ] ]);
+    let expected = pivots[ d ];
     if( expected === null )
     continue;
     self._pivotDimension( d,current,expected )
@@ -2968,15 +2969,15 @@ function pivotForward( pivots )
 
 function pivotBackward( pivots )
 {
-  var self = this;
+  let self = this;
 
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( pivots.length === self.dims.length );
 
-  for( var d = 0 ; d < pivots.length ; d++ )
+  for( let d = 0 ; d < pivots.length ; d++ )
   {
-    var current = pivots[ d ];
-    var expected = _.arrayFromRange([ 0,self.dims[ d ] ]);
+    let current = pivots[ d ];
+    let expected = _.arrayFromRange([ 0,self.dims[ d ] ]);
     if( current === null )
     continue;
     current = current.slice();
@@ -2990,13 +2991,13 @@ function pivotBackward( pivots )
 
 function _vectorPivotDimension( v,current,expected )
 {
-  var self = this;
+  let self = this;
 
-  for( var p1 = 0 ; p1 < expected.length ; p1++ )
+  for( let p1 = 0 ; p1 < expected.length ; p1++ )
   {
     if( expected[ p1 ] === current[ p1 ] )
     continue;
-    var p2 = current[ expected[ p1 ] ];
+    let p2 = current[ expected[ p1 ] ];
     _.arraySwap( current, p1, p2 );
     vector.swapAtoms( v, p1, p2 );
   }
@@ -3016,10 +3017,10 @@ function vectorPivotForward( vector,pivot )
   if( _.spaceIs( vector ) )
   return vector.pivotForward([ pivot,null ]);
 
-  var original = vector;
-  var vector = _.vector.from( vector );
-  var current = _.arrayFromRange([ 0,vector.length ]);
-  var expected = pivot;
+  let original = vector;
+  vector = _.vector.from( vector );
+  let current = _.arrayFromRange([ 0,vector.length ]);
+  let expected = pivot;
   if( expected === null )
   return vector;
   this._vectorPivotDimension( vector,current,expected )
@@ -3037,10 +3038,10 @@ function vectorPivotBackward( vector,pivot )
   if( _.spaceIs( vector ) )
   return vector.pivotBackward([ pivot,null ]);
 
-  var original = vector;
-  var vector = _.vector.from( vector );
-  var current = pivot.slice();
-  var expected = _.arrayFromRange([ 0,vector.length ]);
+  let original = vector;
+  vector = _.vector.from( vector );
+  let current = pivot.slice();
+  let expected = _.arrayFromRange([ 0,vector.length ]);
   if( current === null )
   return vector;
   this._vectorPivotDimension( vector,current,expected )
@@ -3052,21 +3053,21 @@ function vectorPivotBackward( vector,pivot )
 // relations
 // --
 
-var offsetSymbol = Symbol.for( 'offset' );
-var bufferSymbol = Symbol.for( 'buffer' );
-var breadthSymbol = Symbol.for( 'breadth' );
-var dimsSymbol = Symbol.for( 'dims' );
+let offsetSymbol = Symbol.for( 'offset' );
+let bufferSymbol = Symbol.for( 'buffer' );
+let breadthSymbol = Symbol.for( 'breadth' );
+let dimsSymbol = Symbol.for( 'dims' );
 
-var stridesSymbol = Symbol.for( 'strides' );
-var lengthSymbol = Symbol.for( 'length' );
-var stridesEffectiveSymbol = Symbol.for( '_stridesEffective' );
+let stridesSymbol = Symbol.for( 'strides' );
+let lengthSymbol = Symbol.for( 'length' );
+let stridesEffectiveSymbol = Symbol.for( '_stridesEffective' );
 
-var atomsPerElementSymbol = Symbol.for( 'atomsPerElement' );
-var occupiedRangeSymbol = Symbol.for( 'occupiedRange' );
+let atomsPerElementSymbol = Symbol.for( 'atomsPerElement' );
+let occupiedRangeSymbol = Symbol.for( 'occupiedRange' );
 
 //
 
-var Composes =
+let Composes =
 {
 
   dims : null,
@@ -3079,20 +3080,20 @@ var Composes =
 
 //
 
-var Aggregates =
+let Aggregates =
 {
   buffer : null,
 }
 
 //
 
-var Associates =
+let Associates =
 {
 }
 
 //
 
-var Restricts =
+let Restricts =
 {
 
   _dimsWas : null,
@@ -3108,7 +3109,7 @@ var Restricts =
 
 //
 
-var Medials =
+let Medials =
 {
 
   // buffer : null,
@@ -3120,7 +3121,7 @@ var Medials =
 
 //
 
-var Statics =
+let Statics =
 {
 
   /* */
@@ -3167,7 +3168,7 @@ var Statics =
 
 //
 
-var Forbids =
+let Forbids =
 {
 
   stride : 'stride',
@@ -3193,7 +3194,7 @@ var Forbids =
 
 //
 
-var ReadOnlyAccessors =
+let ReadOnlyAccessors =
 {
 
   /* size in bytes */
@@ -3232,7 +3233,7 @@ var ReadOnlyAccessors =
 
 //
 
-var Accessors =
+let Accessors =
 {
 
   buffer : 'buffer',
@@ -3248,7 +3249,7 @@ var Accessors =
 // define class
 // --
 
-var Proto =
+let Proto =
 {
 
   init : init,
