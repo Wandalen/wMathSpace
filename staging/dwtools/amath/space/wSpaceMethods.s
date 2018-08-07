@@ -2826,15 +2826,13 @@ function formPerspective( fov, size, depth )
   _.assert( depth.length === 2 );
   _.assert( self.hasShape([ 4,4 ]) );
 
-  let fov = Math.tan( THREE.Math.degToRad( fov * 0.5 ) );
+  fov = Math.tan( _.degToRad( fov * 0.5 ) );
 
   let ymin = - depth[ 0 ] * fov;
   let ymax = - ymin;
 
   let xmin = ymin;
   let xmax = ymax;
-
-  let aspect = size[ 0 ] / size[ 1 ];
 
   if( aspect > 1 )
   {

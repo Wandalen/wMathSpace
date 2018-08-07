@@ -154,7 +154,18 @@ function _traverseAct( it )
   if( it.resetting === undefined )
   it.resetting = 1;
 
+  // if( !it.dst )
+  // debugger;
+
   _.Copyable.prototype._traverseActPre.call( this,it );
+
+  if( !it.dst )
+  {
+    _.assert( it.technique === 'object' );
+    _.assert( it.src instanceof Self );
+    it.dst = it.src.clone();
+    return it.dst;
+  }
 
   _.assert( arguments.length === 1, 'expects single argument' );
   _.assert( it.resetting !== undefined );
