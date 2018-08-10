@@ -3307,7 +3307,7 @@ zip
 */
 
 // --
-// define class
+// declare
 // --
 
 let Extend =

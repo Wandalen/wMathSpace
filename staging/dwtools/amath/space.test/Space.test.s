@@ -10036,7 +10036,7 @@ function polynomClosestFor( test )
 }
 
 // --
-// define class
+// declare
 // --
 
 var Self =
