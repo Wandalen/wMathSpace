@@ -1508,7 +1508,7 @@ function equalWith( ins,o )
   // return self._equalAre( self,ins,o );
 }
 
-_.routineSupplement( equalWith, _._entityEqual );
+_.routineExtend( equalWith, _._entityEqual );
 
 //
 
@@ -1554,7 +1554,7 @@ function _equalAre( it )
   return it.result;
 }
 
-_.routineSupplement( _equalAre, _._entityEqual );
+_.routineExtend( _equalAre, _._entityEqual );
 
 //
 //
