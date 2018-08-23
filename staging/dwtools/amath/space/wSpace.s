@@ -64,7 +64,8 @@ let vector = _.vector;
 let accuracy = _.accuracy;
 let accuracySqr = _.accuracySqr;
 
-_.assert( _.objectIs( vector ), 'wSpace : vector module needed' );
+_.assert( _.objectIs( vector ), 'wSpace requires vector module' );
+_.assert( !!_.all );
 
 let Parent = null;
 let Self = function wSpace( o )
@@ -1774,7 +1775,7 @@ function subspace( subspace )
   _.assert( subspace.length <= self.dims.length,'expects array (-subspace-) of length of self.dims' );
 
   for( let s = subspace.length ; s < self.dims.length ; s++ )
-  subspace.unshift( all );
+  subspace.unshift( _.all );
 
   let dims = [];
   let strides = [];
@@ -1783,7 +1784,7 @@ function subspace( subspace )
 
   for( let s = 0 ; s < subspace.length ; s++ )
   {
-    if( subspace[ s ] === all )
+    if( subspace[ s ] === _.all )
     {
       dims[ s ] = self.dims[ s ];
       strides[ s ] = self._stridesEffective[ s ];

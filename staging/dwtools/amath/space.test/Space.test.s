@@ -4427,10 +4427,10 @@ function _subspace( o )
   test.case = 'simple subspace'; /* */
 
   var m = make();
-  var c1 = m.subspace([ all,0 ]);
-  var c2 = m.subspace([ all,3 ]);
-  var r1 = m.subspace([ 0,all ]);
-  var r2 = m.subspace([ 2,all ]);
+  var c1 = m.subspace([ _.all,0 ]);
+  var c2 = m.subspace([ _.all,3 ]);
+  var r1 = m.subspace([ 0,_.all ]);
+  var r2 = m.subspace([ 2,_.all ]);
 
   var expected = space.makeCol([ 1,5,9 ]);
   test.identical( c1,expected );
@@ -4470,7 +4470,7 @@ function _subspace( o )
     +10, +11,
   ]);
 
-  var sub = m.subspace([ all,[ 1,3 ] ]);
+  var sub = m.subspace([ _.all,[ 1,3 ] ]);
   test.identical( sub,expected );
 
     test.case = 'modify subspaces'; /* */
@@ -4495,7 +4495,7 @@ function _subspace( o )
     +11, +12,
   ]);
 
-  var sub = m.subspace([ all,[ 2,4 ] ]);
+  var sub = m.subspace([ _.all,[ 2,4 ] ]);
   test.identical( sub,expected );
 
     test.case = 'modify subspaces'; /* */
@@ -4519,7 +4519,7 @@ function _subspace( o )
     +5, +6, +7, +8,
   ]);
 
-  var sub = m.subspace([ [ 0,2 ],all ]);
+  var sub = m.subspace([ [ 0,2 ],_.all ]);
   test.identical( sub,expected );
 
   test.case = 'modify subspaces'; /* */
@@ -4543,7 +4543,7 @@ function _subspace( o )
     +9, +10, +11, +12,
   ]);
 
-  var sub = m.subspace([ [ 1,3 ],all ]);
+  var sub = m.subspace([ [ 1,3 ],_.all ]);
   test.identical( sub,expected );
 
   test.case = 'modify subspace'; /* */
@@ -6568,7 +6568,7 @@ function addAtomWise( test )
   test.equivalent( r,expected );
   test.is( r !== m1 );
 
-  test.case = 'addAtomWise all sort of arguments'; /* */
+  test.case = 'addAtomWise _.all sort of arguments'; /* */
 
   remake();
 
@@ -6602,7 +6602,7 @@ function addAtomWise( test )
   test.equivalent( r,expected );
   test.is( r !== m5 );
 
-  test.case = 'addAtomWise all sort of arguments'; /* */
+  test.case = 'addAtomWise _.all sort of arguments'; /* */
 
   remake();
 
@@ -6770,7 +6770,7 @@ function subAtomWise( test )
   test.equivalent( r,expected );
   test.is( r !== m1 );
 
-  test.case = 'all sort of arguments'; /* */
+  test.case = '_.all sort of arguments'; /* */
 
   remake();
 
@@ -6804,7 +6804,7 @@ function subAtomWise( test )
   test.equivalent( r,expected );
   test.is( r !== m5 );
 
-  test.case = 'all sort of arguments'; /* */
+  test.case = '_.all sort of arguments'; /* */
 
   remake();
 
@@ -6858,6 +6858,7 @@ function subAtomWise( test )
 
 }
 
+// xxx
 //   test.case = 'subAtomWise 2 spaces'; /* */
 //
 //   remake();
@@ -6872,7 +6873,7 @@ function subAtomWise( test )
 //   test.equivalent( r,expected );
 //   test.is( r === m1 );
 //
-//   test.case = 'subAtomWise all sort of arguments'; /* */
+//   test.case = 'subAtomWise _.all sort of arguments'; /* */
 //
 //   remake();
 //
@@ -6904,7 +6905,7 @@ function subAtomWise( test )
 //   test.equivalent( r,expected );
 //   test.is( r !== m1 );
 //
-//   test.case = 'mulAtomWise all sort of arguments'; /* */
+//   test.case = 'mulAtomWise _.all sort of arguments'; /* */
 //
 //   remake();
 //
@@ -6934,7 +6935,7 @@ function subAtomWise( test )
 //   test.equivalent( r,expected );
 //   test.is( r !== m1 );
 //
-//   test.case = 'divAtomWise all sort of arguments'; /* */
+//   test.case = 'divAtomWise _.all sort of arguments'; /* */
 //
 //   remake();
 //
@@ -7039,7 +7040,7 @@ function subAtomWise( test )
 //   var r = space.addAtomWise( null,[ m1,10 ] );
 //   test.equivalent( r,expected );
 //
-//   test.case = 'addAtomWise all sort of arguments'; /* */
+//   test.case = 'addAtomWise _.all sort of arguments'; /* */
 //
 //   remake();
 //
@@ -7070,7 +7071,7 @@ function subAtomWise( test )
 //   var r = space.subAtomWise( null,[ m1,m2 ] );
 //   test.equivalent( r,expected );
 //
-//   test.case = 'subAtomWise all sort of arguments'; /* */
+//   test.case = 'subAtomWise _.all sort of arguments'; /* */
 //
 //   remake();
 //
@@ -7098,7 +7099,7 @@ function subAtomWise( test )
 //   var r = space.mulAtomWise( null,[ m1,m2 ] );
 //   test.equivalent( r,expected );
 //
-//   test.case = 'mulAtomWise all sort of arguments'; /* */
+//   test.case = 'mulAtomWise _.all sort of arguments'; /* */
 //
 //   remake();
 //
@@ -7126,7 +7127,7 @@ function subAtomWise( test )
 //   var r = space.divAtomWise( null,[ m1,m2 ] );
 //   test.equivalent( r,expected );
 //
-//   test.case = 'divAtomWise all sort of arguments'; /* */
+//   test.case = 'divAtomWise _.all sort of arguments'; /* */
 //
 //   remake();
 //
@@ -8746,9 +8747,9 @@ function triangulate( test )
 
   test.case = 'l*u should be same as original m';
 
-  u = u.subspace([ [ 0,3 ],all ]);
+  u = u.subspace([ [ 0,3 ], _.all ]);
   var mul = space.mul( null,[ l,u ] );
-  test.equivalent( mul,original );
+  test.equivalent( mul, original );
 
   test.case = 'triangulateLuNormal ( nrow < ncol )'; /* */
 
@@ -8802,7 +8803,7 @@ function triangulate( test )
 
   test.case = 'l*u should be same as original m';
 
-  u = u.subspace([ [ 0,3 ],all ]);
+  u = u.subspace([ [ 0,3 ],_.all ]);
   var mul = space.mul( null,[ l,u ] );
   test.equivalent( mul,original );
 
