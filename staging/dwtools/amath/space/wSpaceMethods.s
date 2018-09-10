@@ -3207,6 +3207,78 @@ function determinant()
   return result;
 }
 
+//
+
+function isDiagonal()
+{
+  let self = this;
+  let cols = self.length;
+  let rows = self.atomsPerElement;
+
+  for( var i = 0; i < cols; i++ )
+  {
+    for( var j = 0; j < rows; j++ )
+    {
+      debugger;
+      if( j !== i && self.atomGet( [ i, j ]) !== 0 )
+      return false
+    }
+  }
+
+  return true;
+}
+
+
+//
+
+function qR()
+{
+  let self = this;
+  let cols = self.length;
+  let rows = self.atomsPerElement;
+  logger.log( 'Matrix: ', self);
+  logger.log( 'Dims: ', rows, cols);
+
+  let a = self.clone();
+  for( var l = 0; l < 3; l ++ )
+  {
+    logger.log( 'Round', l)
+    let matrix = a;
+    // Calculate Q
+    let q = _.Space.make([ rows, cols ]);
+
+    for( var i = 0; i < cols; i++ )
+    {
+      let u = matrix.colVectorGet( i );
+
+      let sum = _.vector.from( _.array.makeArrayOfLengthZeroed( rows ) );
+      for( var j = 0; j < i ; j ++ )
+      {
+        let dot = _.vector.dot( u, _.vector.from( q.colVectorGet( j ) ) );
+        debugger;
+        logger.log(i, j, dot)
+        _.vector.addVectors( sum, _.vector.mulScalar( _.vector.from( q.colVectorGet( j ) ).clone(), - dot ) );
+      }
+
+      let e = _.vector.normalize( _.vector.addVectors( u.clone(), sum ) );
+      q.colSet( i, e );
+    }
+
+    // Calculate R
+    let r = _.Space.mul2Matrices( null, q.clone().transpose(), a );
+    logger.log( 'q', q, 'r', r );
+
+    a = _.Space.mul2Matrices( null, r, q );
+    logger.log('A', a)
+
+  }
+
+  return a;
+}
+
+//
+
+
 // --
 // relations
 // --
@@ -3467,6 +3539,9 @@ let Extend =
   minmaxRowWise : minmaxRowWise,
 
   determinant : determinant,
+
+  isDiagonal : isDiagonal,
+  qR : qR,
 
   //
 

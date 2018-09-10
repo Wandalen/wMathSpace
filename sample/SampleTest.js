@@ -9,27 +9,25 @@ var _ = wTools;
 // Manipulates local drive
 var provider = _.FileProvider.HardDrive();
 
-// Manipulates file on filesTree
-/*
-var tree =
-{
- "‪C:/Users/pabel/Pictures/" :
- {
-   'TEST.txt' : "content",
-   'empty_dir' : {}
- }
-}
-
-var provider = _.FileProvider.Extract({ filesTree : tree });
-*/
-
-/*Read file synchronously*/
 debugger;
 var data = provider.fileRead
 ({
-  pathFile : '‪C:/Users/pabel/Pictures/TEST.txt',
-  sync : 1
+  filePath: 'c:/users/pabel/pictures/black.jpg',
+  sync : 1,
+  encoding : 'buffer.bytes'
 });
 
-  debugger;
-console.log( data );
+debugger;
+for( var i = 0; i < 67 ; i++ )
+{
+//  console.log( data[ i ], data[ i + 1 ], data[ i + 2 ], data[ i + 3 ], data[ i + 4 ], data[ i + 5 ], );
+}
+
+let matrix = _.Space.make([ 2, 2 ]).copy([
+  8, 7,
+  1, 2
+]);
+
+let q = matrix.qR();
+
+logger.log('result', q )
