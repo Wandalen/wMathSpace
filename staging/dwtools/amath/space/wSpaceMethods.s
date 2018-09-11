@@ -3212,12 +3212,15 @@ function determinant()
 function isDiagonal()
 {
   let self = this;
+
+  _.assert( _.Space.is( self ) );
+
   let cols = self.length;
   let rows = self.atomsPerElement;
 
-  for( var i = 0; i < cols; i++ )
+  for( var i = 0; i < rows; i++ )
   {
-    for( var j = 0; j < rows; j++ )
+    for( var j = 0; j < cols; j++ )
     {
       debugger;
       if( j !== i && self.atomGet( [ i, j ]) !== 0 )
@@ -3228,21 +3231,55 @@ function isDiagonal()
   return true;
 }
 
+//
+
+function isUpperTriangle( accuracy )
+{
+  let self = this;
+
+  _.assert( _.Space.is( self ) );
+
+  if( !_.numberIs( accuracy ) || arguments.length === 0 )
+  accuracy = 1E-4;
+
+  let cols = self.length;
+  let rows = self.atomsPerElement;
+
+  for( var i = 0; i < rows; i++ )
+  {
+    for( var j = 0; j < cols; j++ )
+    {
+      debugger;
+      if( i > j )
+      {
+        let point = self.atomGet([ i, j ]);
+        if( 0 - accuracy > point || point > 0 + accuracy )
+        {
+          return false
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
 
 //
 
-function qR()
+function qR( )
 {
   let self = this;
   let cols = self.length;
   let rows = self.atomsPerElement;
-  logger.log( 'Matrix: ', self);
-  logger.log( 'Dims: ', rows, cols);
 
   let a = self.clone();
-  for( var l = 0; l < 3; l ++ )
+  let maxLoop = 0;
+
+
+  while( a.isUpperTriangle() === false && maxLoop < 10  )
   {
-    logger.log( 'Round', l)
+    logger.log('Loop',maxLoop, 'triangle',a.isUpperTriangle());
     let matrix = a;
     // Calculate Q
     let q = _.Space.make([ rows, cols ]);
@@ -3256,24 +3293,26 @@ function qR()
       {
         let dot = _.vector.dot( u, _.vector.from( q.colVectorGet( j ) ) );
         debugger;
-        logger.log(i, j, dot)
+
         _.vector.addVectors( sum, _.vector.mulScalar( _.vector.from( q.colVectorGet( j ) ).clone(), - dot ) );
       }
 
       let e = _.vector.normalize( _.vector.addVectors( u.clone(), sum ) );
       q.colSet( i, e );
     }
+    logger.log( 'q', q );
 
     // Calculate R
     let r = _.Space.mul2Matrices( null, q.clone().transpose(), a );
-    logger.log( 'q', q, 'r', r );
+    logger.log( 'r', r );
 
     a = _.Space.mul2Matrices( null, r, q );
     logger.log('A', a)
 
+    maxLoop = maxLoop + 1;
   }
 
-  return a;
+  return a.diagonalVectorGet();
 }
 
 //
@@ -3541,6 +3580,7 @@ let Extend =
   determinant : determinant,
 
   isDiagonal : isDiagonal,
+  isUpperTriangle : isUpperTriangle,
   qR : qR,
 
   //

@@ -23,9 +23,11 @@ for( var i = 0; i < 67 ; i++ )
 //  console.log( data[ i ], data[ i + 1 ], data[ i + 2 ], data[ i + 3 ], data[ i + 4 ], data[ i + 5 ], );
 }
 
-let matrix = _.Space.make([ 2, 2 ]).copy([
-  8, 7,
-  1, 2
+logger.log( data.length );
+let matrix = _.Space.make([ 3, 3 ]).copy([
+  8, 7, 1,
+  1, 2, 0,
+  3, 3, 3
 ]);
 
 let q = matrix.qR();

@@ -10036,6 +10036,333 @@ function polynomClosestFor( test )
 
 }
 
+//
+
+function isDiagonal( test )
+{
+
+  test.description = 'Matrix remains unchanged'; //
+
+  var matrix =  _.Space.make( [ 4, 6 ] ).copy
+  ([
+    0,   0,   0,   0, - 1,   1,
+    1, - 1,   0,   0,   0,   0,
+    0,   0,   1, - 1,   0,   0,
+    - 1,   0, - 1,   0,   0, - 1
+  ]);
+  var expected = false;
+
+  var gotBool = matrix.isDiagonal( );
+  test.identical( gotBool, expected );
+
+  var oldMatrix =  _.Space.make( [ 4, 6 ] ).copy
+  ([
+    0,   0,   0,   0, - 1,   1,
+    1, - 1,   0,   0,   0,   0,
+    0,   0,   1, - 1,   0,   0,
+    - 1,   0, - 1,   0,   0, - 1
+  ]);
+  test.identical( matrix, oldMatrix );
+
+  test.description = 'Matrix Not diagonal - square'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0,   0,   0,   0,
+    1, - 1,   0,   0,
+    0,   0,   1, - 1,
+    - 1, 0,  - 1,  0
+  ]);
+  var expected = false;
+
+  var gotBool = matrix.isDiagonal( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix Not diagonal - Upper Triangular'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    1,   0,   3,   4,
+    0, - 1,   2,   0,
+    0,   0,   1, - 1,
+    0,   0,   0,  0.5
+  ]);
+  var expected = false;
+
+  var gotBool = matrix.isDiagonal( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix Not diagonal - Lower Triangular'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0.5,  0,   0,  0,
+    1,  - 1,   0,  0,
+    2,    0,   1,  0,
+    - 1, 3.4, - 1, 2
+  ]);
+  var expected = false;
+
+  var gotBool = matrix.isDiagonal( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix not square'; //
+
+  var matrix =  _.Space.make( [ 4, 2 ] ).copy
+  ([
+    0.5,  0,
+    1,  - 1,
+    2,    0,
+    - 1, 3.4
+  ]);
+  var expected = false;
+
+  var gotBool = matrix.isDiagonal( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix Diagonal'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0.5, 0, 0, 0,
+    0, - 1, 0, 0,
+    0,  0,  1, 0,
+    0,  0, -0, 2
+  ]);
+  var expected = true;
+
+  var gotBool = matrix.isDiagonal( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix Diagonal 6x6'; //
+
+  var matrix =  _.Space.make( [ 6, 6 ] ).copy
+  ([
+    0.5, 0, 0, 0, 0, 0,
+    0, - 1, 0, 0, 0, 0,
+    0,  0,  1, 0, 0, 0,
+    0,  0, -0, 2, 0, 0,
+    0,  0,  0, 0, 3, 0,
+    0,  0,  0, 0, 0, - 1
+  ]);
+  var expected = true;
+
+  var gotBool = matrix.isDiagonal( );
+  test.identical( gotBool, expected );
+
+
+  test.description = 'Matrix Diagonal not square'; //
+
+  var matrix =  _.Space.make( [ 4, 3 ] ).copy
+  ([
+    0.5, 0, 0,
+    0, - 1, 0,
+    0,  0,  1,
+    0,  0, -0
+  ]);
+  var expected = true;
+
+  var gotBool = matrix.isDiagonal( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Zero matrix '; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0,  0, 0, 0,
+    0,  0, 0, 0,
+    0,  0,  0, 0,
+    0,  0, -0, 0
+  ]);
+  var expected = true;
+
+  var gotBool = matrix.isDiagonal( );
+  test.identical( gotBool, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  var matrix =  'matrix';
+  test.shouldThrowErrorSync( () => matrix.isDiagonal( matrix ));
+  var matrix =  null;
+  test.shouldThrowErrorSync( () => matrix.isDiagonal( matrix ));
+  var matrix =  NaN;
+  test.shouldThrowErrorSync( () => matrix.isDiagonal( matrix ));
+  var matrix =  [ 0, 0, 0 ];
+  test.shouldThrowErrorSync( () => matrix.isDiagonal( matrix ));
+  var matrix =  _.vector.from( [ 0, 0, 0 ] );
+  test.shouldThrowErrorSync( () => matrix.isDiagonal( matrix ));
+
+}
+
+//
+
+function isUpperTriangle( test )
+{
+
+  test.description = 'Matrix remains unchanged'; //
+
+  var matrix =  _.Space.make( [ 4, 6 ] ).copy
+  ([
+    0,   0,   0,   0, - 1,   1,
+    1, - 1,   0,   0,   0,   0,
+    0,   0,   1, - 1,   0,   0,
+    - 1,   0, - 1,   0,   0, - 1
+  ]);
+  var expected = false;
+
+  var gotBool = matrix.isUpperTriangle( );
+  test.identical( gotBool, expected );
+
+  var oldMatrix =  _.Space.make( [ 4, 6 ] ).copy
+  ([
+    0,   0,   0,   0, - 1,   1,
+    1, - 1,   0,   0,   0,   0,
+    0,   0,   1, - 1,   0,   0,
+    - 1,   0, - 1,   0,   0, - 1
+  ]);
+  test.identical( matrix, oldMatrix );
+
+  test.description = 'Matrix Not triangular - square'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0,   0,   0,   0,
+    1, - 1,   0,   0,
+    0,   0,   1, - 1,
+    - 1, 0,  - 1,  0
+  ]);
+  var expected = false;
+
+  var gotBool = matrix.isUpperTriangle( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix Not diagonal - Lower Triangular'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0.5,  0,   0,  0,
+    1,  - 1,   0,  0,
+    2,    0,   1,  0,
+    - 1, 3.4, - 1, 2
+  ]);
+  var expected = false;
+
+  var gotBool = matrix.isUpperTriangle( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix not square'; //
+
+  var matrix =  _.Space.make( [ 4, 2 ] ).copy
+  ([
+    0.5,  0,
+    1,  - 1,
+    2,    0,
+    - 1, 3.4
+  ]);
+  var expected = false;
+
+  var gotBool = matrix.isUpperTriangle( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix Upper Triangular'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    1,   0,   3,   4,
+    0, - 1,   2,   0,
+    0,   0,   1, - 1,
+    0,   0,   0,  0.5
+  ]);
+  var expected = true;
+
+  var gotBool = matrix.isUpperTriangle( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix Diagonal'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0.5, 0, 0, 0,
+    0, - 1, 0, 0,
+    0,  0,  1, 0,
+    0,  0, -0, 2
+  ]);
+  var expected = true;
+
+  var gotBool = matrix.isUpperTriangle( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix Upper Triangular 6x6'; //
+
+  var matrix =  _.Space.make( [ 6, 6 ] ).copy
+  ([
+    0.5, 5, 8, 0, 3, -0.5,
+    0, - 1, 0, 8, 0, 2,
+    0,  0,  1, 0, 3, 2.2,
+    0,  0, -0, 2, 0, 0,
+    0,  0,  0, 0, 3, 7,
+    0,  0,  0, 0, 0, - 1
+  ]);
+  var expected = true;
+
+  var gotBool = matrix.isUpperTriangle( );
+  test.identical( gotBool, expected );
+
+
+  test.description = 'Matrix Upper Triangular not square'; //
+
+  var matrix =  _.Space.make( [ 4, 3 ] ).copy
+  ([
+    0.5, 0, 0,
+    0, - 1, 0,
+    0,  0,  1,
+    0,  0, -0
+  ]);
+  var expected = true;
+
+  var gotBool = matrix.isUpperTriangle( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Zero matrix '; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0,  0, 0, 0,
+    0,  0, 0, 0,
+    0,  0,  0, 0,
+    0,  0, -0, 0
+  ]);
+  var expected = true;
+
+  var gotBool = matrix.isUpperTriangle( );
+  test.identical( gotBool, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  var matrix = 'matrix';
+  test.shouldThrowErrorSync( () => matrix.isUpperTriangle( ));
+  var matrix = NaN;
+  test.shouldThrowErrorSync( () => matrix.isUpperTriangle( ));
+  var matrix = null;
+  test.shouldThrowErrorSync( () => matrix.isUpperTriangle( ));
+  var matrix = [ 0, 0, 0 ];
+  test.shouldThrowErrorSync( () => matrix.isUpperTriangle( ));
+  var matrix = _.vector.from( [ 0, 0, 0 ] );
+  test.shouldThrowErrorSync( () => matrix.isUpperTriangle( ));
+
+
+}
+
+
+
+
+
 // --
 // declare
 // --
@@ -10121,6 +10448,9 @@ var Self =
 
     polynomExactFor : polynomExactFor,
     polynomClosestFor : polynomClosestFor,
+
+    isDiagonal : isDiagonal,
+    isUpperTriangle : isUpperTriangle,
 
   },
 
