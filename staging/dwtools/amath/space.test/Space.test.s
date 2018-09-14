@@ -10359,7 +10359,345 @@ function isUpperTriangle( test )
 
 }
 
+//
 
+function qrIteration( test )
+{
+
+  test.description = 'Matrix remains unchanged'; //
+
+  var matrix =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    1, 2,
+    2, 1,
+  ]);
+  var expected = _.vector.from( [ 3, -1 ]);
+
+  var gotValues = matrix.qrIteration( );
+  test.equivalent( gotValues, expected );
+
+  var oldMatrix =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    1, 2,
+    2, 1
+  ]);
+  test.equivalent( matrix, oldMatrix );
+
+  test.description = 'Matrix with one repeated eigenvalue 3x3'; //
+
+  var matrix =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    1,  -3,  3,
+    3, - 5,  3,
+    6, - 6,  4
+  ]);
+  var expected = _.vector.from( [ 4, -2, -2 ] );
+
+  var gotValues = matrix.qrIteration( );
+  test.equivalent( gotValues, expected );
+
+  test.description = 'Matrix with different eigenvalues 3x3'; //
+
+  var matrix =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    13,  -4,  2,
+    -4,  11, -2,
+    2,   -2,  8
+  ]);
+  var expected = _.vector.from( [ 17, 8, 7 ] );
+
+  var gotValues = matrix.qrIteration( );
+  test.equivalent( gotValues, expected );
+
+  test.description = 'Matrix 2x2'; //
+
+  var matrix =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    8,  7,
+    1,  2
+  ]);
+  var expected = _.vector.from( [ 9, 1 ] );
+
+  var gotValues = matrix.qrIteration( );
+  test.equivalent( gotValues, expected );
+
+  test.description = 'Matrix 4x4'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    17, 24, 1, 8,
+    23, 5, 7, 14,
+    4, 6, 13, 20,
+    10, 12, 19, 21
+  ]);
+  var expected = _.vector.from( [ 52.01152, 21.52969, -13.93910, -3.60211 ] );
+
+  var gotValues = matrix.qrIteration( );
+  test.equivalent( gotValues, expected );
+
+  test.description = 'Symmetric matrix'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    1, 0.5, 1/3, 0.25,
+    0.5, 1, 2/3, 0.5,
+    1/3, 2/3, 1, 0.75,
+    0.25, 0.5, 0.75, 1
+  ]);
+  var expected = _.vector.from( [ 2.5362, 0.8482, 0.4078, 0.2078 ] );
+
+  var gotValues = matrix.qrIteration( );
+  test.equivalent( gotValues, expected );
+
+  test.description = 'Matrix 5x5 Symmetric'; //
+
+  var matrix =  _.Space.make( [ 5, 5 ] ).copy
+  ([
+    17, 24, 0, 8, 0,
+    24, 5, 6, 0, 0,
+    0, 6, 13, 20, 0,
+    8, 0, 20, 21, 3,
+    0, 0, 0, 3, 9
+  ]);
+  var expected = _.vector.from( [ 43.943070, 29.437279, -17.139794, 9.139799, -0.380354 ] );
+
+  var gotValues = matrix.qrIteration( );
+  test.equivalent( gotValues, expected );
+  
+  test.description = 'Matrix Diagonal'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0.5, 0, 0, 0,
+    0, - 1, 0, 0,
+    0,  0,  1, 0,
+    0,  0, -0, 2
+  ]);
+  var expected = _.vector.from( [ 0.5, -1, 1, 2 ] );
+
+  var gotValues = matrix.qrIteration( );
+  test.equivalent( gotValues, expected );
+
+  test.description = 'Input Q and R'; //
+
+  var matrix =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    1, - 3,  3,
+    3, - 5,  3,
+    6, - 6,  4
+  ]);
+  var q = _.Space.make( [ 3, 3 ] );
+  var r = _.Space.make( [ 3, 3 ] );
+  var expected = _.vector.from( [ 4, -2, -2 ] );
+
+  var gotValues = matrix.qrIteration( q, r );
+  test.equivalent( gotValues, expected );
+
+  var oldQ =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    0.408248, -0.577350, 0.707106,
+    0.408248, -0.577350, -0.707106,
+    0.816496, 0.577350, 0.000000
+  ]);
+  var oldQ =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    -0.408248, -0.577350, 0.707106,
+    -0.408248, -0.577350, -0.707106,
+    -0.816496, 0.577350, 0.000000
+  ]);
+  test.equivalent( q, oldQ );
+
+  var oldR =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    4.0000167, -4.242737, - 10.392261,
+    0,  2,  0,
+    0,  0,  2
+  ]);
+  var oldR =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    -4.0000167, 4.242737, 10.392261,
+    0,  2,  0,
+    0,  0,  2
+  ]);
+  test.equivalent( r, oldR );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  var matrix = 'matrix';
+  test.shouldThrowErrorSync( () => matrix.qrIteration( ));
+  var matrix = NaN;
+  test.shouldThrowErrorSync( () => matrix.qrIteration( ));
+  var matrix = null;
+  test.shouldThrowErrorSync( () => matrix.qrIteration( ));
+  var matrix = [ 0, 0, 0 ];
+  test.shouldThrowErrorSync( () => matrix.qrIteration( ));
+  var matrix = _.vector.from( [ 0, 0, 0 ] );
+  test.shouldThrowErrorSync( () => matrix.qrIteration( ));
+
+}
+
+qrIteration.accuracy = 1E-4;
+qrIteration.timeOut = 20000;
+
+//
+
+function qrDecomposition( test )
+{
+
+  test.description = 'Matrix remains unchanged'; //
+
+  var matrix =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    1, 2,
+    2, 1,
+  ]);
+
+  var q = _.Space.make( [ 2, 2 ] );
+  var r = _.Space.make( [ 2, 2 ] );
+  var gotValues = matrix.qrDecompositionGS( q, r );
+
+  var oldMatrix =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    1, 2,
+    2, 1
+  ]);
+  test.equivalent( matrix, oldMatrix );
+
+  var gotValues = matrix.qrDecompositionHH( q, r );
+
+  var oldMatrix =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    1, 2,
+    2, 1
+  ]);
+  test.equivalent( matrix, oldMatrix );
+
+  test.description = 'Matrix with one repeated eigenvalue 3x3'; //
+
+  var matrix =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    12, -51, 4,
+    6, 167, -68,
+    -4, -24, -41,
+  ]);
+  var q = _.Space.make( [ 3, 3 ] );
+  var r = _.Space.make( [ 3, 3 ] );
+  var gotValues = matrix.qrDecompositionGS( q, r );
+  test.equivalent( matrix, _.Space.mul2Matrices( null, q, r ) );
+
+  var expectedQ =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    0.857143, -0.467324, -0.216597,
+    0.428571, 0.880322, -0.203369,
+    -0.285714, -0.081489, -0.954844,
+  ]);
+  test.equivalent( expectedQ, q );
+
+  var expectedR =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    14, 34.714287, -14,
+    0, 172.803116, -58.390148,
+    0, 0, 52.111328
+  ]);
+  test.equivalent( expectedR, r );
+
+  gotValues = matrix.qrDecompositionHH( q, r );
+  test.equivalent( matrix, _.Space.mul2Matrices( null, q, r ) );
+
+  var expectedQ =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    -0.857143, 0.467324, -0.216597,
+    -0.428571, -0.880322, -0.203369,
+    0.285714, 0.081489, -0.954844,
+  ]);
+  test.equivalent( expectedQ, q );
+
+  var expectedR =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    -14, -34.714287, 14,
+    0, -172.803116, 58.390148,
+    0, 0, 52.111328
+  ]);
+  test.equivalent( expectedR, r );
+
+  test.description = 'Symmetric matrix with different eigenvalues 3x3'; //
+
+  var matrix =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    13,  -4,  2,
+    -4,  11, -2,
+    2,   -2,  8
+  ]);
+  var q = _.Space.make( [ 3, 3 ] );
+  var r = _.Space.make( [ 3, 3 ] );
+  var gotValues = matrix.qrDecompositionGS( q, r );
+  test.equivalent( matrix, _.Space.mul2Matrices( null, q, r ) );
+
+  var expectedQ =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    0.945611, 0.306672, -0.108501,
+    -0.290957, 0.946511, 0.139501,
+    0.145479, -0.100345, 0.984260,
+  ]);
+  test.equivalent( expectedQ, q );
+
+  var expectedR =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    13.747727, -7.273930, 3.636965,
+    0, 9.385624, -2.082437,
+    0, 0, 7.378071,
+  ]);
+  test.equivalent( expectedR, r );
+
+  gotValues = matrix.qrDecompositionHH( q, r );
+  test.equivalent( matrix, _.Space.mul2Matrices( null, q, r ) );
+
+  var expectedQ =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    -0.945611, -0.306672, 0.108501,
+    0.290957, -0.946511, -0.139501,
+    -0.145479, 0.100345, -0.984260,
+  ]);
+  test.equivalent( expectedQ, q );
+
+  var expectedR =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    -13.747727, 7.273930, -3.636965,
+    0, -9.385624, 2.082437,
+    0, 0, -7.378071,
+  ]);
+  test.equivalent( expectedR, r );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  var matrix = 'matrix';
+  var q = _.Space.make([ 3, 3 ]);
+  var r = _.Space.make([ 3, 3 ]);
+  test.shouldThrowErrorSync( () => matrix.qrDecompositionGS( q, r ));
+  test.shouldThrowErrorSync( () => matrix.qrDecompositionHH( q, r ));
+  var matrix = NaN;
+  test.shouldThrowErrorSync( () => matrix.qrDecompositionGS( q, r ));
+  test.shouldThrowErrorSync( () => matrix.qrDecompositionHH( q, r ));
+  var matrix = null;
+  test.shouldThrowErrorSync( () => matrix.qrDecompositionGS( q, r ));
+  test.shouldThrowErrorSync( () => matrix.qrDecompositionHH( q, r ));
+  var matrix = [ 0, 0, 0 ];
+  test.shouldThrowErrorSync( () => matrix.qrDecompositionGS( q, r ));
+  test.shouldThrowErrorSync( () => matrix.qrDecompositionHH( q, r ));
+  var matrix = _.vector.from( [ 0, 0, 0 ] );
+  test.shouldThrowErrorSync( () => matrix.qrDecompositionGS( q, r ));
+  test.shouldThrowErrorSync( () => matrix.qrDecompositionHH( q, r ));
+
+}
+
+qrDecomposition.accuracy = 1E-4;
+qrDecomposition.timeOut = 20000;
 
 
 
@@ -10373,7 +10711,7 @@ var Self =
   name : 'Tools/Math/Space',
   silencing : 1,
   enabled : 1,
-  // routine : 'construct',
+  // routine : 'qR',
   // verbosity : 7,
 
   context :
@@ -10451,6 +10789,8 @@ var Self =
 
     isDiagonal : isDiagonal,
     isUpperTriangle : isUpperTriangle,
+    qrIteration : qrIteration,
+    qrDecomposition : qrDecomposition,
 
   },
 

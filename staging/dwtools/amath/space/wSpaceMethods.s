@@ -3218,9 +3218,9 @@ function isDiagonal()
   let cols = self.length;
   let rows = self.atomsPerElement;
 
-  for( var i = 0; i < rows; i++ )
+  for( let i = 0; i < rows; i++ )
   {
-    for( var j = 0; j < cols; j++ )
+    for( let j = 0; j < cols; j++ )
     {
       debugger;
       if( j !== i && self.atomGet( [ i, j ]) !== 0 )
@@ -3240,14 +3240,14 @@ function isUpperTriangle( accuracy )
   _.assert( _.Space.is( self ) );
 
   if( !_.numberIs( accuracy ) || arguments.length === 0 )
-  accuracy = 1E-4;
+  accuracy = 1E-5;
 
   let cols = self.length;
   let rows = self.atomsPerElement;
 
-  for( var i = 0; i < rows; i++ )
+  for( let i = 0; i < rows; i++ )
   {
-    for( var j = 0; j < cols; j++ )
+    for( let j = 0; j < cols; j++ )
     {
       debugger;
       if( i > j )
@@ -3264,58 +3264,244 @@ function isUpperTriangle( accuracy )
   return true;
 }
 
-
 //
 
-function qR( )
+function qrIteration( q, r )
 {
   let self = this;
+  _.assert( _.Space.is( self ) );
+  //_.assert( !isNaN( self.clone().invert().atomGet([ 0, 0 ]) ), 'Matrix must be invertible' )
+
   let cols = self.length;
   let rows = self.atomsPerElement;
 
-  let a = self.clone();
-  let maxLoop = 0;
-
-
-  while( a.isUpperTriangle() === false && maxLoop < 10  )
+  if( arguments.length === 0 )
   {
-    logger.log('Loop',maxLoop, 'triangle',a.isUpperTriangle());
-    let matrix = a;
-    // Calculate Q
-    let q = _.Space.make([ rows, cols ]);
+    var q = _.Space.makeIdentity( [ rows, cols ] );
+    var r = _.Space.make([ rows, cols ]);
+  }
+
+  let a = self.clone();
+  let loop = 0;
+  q.copy( _.Space.makeIdentity( rows ) );
+
+  while( a.isUpperTriangle() === false && loop < 1000 )
+  {
+
+    var qInt = _.Space.makeIdentity([ rows, cols ]);
+    var rInt = _.Space.makeIdentity([ rows, cols ]);
+    a.qrDecompositionHH( qInt, rInt );
+
+    // Calculate transformation matrix
+    q.mulLeft( qInt );
+
+    a.mul2Matrices( rInt, qInt );
+
+    loop = loop + 1;
 
     for( var i = 0; i < cols; i++ )
     {
-      let u = matrix.colVectorGet( i );
-
-      let sum = _.vector.from( _.array.makeArrayOfLengthZeroed( rows ) );
-      for( var j = 0; j < i ; j ++ )
-      {
-        let dot = _.vector.dot( u, _.vector.from( q.colVectorGet( j ) ) );
-        debugger;
-
-        _.vector.addVectors( sum, _.vector.mulScalar( _.vector.from( q.colVectorGet( j ) ).clone(), - dot ) );
-      }
-
-      let e = _.vector.normalize( _.vector.addVectors( u.clone(), sum ) );
-      q.colSet( i, e );
+      r.colSet( i, rInt.colVectorGet( i ) );
     }
-    logger.log( 'q', q );
-
-    // Calculate R
-    let r = _.Space.mul2Matrices( null, q.clone().transpose(), a );
-    logger.log( 'r', r );
-
-    a = _.Space.mul2Matrices( null, r, q );
-    logger.log('A', a)
-
-    maxLoop = maxLoop + 1;
   }
+
+  q.copy( q )
 
   return a.diagonalVectorGet();
 }
 
 //
+
+function qrDecompositionGS( q, r )
+{
+  let self = this;
+  _.assert( _.Space.is( self ) );
+  _.assert( _.Space.is( q ) );
+  _.assert( _.Space.is( r ) );
+
+  let cols = self.length;
+  let rows = self.atomsPerElement;
+
+  _.assert( !isNaN( self.clone().invert().atomGet([ 0, 0 ]) ), 'Matrix must be invertible' )
+
+  let matrix = self.clone();
+  q.copy( _.Space.makeIdentity( [ rows, cols ] ) );
+
+  var qInt = _.Space.makeIdentity([ rows, cols ]);
+
+  for( let i = 0; i < cols; i++ )
+  {
+    let col = matrix.colVectorGet( i );
+    let sum = _.vector.from( _.array.makeArrayOfLengthZeroed( rows ) );
+    for( let j = 0; j < i ; j ++ )
+    {
+      let dot = _.vector.dot( col, _.vector.from( qInt.colVectorGet( j ) ) );
+      debugger;
+
+      _.vector.addVectors( sum, _.vector.mulScalar( _.vector.from( qInt.colVectorGet( j ) ).clone(), - dot ) );
+    }
+    let e = _.vector.normalize( _.vector.addVectors( col.clone(), sum ) );
+    qInt.colSet( i, e );
+  }
+
+  // Calculate R
+  r.mul2Matrices( qInt.clone().transpose(), matrix );
+
+  // Calculate transformation matrix
+  q.mulLeft( qInt );
+  let a = _.Space.make([ cols, rows ]);
+}
+
+//
+
+function qrDecompositionHH( q, r )
+{
+  let self = this;
+  _.assert( _.Space.is( self ) );
+  _.assert( _.Space.is( q ) );
+  _.assert( _.Space.is( r ) );
+
+  let cols = self.length;
+  let rows = self.atomsPerElement;
+
+  let matrix = self.clone();
+
+  q.copy( _.Space.makeIdentity( rows ) );
+  let identity = _.Space.makeIdentity( rows );
+
+  // Calculate Q
+  for( let j = 0; j < cols; j++ )
+  {
+    let u = _.vector.from( _.array.makeArrayOfLengthZeroed( rows ) );
+    let e = identity.clone().colVectorGet( j );
+    let col = matrix.clone().colVectorGet( j );
+
+    for( let i = 0; i < j; i ++ )
+    {
+      col.eSet( i, 0 );
+    }
+    debugger;
+    let c = 0;
+
+    if( matrix.atomGet( [ j, j ] ) > 0 )
+    {
+      c = 1;
+    }
+    else
+    {
+      c = -1;
+    }
+    u = _.vector.addVectors( col, e.mulScalar( c*col.mag() ) ).normalize();
+
+    debugger;
+    let m = _.Space.make( [ rows, cols ] ).fromVectors( u, u );
+
+    let h = m.addMatrix( identity, m.mulScalar( -2 ) );
+
+    q.mulLeft( h );
+
+    matrix = _.Space.mul2Matrices( null, h, matrix );
+  }
+
+  r.copy( matrix );
+}
+
+//
+
+function fromVectors( v1, v2 )
+{
+  _.assert( _.vectorIs( v1 ) );
+  _.assert( _.vectorIs( v2 ) );
+  _.assert( v1.length === v2.length );
+
+  let matrix = _.Space.make( [ v1.length, v2.length ] );
+
+  for( let i = 0; i < v1.length; i ++ )
+  {
+    for( let j = 0; j < v2.length; j ++ )
+    {
+      matrix.atomSet( [ i, j ], v1.eGet( i )*v2.eGet( j ) );
+    }
+  }
+
+  return matrix;
+}
+
+//
+
+function addMatrix( m1, m2 )
+{
+  _.assert( _.spaceIs( m1 ) );
+  _.assert( _.spaceIs( m2 ) );
+
+  let dims1 = _.Space.dimsOf( m1 ) ;
+  let dims2 = _.Space.dimsOf( m2 ) ;
+  _.assert( dims1[ 0 ] === dims2[ 0 ] );
+  _.assert( dims1[ 1 ] === dims2[ 1 ] );
+
+  let rows = dims1[ 0 ];
+  let cols = dims1[ 1 ];
+
+  let matrix = _.Space.make([ rows, cols ]);
+
+  for( let i = 0; i < rows; i ++ )
+  {
+    for( let j = 0; j < cols; j ++ )
+    {
+      matrix.atomSet( [ i, j ], m1.atomGet( [ i, j ] ) + m2.atomGet( [ i, j ] ) );
+    }
+  }
+
+  return matrix;
+}
+
+//
+
+function svd()
+{
+  let self = this;
+  _.assert( _.Space.is( self ) );
+
+  let dims = _.Space.dimsOf( self );
+  let cols = dims[ 1 ];
+  let rows = dims[ 0 ];
+  logger.log('Dims', rows, cols );
+
+  let aaT = _.Space.mul2Matrices( null, self, self.clone().transpose() );
+  logger.log( 'aat',aaT)
+  let qAAT = _.Space.make( [ rows, rows ] );
+  let rAAT = _.Space.make( [ rows, rows ] );
+  logger.log('QR ITERATION')
+  aaT.qrIteration( qAAT, rAAT );
+  logger.log('END')
+  logger.log( 'q', qAAT )
+  logger.log( 'r', rAAT )
+
+
+  let aTa = _.Space.mul2Matrices( null, self.clone().transpose(), self );
+  logger.log( 'ata',aTa)
+  let qATA = _.Space.make( [ cols, cols ] );
+  let rATA = _.Space.make( [ cols, cols ] );
+  logger.log('QR ITERATION')
+  aTa.qrIteration( qATA, rATA );
+  logger.log('END')
+  logger.log( 'q', qATA )
+  logger.log( 'r', rATA )
+
+  let s = _.Space.make([ rows, cols ]);
+
+  let min = rows;
+  if( cols < rows )
+  min = cols;
+  
+  for( var i = 0; i < min; i++ )
+  {
+    s.atomSet( [ i, i ], Math.sqrt( Math.abs( rATA.atomGet( [ i, i ] ) ) ) );
+  }
+
+  logger.log('S', s )
+
+}
 
 
 // --
@@ -3581,7 +3767,12 @@ let Extend =
 
   isDiagonal : isDiagonal,
   isUpperTriangle : isUpperTriangle,
-  qR : qR,
+  qrIteration : qrIteration,
+  qrDecompositionGS : qrDecompositionGS,
+  qrDecompositionHH : qrDecompositionHH,
+  fromVectors : fromVectors,
+  addMatrix : addMatrix,
+  svd : svd,
 
   //
 
