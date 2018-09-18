@@ -10986,6 +10986,55 @@ function svd( test )
   var uSVT = _.Space.mul2Matrices( null, u, sVT );
   test.equivalent( oldMatrix, uSVT );
 
+  test.description = '3x3 Matrix'; //
+
+  var matrix =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    1, 2, 3,
+    -2, 3, 8,
+    5, 1, -3
+  ]);
+
+  var u = _.Space.make( [ 3, 3 ] );
+  var s = _.Space.make( [ 3, 3 ] );
+  var v = _.Space.make( [ 3, 3 ] );
+
+  var gotValues = matrix.svd( u, s, v );
+
+  var expectedU =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    0.287101, -0.477321, -0.830504,
+    0.864001, -0.245327, 0.439679,
+    -0.413613, -0.843789, 0.341972
+  ]);
+  test.equivalent( u, expectedU );
+
+  var expectedS =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    10.05705738, 0, 0,
+    0.000, 4.985533, 0,
+    0, 0, 0.000490
+  ]);
+  test.equivalent( s, expectedS );
+
+  var expectedV =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    -0.348906, -0.843563, 0.742781,
+    0.273697, -0.508353, 0.557086,
+    0.8963, -0.173144, 0.371391
+  ]);
+  test.equivalent( v, expectedV );
+
+  var oldMatrix =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    1, 2, 3,
+    -2, 3, 8,
+    5, 1, -3
+  ]);
+  var sVT = _.Space.mul2Matrices( null, s, v.clone().transpose() );
+  var uSVT = _.Space.mul2Matrices( null, u, sVT );
+  test.equivalent( oldMatrix, uSVT );
+
   test.description = '4x2 Matrix'; //
 
   var matrix =  _.Space.make( [ 4, 2 ] ).copy
@@ -11038,6 +11087,108 @@ function svd( test )
   var uSVT = _.Space.mul2Matrices( null, u, sVT );
   test.equivalent( oldMatrix, uSVT );
 
+  test.description = '4x5 Matrix'; //
+
+  var matrix =  _.Space.make( [ 4, 5 ] ).copy
+  ([
+    1, 0, 0, 0, 2,
+    0, 0, 3, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 2, 0, 0, 0
+  ]);
+
+  var u = _.Space.make( [ 4, 4 ] );
+  var s = _.Space.make( [ 4, 5 ] );
+  var v = _.Space.make( [ 5, 5 ] );
+
+  var gotValues = matrix.svd( u, s, v );
+  var expectedU = _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0, 1, 0, 0,
+    1, 0, 0, 0,
+    0, 0, 0, 1,
+    0, 0, 1, 0
+  ]);
+  test.equivalent( u, expectedU );
+
+  var expectedS =  _.Space.make( [ 4, 5 ] ).copy
+  ([
+    3, 0, 0, 0, 0,
+    0, Math.sqrt( 5 ), 0, 0, 0,
+    0, 0, 2, 0, 0,
+    0, 0, 0, 0, 0
+  ]);
+
+  test.equivalent( s, expectedS );
+
+  var expectedV =  _.Space.make( [ 5, 5 ] ).copy
+  ([
+    0, Math.sqrt(0.2), 0, 0, 0,
+    0, 0, 1, 0, 0,
+    1, 0, 0, 0, 0,
+    0, 0, 0, 0, 1,
+    0, Math.sqrt( 0.8 ), 0, 0, 0
+  ]);
+
+  test.equivalent( v, expectedV );
+
+  var oldMatrix =   _.Space.make( [ 4, 5 ] ).copy
+  ([
+    1, 0, 0, 0, 2,
+    0, 0, 3, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 2, 0, 0, 0
+  ]);
+  var sVT = _.Space.mul2Matrices( null, s, v.clone().transpose() );
+  var uSVT = _.Space.mul2Matrices( null, u, sVT );
+  test.equivalent( oldMatrix, uSVT );
+
+  test.description = '7x5 Matrix'; //
+
+  var matrix =  _.Space.make( [ 7, 5 ] ).copy
+  ([
+    1, 1, 1, 0, 0,
+    2, 2, 2, 0, 0,
+    1, 1, 1, 0, 0,
+    5, 5, 5, 0, 0,
+    0, 0, 0, 2, 2,
+    0, 0, 0, 3, 3,
+    0, 0, 0, 1, 1
+  ]);
+
+  var u = _.Space.make( [ 7, 7 ] );
+  var s = _.Space.make( [ 7, 5 ] );
+  var v = _.Space.make( [ 5, 5 ] );
+
+  var gotValues = matrix.svd( u, s, v );
+
+  var expectedS =  _.Space.make( [ 7, 5 ] ).copy
+  ([
+    9.64365, 0, 0, 0, 0,
+    0, 5.291502, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+  ]);
+  test.equivalent( s, expectedS );
+
+  var oldMatrix = _.Space.make( [ 7, 5 ] ).copy
+  ([
+    1, 1, 1, 0, 0,
+    2, 2, 2, 0, 0,
+    1, 1, 1, 0, 0,
+    5, 5, 5, 0, 0,
+    0, 0, 0, 2, 2,
+    0, 0, 0, 3, 3,
+    0, 0, 0, 1, 1
+  ]);
+
+  var sVT = _.Space.mul2Matrices( null, s, v.clone().transpose() );
+  var uSVT = _.Space.mul2Matrices( null, u, sVT );
+  test.equivalent( oldMatrix, uSVT );
+
   /* */
 
   if( !Config.debug )
@@ -11060,7 +11211,7 @@ function svd( test )
 }
 
 
-svd.accuracy = 1E-4;
+svd.accuracy = 1E-3;
 
 // --
 // declare

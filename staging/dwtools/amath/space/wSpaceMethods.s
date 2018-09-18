@@ -3330,7 +3330,6 @@ function qrIteration( q, r )
     var qInt = _.Space.makeIdentity([ rows, cols ]);
     var rInt = _.Space.makeIdentity([ rows, cols ]);
     a.qrDecompositionHH( qInt, rInt );
-
     // Calculate transformation matrix
     q.mulLeft( qInt );
 
@@ -3339,33 +3338,40 @@ function qrIteration( q, r )
     loop = loop + 1;
   }
 
-  let eigenValues = _.vector.toArray( a.diagonalVectorGet() );
-  eigenValues.sort( ( a, b ) => b - a )
+  q.copy( q );
+  r.copy( a );
 
+  if( loop === 1000 )
+  {
+    r.copy( rInt );
+  }
+
+  let eigenValues = _.vector.toArray( a.diagonalVectorGet() );
+  eigenValues.sort( ( a, b ) => b - a );
+
+  logger.log( 'EI',eigenValues)
   for( var i = 0; i < eigenValues.length; i++ )
   {
     let newValue = eigenValues[ i ];
     for( var j = 0; j < eigenValues.length; j++ )
     {
-      let value = a.atomGet( [ j, j ] );
+      let value = r.atomGet( [ j, j ] );
 
       if( newValue === value )
       {
         let oldColQ = q.colVectorGet( i ).clone();
-        let oldValue = a.atomGet( [ i, i ] );
+        let oldValue = r.atomGet( [ i, i ] );
 
         q.colSet( i, q.colVectorGet( j ) );
         q.colSet( j, oldColQ );
 
-        a.atomSet( [ i, i ], a.atomGet( [ j, j ] ) );
-        a.atomSet( [ j, j ], oldValue );
+        r.atomSet( [ i, i ], r.atomGet( [ j, j ] ) );
+        r.atomSet( [ j, j ], oldValue );
       }
     }
   }
 
-  q.copy( q )
-  r.copy( a )
-  return a.diagonalVectorGet();
+  return r.diagonalVectorGet();
 }
 
 //
@@ -3473,13 +3479,11 @@ function qrDecompositionHH( q, r )
     {
       if( m.atomGet( [ i, j ] ) < self.atomGet( [ i, j ] ) - 1E-4 )
       {
-        logger.log(i,j, m.atomGet( [ i, j ] ), self.atomGet( [ i, j ] ) )
         throw _.err( 'QR decomposition failed' );
       }
 
       if( m.atomGet( [ i, j ] ) > self.atomGet( [ i, j ] ) + 1E-4 )
       {
-        logger.log(i,j, m.atomGet( [ i, j ] ), self.atomGet( [ i, j ] ) )
         throw _.err( 'QR decomposition failed' );
       }
     }
@@ -3565,6 +3569,7 @@ function svd( u, s, v )
     let r =  _.Space.make( [ cols, rows ] );
     let identity = _.Space.makeIdentity( [ cols, rows ] );
     self.qrIteration( q, r );
+
     let eigenValues = r.diagonalVectorGet();
     for( let i = 0; i < cols; i++ )
     {
@@ -3589,7 +3594,6 @@ function svd( u, s, v )
     let rAAT = _.Space.make( [ rows, rows ] );
 
     aaT.qrIteration( qAAT, rAAT );
-    
     let sd = _.Space.mul2Matrices( null, rAAT, qAAT.clone().transpose() )
 
     u.copy( qAAT );
