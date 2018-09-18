@@ -10572,7 +10572,7 @@ function qrIteration( test )
     4, 6, 13, 20,
     10, 12, 19, 21
   ]);
-  var expected = _.vector.from( [ 52.01152, 21.52969, -13.93910, -3.60211 ] );
+  var expected = _.vector.from( [ 52.01152, 21.52969, -3.60211, -13.93910 ] );
 
   var gotValues = matrix.qrIteration( );
   test.equivalent( gotValues, expected );
@@ -10601,7 +10601,7 @@ function qrIteration( test )
     8, 0, 20, 21, 3,
     0, 0, 0, 3, 9
   ]);
-  var expected = _.vector.from( [ 43.943070, 29.437279, -17.139794, 9.139799, -0.380354 ] );
+  var expected = _.vector.from( [ 43.943070, 29.437279, 9.139799, -0.380354, -17.139794 ] );
 
   var gotValues = matrix.qrIteration( );
   test.equivalent( gotValues, expected );
@@ -10615,7 +10615,7 @@ function qrIteration( test )
     0,  0,  1, 0,
     0,  0, -0, 2
   ]);
-  var expected = _.vector.from( [ 0.5, -1, 1, 2 ] );
+  var expected = _.vector.from( [ 2, 1, 0.5, -1 ] );
 
   var gotValues = matrix.qrIteration( );
   test.equivalent( gotValues, expected );
@@ -10637,9 +10637,9 @@ function qrIteration( test )
 
   var oldQ =  _.Space.make( [ 3, 3 ] ).copy
   ([
-    -0.408248, -0.577350, 0.707106,
-    -0.408248, -0.577350, -0.707106,
-    -0.816496, 0.577350, 0.000000
+    -0.408248, 0.707106, -0.577350,
+    -0.408248, -0.707106, -0.577350,
+    -0.816496, 0.000000, 0.577350
   ]);
   test.equivalent( q, oldQ );
 
@@ -10849,7 +10849,7 @@ function svd( test )
   ]);
   test.equivalent( matrix, oldMatrix );
 
-  test.description = '2x2 Matrix'; //
+  test.description = '2x2 Symmetric Matrix'; //
 
   var matrix =  _.Space.make( [ 2, 2 ] ).copy
   ([
@@ -10888,6 +10888,99 @@ function svd( test )
   ([
     2, 4,
     4, 2
+  ]);
+  var sVT = _.Space.mul2Matrices( null, s, v.clone().transpose() );
+  var uSVT = _.Space.mul2Matrices( null, u, sVT );
+  test.equivalent( oldMatrix, uSVT );
+
+  test.description = '2x3 Matrix'; //
+
+  var matrix =  _.Space.make( [ 2, 3 ] ).copy
+  ([
+    3, 2, 2,
+    2, 3, -2,
+  ]);
+
+  var u = _.Space.make( [ 2, 2 ] );
+  var s = _.Space.make( [ 2, 3 ] );
+  var v = _.Space.make( [ 3, 3 ] );
+
+  var gotValues = matrix.svd( u, s, v );
+
+  var expectedU =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    Math.sqrt( 2 ) / 2, -Math.sqrt( 2 ) / 2,
+    Math.sqrt( 2 ) / 2, Math.sqrt( 2 ) / 2
+  ]);
+  test.equivalent( u, expectedU );
+
+  var expectedS =  _.Space.make( [ 2, 3 ] ).copy
+  ([
+    5.000, 0.000, 0.000,
+    0.000, 3.000, 0.000
+  ]);
+  test.equivalent( s, expectedS );
+
+  var expectedV =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    Math.sqrt( 2 ) / 2, -1/Math.sqrt( 18 ), 2/3,
+    Math.sqrt( 2 ) / 2, 1/Math.sqrt( 18 ), -2/3,
+    0, -4/Math.sqrt( 18 ), -1/3
+  ]);
+  test.equivalent( v, expectedV );
+
+  var oldMatrix =  _.Space.make( [ 2, 3 ] ).copy
+  ([
+    3, 2, 2,
+    2, 3, -2,
+  ]);
+  var sVT = _.Space.mul2Matrices( null, s, v.clone().transpose() );
+  var uSVT = _.Space.mul2Matrices( null, u, sVT );
+  test.equivalent( oldMatrix, uSVT );
+
+  test.description = '3x2 Matrix'; //
+
+  var matrix =  _.Space.make( [ 3, 2 ] ).copy
+  ([
+    0, 0,
+    0, 9,
+    3, 0
+  ]);
+
+  var u = _.Space.make( [ 3, 3 ] );
+  var s = _.Space.make( [ 3, 2 ] );
+  var v = _.Space.make( [ 2, 2 ] );
+
+  var gotValues = matrix.svd( u, s, v );
+
+  var expectedU =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    0, 0, 1,
+    1, 0, 0,
+    0, 1, 0
+  ]);
+  test.equivalent( u, expectedU );
+
+  var expectedS =  _.Space.make( [ 3, 2 ] ).copy
+  ([
+    9.000, 0.000,
+    0.000, 3.000,
+    0, 0
+  ]);
+  test.equivalent( s, expectedS );
+
+  var expectedV =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    0, 1,
+    1, 0
+  ]);
+  test.equivalent( v, expectedV );
+
+  var oldMatrix =  _.Space.make( [ 3, 2 ] ).copy
+  ([
+    0, 0,
+    0, 9,
+    3, 0
   ]);
   var sVT = _.Space.mul2Matrices( null, s, v.clone().transpose() );
   var uSVT = _.Space.mul2Matrices( null, u, sVT );

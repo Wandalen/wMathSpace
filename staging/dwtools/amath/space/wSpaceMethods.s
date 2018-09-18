@@ -3324,6 +3324,7 @@ function qrIteration( q, r )
   let loop = 0;
   q.copy( _.Space.makeIdentity( rows ) );
 
+
   while( a.isUpperTriangle() === false && loop < 1000 )
   {
     var qInt = _.Space.makeIdentity([ rows, cols ]);
@@ -3336,6 +3337,30 @@ function qrIteration( q, r )
     a.mul2Matrices( rInt, qInt );
 
     loop = loop + 1;
+  }
+
+  let eigenValues = _.vector.toArray( a.diagonalVectorGet() );
+  eigenValues.sort( ( a, b ) => b - a )
+
+  for( var i = 0; i < eigenValues.length; i++ )
+  {
+    let newValue = eigenValues[ i ];
+    for( var j = 0; j < eigenValues.length; j++ )
+    {
+      let value = a.atomGet( [ j, j ] );
+
+      if( newValue === value )
+      {
+        let oldColQ = q.colVectorGet( i ).clone();
+        let oldValue = a.atomGet( [ i, i ] );
+
+        q.colSet( i, q.colVectorGet( j ) );
+        q.colSet( j, oldColQ );
+
+        a.atomSet( [ i, i ], a.atomGet( [ j, j ] ) );
+        a.atomSet( [ j, j ], oldValue );
+      }
+    }
   }
 
   q.copy( q )
@@ -3521,7 +3546,9 @@ function svd( u, s, v )
   let dims = _.Space.dimsOf( self );
   let cols = dims[ 1 ];
   let rows = dims[ 0 ];
-  logger.log('Dims', rows, cols );
+  let min = rows;
+  if( cols < rows )
+  min = cols;
 
   if( arguments[ 0 ] == null )
   var u = _.Space.make([ rows, rows ]);
@@ -3538,8 +3565,6 @@ function svd( u, s, v )
     let r =  _.Space.make( [ cols, rows ] );
     let identity = _.Space.makeIdentity( [ cols, rows ] );
     self.qrIteration( q, r );
-    logger.log('q', q)
-    logger.log('r', r)
     let eigenValues = r.diagonalVectorGet();
     for( let i = 0; i < cols; i++ )
     {
@@ -3554,35 +3579,50 @@ function svd( u, s, v )
         u.colSet( i, q.colVectorGet( i ).mulScalar( - 1 ) );
         s.colSet( i, identity.colVectorGet( i ).mulScalar( - eigenValues.eGet( i ) ) );
         v.colSet( i, q.colVectorGet( i ).mulScalar( - 1 ) );
-        logger.log( 'u', u.colVectorGet( i ) );
-        logger.log( 'v', v.colVectorGet( i ) );
       }
     }
-    logger.log('Symmetric')
-    return 0;
   }
-
-  let aaT = _.Space.mul2Matrices( null, self, self.clone().transpose() );
-  let qAAT = _.Space.make( [ rows, rows ] );
-  let rAAT = _.Space.make( [ rows, rows ] );
-
-  aaT.qrIteration( qAAT, rAAT );
-  u.copy( qAAT );
-
-  let aTa = _.Space.mul2Matrices( null, self.clone().transpose(), self );
-  let qATA = _.Space.make( [ cols, cols ] );
-  let rATA = _.Space.make( [ cols, cols ] );
-
-  aTa.qrIteration( qATA, rATA );
-  v.copy( qATA );
-
-  let min = rows;
-  if( cols < rows )
-  min = cols;
-
-  for( let i = 0; i < min; i++ )
+  else
   {
-    s.atomSet( [ i, i ], Math.sqrt( Math.abs( rATA.atomGet( [ i, i ] ) ) ) );
+    let aaT = _.Space.mul2Matrices( null, self, self.clone().transpose() );
+    let qAAT = _.Space.make( [ rows, rows ] );
+    let rAAT = _.Space.make( [ rows, rows ] );
+
+    aaT.qrIteration( qAAT, rAAT );
+    
+    let sd = _.Space.mul2Matrices( null, rAAT, qAAT.clone().transpose() )
+
+    u.copy( qAAT );
+
+    let aTa = _.Space.mul2Matrices( null, self.clone().transpose(), self );
+    let qATA = _.Space.make( [ cols, cols ] );
+    let rATA = _.Space.make( [ cols, cols ] );
+
+    aTa.qrIteration( qATA, rATA );
+
+    let sd1 = _.Space.mul2Matrices( null, rATA, qATA.clone().transpose() )
+
+    v.copy( qATA );
+
+    let eigenV = rATA.diagonalVectorGet();
+
+    for( let i = 0; i < min; i++ )
+    {
+      if( eigenV.eGet( i ) !== 0 )
+      {
+        let col = u.colVectorGet( i ).slice();
+        let m1 = _.Space.make( [ col.length, 1 ] ).copy( col );
+        let m2 = _.Space.mul2Matrices( null, self.clone().transpose(), m1 );
+
+        v.colSet( i, m2.colVectorGet( 0 ).mulScalar( 1 / eigenV.eGet( i ) ).normalize() );
+      }
+    }
+
+
+    for( let i = 0; i < min; i++ )
+    {
+      s.atomSet( [ i, i ], Math.sqrt( Math.abs( rATA.atomGet( [ i, i ] ) ) ) );
+    }
   }
 }
 
@@ -3851,11 +3891,14 @@ let Extend =
   isDiagonal : isDiagonal,
   isUpperTriangle : isUpperTriangle,
   isSymmetric : isSymmetric,
+
   qrIteration : qrIteration,
   qrDecompositionGS : qrDecompositionGS,
   qrDecompositionHH : qrDecompositionHH,
+
   fromVectors : fromVectors,
   addMatrix : addMatrix,
+
   svd : svd,
 
   //
