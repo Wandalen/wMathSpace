@@ -10356,6 +10356,148 @@ function isUpperTriangle( test )
   var matrix = _.vector.from( [ 0, 0, 0 ] );
   test.shouldThrowErrorSync( () => matrix.isUpperTriangle( ));
 
+}
+
+//
+
+function isSymmetric( test )
+{
+
+  test.description = 'Matrix remains unchanged'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0,   0,   0,   0,
+    1, - 1,   0,   0,
+    0,   0,   1, - 1,
+    - 1,   0, - 1, 0
+  ]);
+  var expected = false;
+
+  var gotBool = matrix.isSymmetric( );
+  test.identical( gotBool, expected );
+
+  var oldMatrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0,   0,   0,   0,
+    1, - 1,   0,   0,
+    0,   0,   1, - 1,
+    - 1,   0, - 1, 0
+  ]);
+  test.identical( matrix, oldMatrix );
+
+  test.description = 'Matrix Not Symmetric'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0,   0,   2,   0,
+    1, - 1,   0,   0,
+    0,   0,   1, - 1,
+    - 1, 0,  - 1,  0
+  ]);
+  var expected = false;
+
+  var gotBool = matrix.isSymmetric( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix Lower Triangular'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0.5,  0,   0,  0,
+    1,  - 1,   0,  0,
+    2,    0,   1,  0,
+    - 1, 3.4, - 1, 2
+  ]);
+  var expected = false;
+
+  var gotBool = matrix.isSymmetric( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix Upper Triangular'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    1,   0,   3,   4,
+    0, - 1,   2,   0,
+    0,   0,   1, - 1,
+    0,   0,   0,  0.5
+  ]);
+  var expected = false;
+
+  var gotBool = matrix.isSymmetric( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix Not Squared'; //
+
+  var matrix =  _.Space.make( [ 3, 4 ] ).copy
+  ([
+    1,   0,   3,   4,
+    0, - 1,   2,   0,
+    3,   2,   1, - 1,
+  ]);
+  var expected = false;
+
+  var gotBool = matrix.isSymmetric( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix Diagonal'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0.5, 0, 0, 0,
+    0, - 1, 0, 0,
+    0,  0,  1, 0,
+    0,  0, -0, 2
+  ]);
+  var expected = true;
+
+  var gotBool = matrix.isSymmetric( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Matrix Symmetric'; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0.5, 5, 8, 0.1,
+    5, - 1, 2, 8,
+    8,  2,  1, 0,
+    0.1,  8, -0, 2
+  ]);
+  var expected = true;
+
+  var gotBool = matrix.isSymmetric( );
+  test.identical( gotBool, expected );
+
+  test.description = 'Zero matrix '; //
+
+  var matrix =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    0,  0, 0, 0,
+    0,  0, 0, 0,
+    0,  0,  0, 0,
+    0,  0, -0, 0
+  ]);
+  var expected = true;
+
+  var gotBool = matrix.isSymmetric( );
+  test.identical( gotBool, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  var matrix = 'matrix';
+  test.shouldThrowErrorSync( () => matrix.isSymmetric( ));
+  var matrix = NaN;
+  test.shouldThrowErrorSync( () => matrix.isSymmetric( ));
+  var matrix = null;
+  test.shouldThrowErrorSync( () => matrix.isSymmetric( ));
+  var matrix = [ 0, 0, 0 ];
+  test.shouldThrowErrorSync( () => matrix.isSymmetric( ));
+  var matrix = _.vector.from( [ 0, 0, 0 ] );
+  test.shouldThrowErrorSync( () => matrix.isSymmetric( ));
 
 }
 
@@ -10463,7 +10605,7 @@ function qrIteration( test )
 
   var gotValues = matrix.qrIteration( );
   test.equivalent( gotValues, expected );
-  
+
   test.description = 'Matrix Diagonal'; //
 
   var matrix =  _.Space.make( [ 4, 4 ] ).copy
@@ -10495,12 +10637,6 @@ function qrIteration( test )
 
   var oldQ =  _.Space.make( [ 3, 3 ] ).copy
   ([
-    0.408248, -0.577350, 0.707106,
-    0.408248, -0.577350, -0.707106,
-    0.816496, 0.577350, 0.000000
-  ]);
-  var oldQ =  _.Space.make( [ 3, 3 ] ).copy
-  ([
     -0.408248, -0.577350, 0.707106,
     -0.408248, -0.577350, -0.707106,
     -0.816496, 0.577350, 0.000000
@@ -10510,14 +10646,8 @@ function qrIteration( test )
   var oldR =  _.Space.make( [ 3, 3 ] ).copy
   ([
     4.0000167, -4.242737, - 10.392261,
-    0,  2,  0,
-    0,  0,  2
-  ]);
-  var oldR =  _.Space.make( [ 3, 3 ] ).copy
-  ([
-    -4.0000167, 4.242737, 10.392261,
-    0,  2,  0,
-    0,  0,  2
+    0,  -2,  0,
+    0,  0,  -2
   ]);
   test.equivalent( r, oldR );
 
@@ -10699,7 +10829,145 @@ function qrDecomposition( test )
 qrDecomposition.accuracy = 1E-4;
 qrDecomposition.timeOut = 20000;
 
+function svd( test )
+{
 
+  test.description = 'Matrix remains unchanged'; //
+
+  var matrix =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    1, 2,
+    2, 1,
+  ]);
+
+  var gotValues = matrix.svd( null, null, null );
+
+  var oldMatrix =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    1, 2,
+    2, 1
+  ]);
+  test.equivalent( matrix, oldMatrix );
+
+  test.description = '2x2 Matrix'; //
+
+  var matrix =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    2, 4,
+    4, 2,
+  ]);
+
+  var u = _.Space.make( [ 2, 2 ] );
+  var s = _.Space.make( [ 2, 2 ] );
+  var v = _.Space.make( [ 2, 2 ] );
+
+  var gotValues = matrix.svd( u, s, v );
+
+  var expectedU =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    -Math.sqrt( 2 ) / 2, -Math.sqrt( 2 ) / 2,
+    -Math.sqrt( 2 ) / 2, Math.sqrt( 2 ) / 2
+  ]);
+  test.equivalent( u, expectedU );
+
+  var expectedS =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    6.000, 0.000,
+    0.000, 2.000
+  ]);
+  test.equivalent( s, expectedS );
+
+  var expectedV =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    -Math.sqrt( 2 ) / 2, Math.sqrt( 2 ) / 2,
+    -Math.sqrt( 2 ) / 2, -Math.sqrt( 2 ) / 2
+  ]);
+  test.equivalent( v, expectedV );
+
+  var oldMatrix =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    2, 4,
+    4, 2
+  ]);
+  var sVT = _.Space.mul2Matrices( null, s, v.clone().transpose() );
+  var uSVT = _.Space.mul2Matrices( null, u, sVT );
+  test.equivalent( oldMatrix, uSVT );
+
+  test.description = '4x2 Matrix'; //
+
+  var matrix =  _.Space.make( [ 4, 2 ] ).copy
+  ([
+    2, 4,
+    1, 3,
+    0, 0,
+    0, 0
+  ]);
+
+  var u = _.Space.make( [ 4, 4 ] );
+  var s = _.Space.make( [ 4, 2 ] );
+  var v = _.Space.make( [ 2, 2 ] );
+
+  var gotValues = matrix.svd( u, s, v );
+
+  var expectedU =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    -0.817415, 0.576048, 0, 0,
+    -0.576048, -0.817415, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
+  ]);
+  test.equivalent( u, expectedU );
+
+  var expectedS =  _.Space.make( [ 4, 2 ] ).copy
+  ([
+    5.46499, 0.000,
+    0.000, 0.365966,
+    0, 0,
+    0, 0
+  ]);
+  test.equivalent( s, expectedS );
+
+  var expectedV =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    -0.404554, 0.914514,
+    -0.914514, -0.404554
+  ]);
+  test.equivalent( v, expectedV );
+
+  var oldMatrix =  _.Space.make( [ 4, 2 ] ).copy
+  ([
+    2, 4,
+    1, 3,
+    0, 0,
+    0, 0
+  ]);
+  var sVT = _.Space.mul2Matrices( null, s, v.clone().transpose() );
+  var uSVT = _.Space.mul2Matrices( null, u, sVT );
+  test.equivalent( oldMatrix, uSVT );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  var matrix = 'matrix';
+  var u = _.Space.make([ 3, 3 ]);
+  var s = _.Space.make([ 3, 3 ]);
+  var v = _.Space.make([ 3, 3 ]);
+  test.shouldThrowErrorSync( () => matrix.svd( u, s, v ));
+  var matrix = NaN;
+  test.shouldThrowErrorSync( () => matrix.svd( u, s, v ));
+  var matrix = null;
+  test.shouldThrowErrorSync( () => matrix.svd( u, s, v ));
+  var matrix = [ 0, 0, 0 ];
+  test.shouldThrowErrorSync( () => matrix.svd( u, s, v ));
+  var matrix = _.vector.from( [ 0, 0, 0 ] );
+  test.shouldThrowErrorSync( () => matrix.svd( u, s, v ));
+
+}
+
+
+svd.accuracy = 1E-4;
 
 // --
 // declare
@@ -10789,8 +11057,10 @@ var Self =
 
     isDiagonal : isDiagonal,
     isUpperTriangle : isUpperTriangle,
+    isSymmetric : isSymmetric,
     qrIteration : qrIteration,
     qrDecomposition : qrDecomposition,
+    svd : svd,
 
   },
 

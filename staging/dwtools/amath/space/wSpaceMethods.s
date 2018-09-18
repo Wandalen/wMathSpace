@@ -3266,6 +3266,45 @@ function isUpperTriangle( accuracy )
 
 //
 
+function isSymmetric( accuracy )
+{
+  let self = this;
+
+  _.assert( _.Space.is( self ) );
+
+  if( !_.numberIs( accuracy ) || arguments.length === 0 )
+  accuracy = 1E-5;
+
+  let cols = self.length;
+  let rows = self.atomsPerElement;
+
+  if( cols !== rows )
+  {
+    return false;
+  }
+
+
+  for( let i = 0; i < rows; i++ )
+  {
+    for( let j = 0; j < cols; j++ )
+    {
+      debugger;
+      if( i > j )
+      {
+        let dif = self.atomGet([ i, j ]) - self.atomGet([ j, i ]);
+        if( 0 - accuracy > dif || dif > 0 + accuracy )
+        {
+          return false
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
+//
+
 function qrIteration( q, r )
 {
   let self = this;
@@ -3287,7 +3326,6 @@ function qrIteration( q, r )
 
   while( a.isUpperTriangle() === false && loop < 1000 )
   {
-
     var qInt = _.Space.makeIdentity([ rows, cols ]);
     var rInt = _.Space.makeIdentity([ rows, cols ]);
     a.qrDecompositionHH( qInt, rInt );
@@ -3298,15 +3336,10 @@ function qrIteration( q, r )
     a.mul2Matrices( rInt, qInt );
 
     loop = loop + 1;
-
-    for( var i = 0; i < cols; i++ )
-    {
-      r.colSet( i, rInt.colVectorGet( i ) );
-    }
   }
 
   q.copy( q )
-
+  r.copy( a )
   return a.diagonalVectorGet();
 }
 
@@ -3391,19 +3424,41 @@ function qrDecompositionHH( q, r )
     {
       c = -1;
     }
+
     u = _.vector.addVectors( col, e.mulScalar( c*col.mag() ) ).normalize();
 
     debugger;
     let m = _.Space.make( [ rows, cols ] ).fromVectors( u, u );
-
-    let h = m.addMatrix( identity, m.mulScalar( -2 ) );
-
+    let h = m.addMatrix( identity, m.mulScalar( - 2 ) );
     q.mulLeft( h );
 
     matrix = _.Space.mul2Matrices( null, h, matrix );
   }
 
   r.copy( matrix );
+
+  // Calculate R
+  // r.mul2Matrices( h.clone().transpose(), matrix );
+  let m = _.Space.mul2Matrices( null, q, r );
+  let rb = _.Space.mul2Matrices( null, q.clone().transpose(), self )
+
+  for( let i = 0; i < rows; i++ )
+  {
+    for( let j = 0; j < cols; j++ )
+    {
+      if( m.atomGet( [ i, j ] ) < self.atomGet( [ i, j ] ) - 1E-4 )
+      {
+        logger.log(i,j, m.atomGet( [ i, j ] ), self.atomGet( [ i, j ] ) )
+        throw _.err( 'QR decomposition failed' );
+      }
+
+      if( m.atomGet( [ i, j ] ) > self.atomGet( [ i, j ] ) + 1E-4 )
+      {
+        logger.log(i,j, m.atomGet( [ i, j ] ), self.atomGet( [ i, j ] ) )
+        throw _.err( 'QR decomposition failed' );
+      }
+    }
+  }
 }
 
 //
@@ -3457,50 +3512,78 @@ function addMatrix( m1, m2 )
 
 //
 
-function svd()
+function svd( u, s, v )
 {
   let self = this;
   _.assert( _.Space.is( self ) );
+  _.assert( arguments.length === 3 );
 
   let dims = _.Space.dimsOf( self );
   let cols = dims[ 1 ];
   let rows = dims[ 0 ];
   logger.log('Dims', rows, cols );
 
+  if( arguments[ 0 ] == null )
+  var u = _.Space.make([ rows, rows ]);
+
+  if( arguments[ 1 ] == null )
+  var s = _.Space.make([ rows, cols ]);
+
+  if( arguments[ 2 ] == null )
+  var v = _.Space.make([ cols, cols ]);
+
+  if( self.isSymmetric() === true )
+  {
+    let q =  _.Space.make( [ cols, rows ] );
+    let r =  _.Space.make( [ cols, rows ] );
+    let identity = _.Space.makeIdentity( [ cols, rows ] );
+    self.qrIteration( q, r );
+    logger.log('q', q)
+    logger.log('r', r)
+    let eigenValues = r.diagonalVectorGet();
+    for( let i = 0; i < cols; i++ )
+    {
+      if( eigenValues.eGet( i ) >= 0 )
+      {
+        u.colSet( i, q.colVectorGet( i ) );
+        s.colSet( i, identity.colVectorGet( i ).mulScalar( eigenValues.eGet( i ) ) );
+        v.colSet( i, q.colVectorGet( i ) );
+      }
+      else if( eigenValues.eGet( i ) < 0 )
+      {
+        u.colSet( i, q.colVectorGet( i ).mulScalar( - 1 ) );
+        s.colSet( i, identity.colVectorGet( i ).mulScalar( - eigenValues.eGet( i ) ) );
+        v.colSet( i, q.colVectorGet( i ).mulScalar( - 1 ) );
+        logger.log( 'u', u.colVectorGet( i ) );
+        logger.log( 'v', v.colVectorGet( i ) );
+      }
+    }
+    logger.log('Symmetric')
+    return 0;
+  }
+
   let aaT = _.Space.mul2Matrices( null, self, self.clone().transpose() );
-  logger.log( 'aat',aaT)
   let qAAT = _.Space.make( [ rows, rows ] );
   let rAAT = _.Space.make( [ rows, rows ] );
-  logger.log('QR ITERATION')
-  aaT.qrIteration( qAAT, rAAT );
-  logger.log('END')
-  logger.log( 'q', qAAT )
-  logger.log( 'r', rAAT )
 
+  aaT.qrIteration( qAAT, rAAT );
+  u.copy( qAAT );
 
   let aTa = _.Space.mul2Matrices( null, self.clone().transpose(), self );
-  logger.log( 'ata',aTa)
   let qATA = _.Space.make( [ cols, cols ] );
   let rATA = _.Space.make( [ cols, cols ] );
-  logger.log('QR ITERATION')
-  aTa.qrIteration( qATA, rATA );
-  logger.log('END')
-  logger.log( 'q', qATA )
-  logger.log( 'r', rATA )
 
-  let s = _.Space.make([ rows, cols ]);
+  aTa.qrIteration( qATA, rATA );
+  v.copy( qATA );
 
   let min = rows;
   if( cols < rows )
   min = cols;
-  
-  for( var i = 0; i < min; i++ )
+
+  for( let i = 0; i < min; i++ )
   {
     s.atomSet( [ i, i ], Math.sqrt( Math.abs( rATA.atomGet( [ i, i ] ) ) ) );
   }
-
-  logger.log('S', s )
-
 }
 
 
@@ -3767,6 +3850,7 @@ let Extend =
 
   isDiagonal : isDiagonal,
   isUpperTriangle : isUpperTriangle,
+  isSymmetric : isSymmetric,
   qrIteration : qrIteration,
   qrDecompositionGS : qrDecompositionGS,
   qrDecompositionHH : qrDecompositionHH,
