@@ -28,8 +28,9 @@
     "url": "https://github.com/Wandalen/wMathSpace/issues"
   },
   "dependencies": {
-    "wTools": "",
     "wCopyable": "",
+    "wFiles": "^0.6.227",
+    "wTools": "",
     "wmathscalar": "",
     "wmathvector": ""
   },

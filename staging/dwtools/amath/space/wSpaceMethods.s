@@ -3630,6 +3630,90 @@ function svd( u, s, v )
   }
 }
 
+//
+
+function huffmanDecoder( jpgPath )
+{
+  let provider = _.FileProvider.HardDrive();
+
+  let data = provider.fileRead
+  ({
+    filePath : jpgPath,
+    sync : 1,
+    encoding : 'buffer.bytes'
+  });
+
+  let dataViewByte = Array.from( data );
+  let dataViewHex = Array.from( data ).slice();
+
+  // To HEX
+  let hexChar = ["0", "1", "2", "3", "4", "5", "6", "7","8", "9", "A", "B", "C", "D", "E", "F"];
+  function byteToHex(b) {
+    return hexChar[(b >> 4) & 0x0f] + hexChar[b & 0x0f];
+  }
+
+  logger.log( 'Hex length', dataViewHex.length )
+  for( let i = 0; i < dataViewByte.length; i++ )
+  {
+    dataViewHex[ i ] = byteToHex( dataViewHex[ i ] );
+    //logger.log( dataView.eGet( i ));
+    if( i > 0 && dataViewHex[ i - 1 ] === 'FF' )
+    {
+      if( dataViewHex[ i ] === 'D8' )
+      {
+        logger.log('Quantization Table', i );
+      }
+      if( dataViewHex[ i ] === 'C4' )
+      {
+        logger.log('Huffman Table', i );
+        dataViewHex[ i - 1 ] = 'Huffman';
+        dataViewHex[ i ] = 'table';
+      }
+      if( dataViewHex[ i ] === 'DC' )
+      {
+        logger.log('Number of lines', i );
+      }
+      if( dataViewHex[ i ] === 'DA' )
+      {
+        logger.log('Start of Scan', i );
+        var startOfScan = i;
+      }
+      if( dataViewHex[ i ] === 'C0' )
+      {
+        logger.log('Start of Frame', i );
+      }
+      if( dataViewHex[ i ] === 'DD' )
+      {
+        logger.log('Restart interval', i );
+      }
+      if( dataViewHex[ i ] === 'FE' )
+      {
+        logger.log('Comment', i );
+      }
+      if( dataViewHex[ i ] === 'E0' )
+      {
+        logger.log('JFIF specification', i );
+      }
+      if( dataViewHex[ i ] === 'D9' )
+      {
+        logger.log('End of image', i );
+        var endOfImage = i;
+      }
+      if( dataViewHex[ i ] === '00' )
+      {
+        //logger.log('Stuff byte', i );
+        dataViewHex[ i ] = '';
+      }
+    }
+
+    if( i >= startOfScan )
+    {
+    //  logger.log( dataViewHex[ i ] )
+    }
+  }
+
+  //logger.log( dataViewHex)
+}
 
 // --
 // relations
@@ -3904,6 +3988,8 @@ let Extend =
   addMatrix : addMatrix,
 
   svd : svd,
+
+  huffmanDecoder : huffmanDecoder,
 
   //
 

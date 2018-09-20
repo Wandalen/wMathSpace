@@ -10893,6 +10893,50 @@ function svd( test )
   var uSVT = _.Space.mul2Matrices( null, u, sVT );
   test.equivalent( oldMatrix, uSVT );
 
+  test.description = '2x2 Matrix'; //
+
+  var matrix =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    4, 0,
+    3, -5
+  ]);
+
+  var u = _.Space.make( [ 2, 2 ] );
+  var s = _.Space.make( [ 2, 2 ] );
+  var v = _.Space.make( [ 2, 2 ] );
+
+  var gotValues = matrix.svd( u, s, v );
+
+  var expectedU =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    0.4472, -0.8944,
+    0.8944, 0.4472
+  ]);
+  test.equivalent( u, expectedU );
+
+  var expectedS =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    6.3245, 0.000,
+    0.000, 3.1622
+  ]);
+  test.equivalent( s, expectedS );
+
+  var expectedV =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    Math.sqrt( 2 ) / 2, -Math.sqrt( 2 ) / 2,
+    -Math.sqrt( 2 ) / 2, -Math.sqrt( 2 ) / 2
+  ]);
+  test.equivalent( v, expectedV );
+
+  var oldMatrix =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    4, 0,
+    3, -5
+  ]);
+  var sVT = _.Space.mul2Matrices( null, s, v.clone().transpose() );
+  var uSVT = _.Space.mul2Matrices( null, u, sVT );
+  test.equivalent( oldMatrix, uSVT );
+
   test.description = '2x3 Matrix'; //
 
   var matrix =  _.Space.make( [ 2, 3 ] ).copy
