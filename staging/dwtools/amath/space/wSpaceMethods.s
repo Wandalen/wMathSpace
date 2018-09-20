@@ -3350,10 +3350,10 @@ function qrIteration( q, r )
   eigenValues.sort( ( a, b ) => b - a );
 
   logger.log( 'EI',eigenValues)
-  for( var i = 0; i < eigenValues.length; i++ )
+  for( let i = 0; i < eigenValues.length; i++ )
   {
     let newValue = eigenValues[ i ];
-    for( var j = 0; j < eigenValues.length; j++ )
+    for( let j = 0; j < eigenValues.length; j++ )
     {
       let value = r.atomGet( [ j, j ] );
 
@@ -3391,7 +3391,7 @@ function qrDecompositionGS( q, r )
   let matrix = self.clone();
   q.copy( _.Space.makeIdentity( [ rows, cols ] ) );
 
-  var qInt = _.Space.makeIdentity([ rows, cols ]);
+  let qInt = _.Space.makeIdentity([ rows, cols ]);
 
   for( let i = 0; i < cols; i++ )
   {
@@ -3648,26 +3648,35 @@ function huffmanDecoder( jpgPath )
 
   // To HEX
   let hexChar = ["0", "1", "2", "3", "4", "5", "6", "7","8", "9", "A", "B", "C", "D", "E", "F"];
-  function byteToHex(b) {
-    return hexChar[(b >> 4) & 0x0f] + hexChar[b & 0x0f];
+  function byteToHex( b ) {
+    return hexChar[ ( b >> 4 ) & 0x0f ] + hexChar[ b & 0x0f ];
   }
 
-  logger.log( 'Hex length', dataViewHex.length )
+  // Set Markers
+  let hfTableIndex = [ 0, 0, 0, 0 ];  // Huffman table start
+  let hf = 0;
+  let startFrame = 0; // Start of Frame
+  let startScan = 0; // Start of Scan
+
   for( let i = 0; i < dataViewByte.length; i++ )
   {
     dataViewHex[ i ] = byteToHex( dataViewHex[ i ] );
-    //logger.log( dataView.eGet( i ));
+    //logger.log( dataView[ i ]);
     if( i > 0 && dataViewHex[ i - 1 ] === 'FF' )
     {
       if( dataViewHex[ i ] === 'D8' )
+      {
+        logger.log('Start of Image', i );
+      }
+      if( dataViewHex[ i ] === 'DB' )
       {
         logger.log('Quantization Table', i );
       }
       if( dataViewHex[ i ] === 'C4' )
       {
         logger.log('Huffman Table', i );
-        dataViewHex[ i - 1 ] = 'Huffman';
-        dataViewHex[ i ] = 'table';
+        hfTableIndex[ hf ] = i + 1;
+        hf = hf + 1;
       }
       if( dataViewHex[ i ] === 'DC' )
       {
@@ -3676,11 +3685,12 @@ function huffmanDecoder( jpgPath )
       if( dataViewHex[ i ] === 'DA' )
       {
         logger.log('Start of Scan', i );
-        var startOfScan = i;
+        startScan = i;
       }
       if( dataViewHex[ i ] === 'C0' )
       {
         logger.log('Start of Frame', i );
+        startFrame = i;
       }
       if( dataViewHex[ i ] === 'DD' )
       {
@@ -3697,7 +3707,6 @@ function huffmanDecoder( jpgPath )
       if( dataViewHex[ i ] === 'D9' )
       {
         logger.log('End of image', i );
-        var endOfImage = i;
       }
       if( dataViewHex[ i ] === '00' )
       {
@@ -3705,15 +3714,153 @@ function huffmanDecoder( jpgPath )
         dataViewHex[ i ] = '';
       }
     }
+  }
+  logger.log('hfTable', hfTableIndex )
 
-    if( i >= startOfScan )
-    {
-    //  logger.log( dataViewHex[ i ] )
-    }
+  // Get Huffman tables
+  let hfTable1 = _.array.makeArrayOfLengthZeroed( hfTableIndex[ 1 ] - hfTableIndex[ 0 ] - 5 );
+  let hfTable2 = _.array.makeArrayOfLengthZeroed( hfTableIndex[ 2 ] - hfTableIndex[ 1 ] - 5 );
+  let hfTable3 = _.array.makeArrayOfLengthZeroed( hfTableIndex[ 3 ] - hfTableIndex[ 2 ] - 5 );
+  let hfTable4 = _.array.makeArrayOfLengthZeroed( startScan - hfTableIndex[ 3 ] - 4 );
+
+  for( let i = 0; i < hfTable1.length; i++ )
+  {
+    hfTable1[ i ] = dataViewByte[ hfTableIndex[ 0 ] + i + 3 ];
+  }
+  for( let i = 0; i < hfTable2.length; i++ )
+  {
+    hfTable2[ i ] = dataViewByte[ hfTableIndex[ 1 ] + i + 3 ];
+  }
+  for( let i = 0; i < hfTable3.length; i++ )
+  {
+    hfTable3[ i ] = dataViewByte[ hfTableIndex[ 2 ] + i + 3 ];
+  }
+  for( let i = 0; i < hfTable4.length; i++ )
+  {
+    hfTable4[ i ] = dataViewByte[ hfTableIndex[ 3 ] + i + 3 ];
   }
 
-  //logger.log( dataViewHex)
+
+  let hfTable1Counters = _.array.makeArrayOfLengthZeroed( 16 ); let sum1 = 0;
+  let hfTable2Counters = _.array.makeArrayOfLengthZeroed( 16 ); let sum2 = 0;
+  let hfTable3Counters = _.array.makeArrayOfLengthZeroed( 16 ); let sum3 = 0;
+  let hfTable4Counters = _.array.makeArrayOfLengthZeroed( 16 ); let sum4 = 0;
+
+  for( let i = 0; i < 16; i ++ )
+  {
+    hfTable1Counters[ i ] = hfTable1[ i ];  // Make Counters array
+    hfTable2Counters[ i ] = hfTable2[ i ];
+    hfTable3Counters[ i ] = hfTable3[ i ];
+    hfTable4Counters[ i ] = hfTable4[ i ];
+    sum1 = sum1 + hfTable1Counters[ i ];   // Check total sum
+    sum2 = sum2 + hfTable2Counters[ i ];
+    sum3 = sum3 + hfTable3Counters[ i ];
+    sum4 = sum4 + hfTable4Counters[ i ];
+  }
+
+
+  let h1 = new Map();
+  let h2 = new Map();
+  let h3 = new Map();
+  let h4 = new Map();
+
+  let v1 = 0;
+  let v2 = 0;
+  let v3 = 0;
+  let v4 = 0;
+
+  for( let i = 0; i < 16; i++ )
+  {
+    let values1 = _.array.makeArrayOfLengthZeroed( hfTable1Counters[ i ] );
+    let values2 = _.array.makeArrayOfLengthZeroed( hfTable2Counters[ i ] );
+    let values3 = _.array.makeArrayOfLengthZeroed( hfTable3Counters[ i ] );
+    let values4 = _.array.makeArrayOfLengthZeroed( hfTable4Counters[ i ] );
+
+    let binVal1 = _.array.makeArrayOfLengthZeroed( hfTable1Counters[ i ] );
+    let binVal2 = _.array.makeArrayOfLengthZeroed( hfTable2Counters[ i ] );
+    let binVal3 = _.array.makeArrayOfLengthZeroed( hfTable3Counters[ i ] );
+    let binVal4 = _.array.makeArrayOfLengthZeroed( hfTable4Counters[ i ] );
+
+    let byte = _.array.makeArrayOfLengthZeroed( i );
+    for( let j = 0; j < values1.length; j ++ )
+    {
+      values1[ j ] = hfTable1[ 16 + v1 ];
+      v1 = v1 + 1;
+
+    }
+    h1.set( 'l' + String( i + 1 ), values1 );
+    h1.set( 'lb' + String( i + 1 ), values1 );
+
+    for( let j = 0; j < values2.length; j ++ )
+    {
+      values2[ j ] = hfTable2[ 16 + v2 ];
+      v2 = v2 + 1;
+    }
+    h2.set( 'l' + String( i + 1 ), values2 );
+
+    for( let j = 0; j < values3.length; j ++ )
+    {
+      values3[ j ] = hfTable3[ 16 + v3 ];
+      v3 = v3 + 1;
+    }
+    h3.set( 'l' + String( i + 1 ), values3 );
+
+    for( let j = 0; j < values4.length; j ++ )
+    {
+      values4[ j ] = hfTable4[ 16 + v4 ];
+      v4 = v4 + 1;
+    }
+    h4.set( 'l' + String( i + 1 ), values4 );
+  }
+
+  logger.log( 'Huffman tables :')
+  logger.log('H1', hfTable1.length );
+  logger.log('H2', hfTable2.length );
+  logger.log('H3', hfTable3.length );
+  logger.log('H4', hfTable4.length );
+
+  logger.log(' ')
+  logger.log('HUFFMAN TABLE 1 ')
+  logger.log( 'Elements :', sum1 + 16 );
+  logger.log('H1', hfTable1 );
+  for( let i = 0; i < 16; i++ )
+  {
+    if( h1.get( 'l'+String(i + 1 )).length !== 0 )
+    logger.log( 'For length '+String(i + 1 ) + ' we have ', h1.get( 'l'+String(i + 1 ) ) )
+  }
+
+  logger.log(' ')
+  logger.log('HUFFMAN TABLE 2 ')
+  logger.log( 'Elements :', sum2 + 16 );
+  logger.log('H2', hfTable2 );
+  for( let i = 0; i < 16; i++ )
+  {
+    if( h2.get( 'l'+String( i + 1 )).length !== 0 )
+    logger.log( 'For length '+ String( i + 1 ) + ' we have ', h2.get( 'l'+String( i + 1 )) )
+  }
+
+  logger.log(' ')
+  logger.log('HUFFMAN TABLE 3 ')
+  logger.log( 'Elements :', sum3 + 16 );
+  logger.log('H3', hfTable3 );
+  for( let i = 0; i < 16; i++ )
+  {
+    if( h3.get( 'l'+String( i + 1 )).length !== 0 )
+    logger.log( 'For length '+ String( i + 1 ) + ' we have ', h3.get( 'l'+String( i + 1 )) )
+  }
+
+  logger.log(' ')
+  logger.log('HUFFMAN TABLE 4 ')
+  logger.log( 'Elements :', sum4 + 16 );
+  logger.log('H4', hfTable4 );
+  for( let i = 0; i < 16; i++ )
+  {
+    if( h4.get( 'l'+String( i + 1 )).length !== 0 )
+    logger.log( 'For length '+ String( i + 1 ) + ' we have ', h4.get( 'l'+String( i + 1 )) )
+  }
+
 }
+
 
 // --
 // relations
