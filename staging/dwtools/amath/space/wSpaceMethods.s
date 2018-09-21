@@ -3776,12 +3776,6 @@ function huffmanDecoder( jpgPath )
     let values3 = _.array.makeArrayOfLengthZeroed( hfTable3Counters[ i ] );
     let values4 = _.array.makeArrayOfLengthZeroed( hfTable4Counters[ i ] );
 
-    let binVal1 = _.array.makeArrayOfLengthZeroed( hfTable1Counters[ i ] );
-    let binVal2 = _.array.makeArrayOfLengthZeroed( hfTable2Counters[ i ] );
-    let binVal3 = _.array.makeArrayOfLengthZeroed( hfTable3Counters[ i ] );
-    let binVal4 = _.array.makeArrayOfLengthZeroed( hfTable4Counters[ i ] );
-
-    let byte = _.array.makeArrayOfLengthZeroed( i );
     for( let j = 0; j < values1.length; j ++ )
     {
       values1[ j ] = hfTable1[ 16 + v1 ];
@@ -3789,7 +3783,6 @@ function huffmanDecoder( jpgPath )
 
     }
     h1.set( 'l' + String( i + 1 ), values1 );
-    h1.set( 'lb' + String( i + 1 ), values1 );
 
     for( let j = 0; j < values2.length; j ++ )
     {
@@ -3813,6 +3806,74 @@ function huffmanDecoder( jpgPath )
     h4.set( 'l' + String( i + 1 ), values4 );
   }
 
+  // Increase binary number
+  function increaseBinary( b )
+  {
+    let newBin = parseInt( b, 2 ) + 1;
+    let bin = newBin.toString( 2 );
+    while( bin.length < b.length )
+    {
+      bin = '0' + bin;
+    }
+    return bin;
+  }
+
+  // Make binary Tree
+  function binaryTree( hT )
+  {
+    let bin = '';
+    let start = 0;
+    for( let i = 0; i < 16; i++ )
+    {
+      if( hT.get( 'l'+String( i + 1 )).length === 0 )
+      {
+        bin = bin + '0';
+        if( start !== 0 )
+        {
+          bin = increaseBinary( bin );
+        }
+      }
+      else
+      {
+        let values = _.array.makeArrayOfLengthZeroed( hT.get( 'l'+String( i + 1 )).length );
+
+        if( start === 0 )
+        {
+          bin = '0' + bin;
+          start = 1;
+          values[ 0 ] = bin;
+
+          for( let j = 1; j < values.length; j++ )
+          {
+            bin = increaseBinary( bin );
+            values[ j ] = bin ;
+          }
+        }
+        else
+        {
+          for( let j = 0; j < values.length; j++ )
+          {
+            bin = increaseBinary( bin );
+
+            if( j === 0 )
+            {
+              bin = bin + '0';
+            }
+            values[ j ] = bin ;
+          }
+        }
+        hT.set( 'lb' + String( i + 1 ), values );
+      }
+    }
+  }
+
+  binaryTree( h1 );
+  binaryTree( h2 );
+  binaryTree( h3 );
+  binaryTree( h4 );
+
+  //Show results
+
   logger.log( 'Huffman tables :')
   logger.log('H1', hfTable1.length );
   logger.log('H2', hfTable2.length );
@@ -3826,7 +3887,7 @@ function huffmanDecoder( jpgPath )
   for( let i = 0; i < 16; i++ )
   {
     if( h1.get( 'l'+String(i + 1 )).length !== 0 )
-    logger.log( 'For length '+String(i + 1 ) + ' we have ', h1.get( 'l'+String(i + 1 ) ) )
+    logger.log( 'For length '+String(i + 1 ) + ' we have ', h1.get( 'l'+String(i + 1 ) ),' corresponding too ', h1.get( 'lb'+String(i + 1 ) ) )
   }
 
   logger.log(' ')
@@ -3836,7 +3897,7 @@ function huffmanDecoder( jpgPath )
   for( let i = 0; i < 16; i++ )
   {
     if( h2.get( 'l'+String( i + 1 )).length !== 0 )
-    logger.log( 'For length '+ String( i + 1 ) + ' we have ', h2.get( 'l'+String( i + 1 )) )
+    logger.log( 'For length '+ String( i + 1 ) + ' we have ', h2.get( 'l'+String( i + 1 )),' corresponding too ', h2.get( 'lb'+String(i + 1 ) ) )
   }
 
   logger.log(' ')
@@ -3846,7 +3907,7 @@ function huffmanDecoder( jpgPath )
   for( let i = 0; i < 16; i++ )
   {
     if( h3.get( 'l'+String( i + 1 )).length !== 0 )
-    logger.log( 'For length '+ String( i + 1 ) + ' we have ', h3.get( 'l'+String( i + 1 )) )
+    logger.log( 'For length '+ String( i + 1 ) + ' we have ', h3.get( 'l'+String( i + 1 )),' corresponding too ', h3.get( 'lb'+String(i + 1 ) ) )
   }
 
   logger.log(' ')
@@ -3856,8 +3917,9 @@ function huffmanDecoder( jpgPath )
   for( let i = 0; i < 16; i++ )
   {
     if( h4.get( 'l'+String( i + 1 )).length !== 0 )
-    logger.log( 'For length '+ String( i + 1 ) + ' we have ', h4.get( 'l'+String( i + 1 )) )
+    logger.log( 'For length '+ String( i + 1 ) + ' we have ', h4.get( 'l'+String( i + 1 )),' corresponding too ', h4.get( 'lb'+String(i + 1 ) ) )
   }
+
 
 }
 
