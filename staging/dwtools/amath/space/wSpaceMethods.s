@@ -3634,6 +3634,7 @@ function svd( u, s, v )
 
 function huffmanDecoder( jpgPath )
 {
+  //Get Data
   let provider = _.FileProvider.HardDrive();
 
   let data = provider.fileRead
@@ -3646,17 +3647,39 @@ function huffmanDecoder( jpgPath )
   let dataViewByte = Array.from( data );
   let dataViewHex = Array.from( data ).slice();
 
-  // To HEX
+  //Number to HEX
   let hexChar = ["0", "1", "2", "3", "4", "5", "6", "7","8", "9", "A", "B", "C", "D", "E", "F"];
-  function byteToHex( b ) {
+  function byteToHex( b )
+  {
     return hexChar[ ( b >> 4 ) & 0x0f ] + hexChar[ b & 0x0f ];
   }
+
+  // Binary to number
+  function binaryToByte( b )
+  {
+    let byte = 0;
+    if( b.charAt( 0 ) ==  1  )
+    {
+      byte = parseInt( b, 2);
+    }
+    else if( b.charAt( 0 ) == 0 )
+    {
+      let c = b.replace( /1/g, '2' );
+      let d = c.replace( /0/g, '1' );
+      let e = d.replace( /2/g, '0' );
+      byte = parseInt( e, 2)*( - 1 );
+    }
+
+    return byte;
+  }
+
 
   // Set Markers
   let hfTableIndex = [ 0, 0, 0, 0 ];  // Huffman table start
   let hf = 0;
   let startFrame = 0; // Start of Frame
   let startScan = 0; // Start of Scan
+  let endImage = 0; // End of Image
 
   for( let i = 0; i < dataViewByte.length; i++ )
   {
@@ -3685,12 +3708,12 @@ function huffmanDecoder( jpgPath )
       if( dataViewHex[ i ] === 'DA' )
       {
         logger.log('Start of Scan', i );
-        startScan = i;
+        startScan = i + 1;
       }
       if( dataViewHex[ i ] === 'C0' )
       {
         logger.log('Start of Frame', i );
-        startFrame = i;
+        startFrame = i + 1;
       }
       if( dataViewHex[ i ] === 'DD' )
       {
@@ -3707,6 +3730,7 @@ function huffmanDecoder( jpgPath )
       if( dataViewHex[ i ] === 'D9' )
       {
         logger.log('End of image', i );
+        endImage = i;
       }
       if( dataViewHex[ i ] === '00' )
       {
@@ -3715,31 +3739,54 @@ function huffmanDecoder( jpgPath )
       }
     }
   }
-  logger.log('hfTable', hfTableIndex )
+  logger.log('hfTable', hfTableIndex, hf )
 
-  // Get Huffman tables
+  _.assert( hf === 4 , 'JPG doesn´t have 4 DHT markers')
+
+  // GET HUFFMAN TABLES
   let hfTable1 = _.array.makeArrayOfLengthZeroed( hfTableIndex[ 1 ] - hfTableIndex[ 0 ] - 5 );
   let hfTable2 = _.array.makeArrayOfLengthZeroed( hfTableIndex[ 2 ] - hfTableIndex[ 1 ] - 5 );
   let hfTable3 = _.array.makeArrayOfLengthZeroed( hfTableIndex[ 3 ] - hfTableIndex[ 2 ] - 5 );
-  let hfTable4 = _.array.makeArrayOfLengthZeroed( startScan - hfTableIndex[ 3 ] - 4 );
+  let hfTable4 = _.array.makeArrayOfLengthZeroed( startScan - hfTableIndex[ 3 ] - 5 );
+  let image = _.array.makeArrayOfLengthZeroed( endImage - startScan );
+  let frame = _.array.makeArrayOfLengthZeroed( hfTableIndex[ 0 ] - startFrame );
+  let hfTable1H = _.array.makeArrayOfLengthZeroed( hfTableIndex[ 1 ] - hfTableIndex[ 0 ] - 5 );
+  let hfTable2H = _.array.makeArrayOfLengthZeroed( hfTableIndex[ 2 ] - hfTableIndex[ 1 ] - 5 );
+  let hfTable3H = _.array.makeArrayOfLengthZeroed( hfTableIndex[ 3 ] - hfTableIndex[ 2 ] - 5 );
+  let hfTable4H = _.array.makeArrayOfLengthZeroed( startScan - hfTableIndex[ 3 ] - 5 );
+  let imageH = _.array.makeArrayOfLengthZeroed( endImage - startScan );
+  let imageB = _.array.makeArrayOfLengthZeroed( endImage - startScan );
 
   for( let i = 0; i < hfTable1.length; i++ )
   {
     hfTable1[ i ] = dataViewByte[ hfTableIndex[ 0 ] + i + 3 ];
+    hfTable1H[ i ] = dataViewHex[ hfTableIndex[ 0 ] + i + 3 ];
   }
   for( let i = 0; i < hfTable2.length; i++ )
   {
     hfTable2[ i ] = dataViewByte[ hfTableIndex[ 1 ] + i + 3 ];
+    hfTable2H[ i ] = dataViewHex[ hfTableIndex[ 1 ] + i + 3 ];
   }
   for( let i = 0; i < hfTable3.length; i++ )
   {
     hfTable3[ i ] = dataViewByte[ hfTableIndex[ 2 ] + i + 3 ];
+    hfTable3H[ i ] = dataViewHex[ hfTableIndex[ 2 ] + i + 3 ];
   }
   for( let i = 0; i < hfTable4.length; i++ )
   {
     hfTable4[ i ] = dataViewByte[ hfTableIndex[ 3 ] + i + 3 ];
+    hfTable4H[ i ] = dataViewHex[ hfTableIndex[ 3 ] + i + 3  ];
   }
-
+  for( let i = 0; i < image.length; i++ )
+  {
+    image[ i ] = dataViewByte[ startScan + i - 2 ];
+    imageH[ i ] = dataViewHex[ startScan + i - 2 ];
+    imageB[ i ] = ( dataViewByte[ startScan + i - 2 ] ).toString( 2 );
+  }
+  for( let i = 0; i < frame.length; i++ )
+  {
+    frame[ i ] = dataViewHex[ startFrame + i - 1 ];
+  }
 
   let hfTable1Counters = _.array.makeArrayOfLengthZeroed( 16 ); let sum1 = 0;
   let hfTable2Counters = _.array.makeArrayOfLengthZeroed( 16 ); let sum2 = 0;
@@ -3758,12 +3805,13 @@ function huffmanDecoder( jpgPath )
     sum4 = sum4 + hfTable4Counters[ i ];
   }
 
-
+  //Huffman Tables
   let h1 = new Map();
   let h2 = new Map();
   let h3 = new Map();
   let h4 = new Map();
 
+  // Get Huffman Values
   let v1 = 0;
   let v2 = 0;
   let v3 = 0;
@@ -3778,7 +3826,7 @@ function huffmanDecoder( jpgPath )
 
     for( let j = 0; j < values1.length; j ++ )
     {
-      values1[ j ] = hfTable1[ 16 + v1 ];
+      values1[ j ] = hfTable1H[ 16 + v1 ];
       v1 = v1 + 1;
 
     }
@@ -3786,21 +3834,21 @@ function huffmanDecoder( jpgPath )
 
     for( let j = 0; j < values2.length; j ++ )
     {
-      values2[ j ] = hfTable2[ 16 + v2 ];
+      values2[ j ] = hfTable2H[ 16 + v2 ];
       v2 = v2 + 1;
     }
     h2.set( 'l' + String( i + 1 ), values2 );
 
     for( let j = 0; j < values3.length; j ++ )
     {
-      values3[ j ] = hfTable3[ 16 + v3 ];
+      values3[ j ] = hfTable3H[ 16 + v3 ];
       v3 = v3 + 1;
     }
     h3.set( 'l' + String( i + 1 ), values3 );
 
     for( let j = 0; j < values4.length; j ++ )
     {
-      values4[ j ] = hfTable4[ 16 + v4 ];
+      values4[ j ] = hfTable4H[ 16 + v4 ];
       v4 = v4 + 1;
     }
     h4.set( 'l' + String( i + 1 ), values4 );
@@ -3872,7 +3920,7 @@ function huffmanDecoder( jpgPath )
   binaryTree( h3 );
   binaryTree( h4 );
 
-  //Show results
+  //SHOW RESULTS
 
   logger.log( 'Huffman tables :')
   logger.log('H1', hfTable1.length );
@@ -3920,6 +3968,359 @@ function huffmanDecoder( jpgPath )
     logger.log( 'For length '+ String( i + 1 ) + ' we have ', h4.get( 'l'+String( i + 1 )),' corresponding too ', h4.get( 'lb'+String(i + 1 ) ) )
   }
 
+  logger.log('');
+  logger.log('');
+
+
+  logger.log('Start of scan')
+  //Get scan data
+
+  // Number of bytes
+  let length = 2 + image[ 2 ]*256 + image[ 3 ];
+  let imageString = '';
+  for( let i = length; i < imageB.length; i++ )
+  {
+    imageString = imageString + imageB[ i ].toString();
+  }
+
+
+  let y = _.array.makeArrayOfLengthZeroed( 64 );
+  let cb = _.array.makeArrayOfLengthZeroed( 64 );
+  let cr = _.array.makeArrayOfLengthZeroed( 64 );
+  let index = 0;
+
+  index = getBlock( imageString, index, y, cb, cr );
+  logger.log( index, y, cb, cr )
+
+  // Get Block Info
+  function getBlock( imageS, index, y, cb, cr )
+  {
+    if( arguments.length === 2 )
+    {
+      var y = _.array.makeArrayOfLengthZeroed( 64 );
+      var cb = _.array.makeArrayOfLengthZeroed( 64 );
+      var cr = _.array.makeArrayOfLengthZeroed( 64 );
+    }
+    let i = index;     // counter
+    let numOfBytes = imageString.length;
+    _.assert( i < numOfBytes );
+
+    // Y - DC
+    let yDc = 0;
+
+    let num = '';  // bit sequence
+    let code = ''; // huffman code
+    let value = ''; // value related to the huffman code
+    let diffBinary = '';
+
+    while( code === '' )
+    {
+      num = num + imageS.charAt( i );
+
+      for( let j = 0; j < 16; j++ )
+      {
+        if( h1.get( 'l' + String( j + 1 ) ).length !== 0 )
+        {
+          let binaryCode = h1.get( 'lb' + String( j + 1 ) );
+          for( let k = 0; k < binaryCode.length; k++ )
+          if( num === binaryCode[ k ].toString() )
+          {
+            code = num;
+            value = h1.get( 'l' + String( j + 1 ) )[ k ];
+          }
+        }
+      }
+      i = i + 1;
+    }
+
+    if( value != '00' )
+    {
+      for( let f = 0; f < parseInt( value ); f++)
+      {
+        diffBinary = diffBinary + imageString.charAt( i );
+        i = i + 1;
+      }
+
+      yDc = binaryToByte( diffBinary );
+      y[ 0 ] = yDc;
+    }
+    else
+    {
+        y[ 0 ] = 0;
+    }
+
+    // Y - AC
+    let j = 1;
+    value = ''; // value related to the huffman code
+    while( j < 64 && value != '00')
+    {
+      num = '';  // bit sequence
+      code = ''; // huffman code
+      value = ''; // value related to the huffman code
+
+      while( code === '' )
+      {
+        num = num + imageS.charAt( i );
+
+        for( let j = 0; j < 16; j++ )
+        {
+          if( h2.get( 'l' + String( j + 1 ) ).length !== 0 )
+          {
+            let binaryCode = h2.get( 'lb' + String( j + 1 ) );
+            for( let k = 0; k < binaryCode.length; k++ )
+            if( num === binaryCode[ k ].toString() )
+            {
+              code = num;
+              value = h2.get( 'l' + String( j + 1 ) )[ k ];
+            }
+          }
+        }
+        i = i + 1;
+      }
+
+      logger.log( 'VALUE', value)
+      if( value != '00' )
+      {
+        let numValue = parseInt( value, 10 );
+        let binValue = Number( numValue ).toString( 2 );
+        logger.log( 'VALUE bin', binValue );
+        if( binValue.length < 5 )
+        {
+          let diffBinary = '';
+          for( let f = 0; f < parseInt( value ); f++)
+          {
+            diffBinary = diffBinary + imageString.charAt( i );
+            i = i + 1;
+          }
+
+          let yAc = binaryToByte( diffBinary );
+          y[ j ] = yAc;
+        }
+        else
+        {
+          let diffBinary = '';
+          let newValue = '';
+          let zeros = 0;
+
+          for( let u = binValue.length; u >= 0; u-- )
+          {
+            if( u > 4 )
+            {
+              newValue = newValue + binValue.charAt( binValue.length - 4 + u );
+            }
+          }
+
+        }
+      }
+      else {}
+      j = j + 1;
+    }
+
+    // Cb - DC
+    let cbDc = 0;
+
+    num = '';  // bit sequence
+    code = ''; // huffman code
+    value = ''; // value related to the huffman code
+
+    while( code === '' )
+    {
+      num = num + imageS.charAt( i );
+
+      for( let j = 0; j < 16; j++ )
+      {
+        if( h3.get( 'l' + String( j + 1 ) ).length !== 0 )
+        {
+          let binaryCode = h3.get( 'lb' + String( j + 1 ) );
+          for( let k = 0; k < binaryCode.length; k++ )
+          if( num === binaryCode[ k ].toString() )
+          {
+            code = num;
+            value = h3.get( 'l' + String( j + 1 ) )[ k ];
+          }
+        }
+      }
+      i = i + 1;
+    }
+
+    diffBinary = ''
+    if( value != '00' )
+    {
+      for( let f = 0; f < parseInt( value ); f++)
+      {
+        diffBinary = diffBinary + imageString.charAt( i );
+        i = i + 1;
+      }
+
+      cbDc = binaryToByte( diffBinary );
+      cb[ 0 ] = cbDc;
+    }
+    else
+    {
+        cb[ 0 ] = 0;
+    }
+
+    // Cb - AC
+    j = 1;
+    value = ''; // value related to the huffman code
+    while( j < 63 && value != '00')
+    {
+      num = '';  // bit sequence
+      code = ''; // huffman code
+      value = ''; // value related to the huffman code
+
+      while( code === '' )
+      {
+        num = num + imageS.charAt( i );
+
+        for( let j = 0; j < 16; j++ )
+        {
+          if( h4.get( 'l' + String( j + 1 ) ).length !== 0 )
+          {
+            let binaryCode = h4.get( 'lb' + String( j + 1 ) );
+            for( let k = 0; k < binaryCode.length; k++ )
+            if( num === binaryCode[ k ].toString() )
+            {
+              code = num;
+              value = h4.get( 'l' + String( j + 1 ) )[ k ];
+            }
+          }
+        }
+        i = i + 1;
+      }
+
+      if( value != '00' )
+      {
+        let diffBinary = '';
+        for( let f = 0; f < parseInt( value ); f++)
+        {
+          diffBinary = diffBinary + imageString.charAt( i );
+          i = i + 1;
+        }
+
+        let cbAc = binaryToByte( diffBinary );
+        cb[ j ] = cbAc;
+      }
+      else {}
+
+      j = j + 1;
+    }
+
+    // Cr - DC
+    let crDc = 0;
+
+    num = '';  // bit sequence
+    code = ''; // huffman code
+    value = ''; // value related to the huffman code
+
+    while( code === '' )
+    {
+      num = num + imageS.charAt( i );
+
+      for( let j = 0; j < 16; j++ )
+      {
+        if( h3.get( 'l' + String( j + 1 ) ).length !== 0 )
+        {
+          let binaryCode = h3.get( 'lb' + String( j + 1 ) );
+          for( let k = 0; k < binaryCode.length; k++ )
+          if( num === binaryCode[ k ].toString() )
+          {
+            code = num;
+            value = h3.get( 'l' + String( j + 1 ) )[ k ];
+          }
+        }
+      }
+      i = i + 1;
+    }
+
+    if( value != '00' )
+    {
+      for( let f = 0; f < parseInt( value ); f++)
+      {
+        diffBinary = diffBinary + imageString.charAt( i );
+        i = i + 1;
+      }
+
+      crDc = binaryToByte( diffBinary );
+      cr[ 0 ] = crDc;
+    }
+    else
+    {
+        cr[ 0 ] = 0;
+    }
+
+    // Cr - AC
+    num = '';  // bit sequence
+    code = ''; // huffman code
+    value = ''; // value related to the huffman code
+
+    j = 1;
+    while( j < 63 && value != '00')
+    {
+      num = '';  // bit sequence
+      code = ''; // huffman code
+      value = ''; // value related to the huffman code
+
+      while( code === '' )
+      {
+        num = num + imageS.charAt( i );
+
+        for( let j = 0; j < 16; j++ )
+        {
+          if( h4.get( 'l' + String( j + 1 ) ).length !== 0 )
+          {
+            let binaryCode = h4.get( 'lb' + String( j + 1 ) );
+            for( let k = 0; k < binaryCode.length; k++ )
+            if( num === binaryCode[ k ].toString() )
+            {
+              code = num;
+              value = h4.get( 'l' + String( j + 1 ) )[ k ];
+            }
+          }
+        }
+        i = i + 1;
+      }
+
+      if( value != '00' )
+      {
+        let numValue = parseInt( value, 10 );
+        let binValue = Number( numValue ).toString( 2 );
+        logger.log( 'VALUE bin', value, binValue );
+        if( binValue.length < 5 )
+        {
+          let diffBinary = '';
+          for( let f = 0; f < parseInt( value ); f++)
+          {
+            diffBinary = diffBinary + imageString.charAt( i );
+            i = i + 1;
+          }
+
+          let crAc = binaryToByte( diffBinary );
+          cr[ j ] = crAc;
+        }
+        else
+        {
+          let diffBinary = '';
+          let newValue = '';
+          let zeros = 0;
+
+          for( let u = binValue.length; u >= 0; u-- )
+          {
+            if( u > 4 )
+            {
+              newValue = newValue + binValue.charAt( binValue.length - 4 + u );
+            }
+          }
+
+        }
+      }
+      else {}
+
+      j = j + 1;
+    }
+    index = i;
+    return index;
+  }
 
 }
 
