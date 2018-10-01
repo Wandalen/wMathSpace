@@ -1517,9 +1517,9 @@ function _equalAre( it )
 {
 
   _.assert( arguments.length === 1, 'expects exactly three argument' );
-  _.assert( it.context.onNumbersAreEqual );
+  _.assert( _.routineIs( it.context.onNumbersAreEqual ) );
 
-  debugger;
+  // debugger;
   it.looking = false;
 
   if( !( it.src2 instanceof Self ) )

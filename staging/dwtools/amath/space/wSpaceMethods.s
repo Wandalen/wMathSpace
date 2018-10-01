@@ -528,7 +528,7 @@ function convertToClass( cls,src )
 
 //
 
-function fromVector( src )
+function fromVectorImage( src )
 {
   let result;
 
@@ -628,7 +628,7 @@ function from( src,dims )
   }
   else
   {
-    result = this.fromVector( src );
+    result = this.fromVectorImage( src );
   }
 
   _.assert( !dims || result.hasShape( dims ) );
@@ -657,7 +657,7 @@ function fromForReading( src,dims )
   }
   else
   {
-    let result = this.fromVector( src );
+    let result = this.fromVectorImage( src );
   }
 
   _.assert( !dims || result.hasShape( dims ) );
@@ -3237,7 +3237,7 @@ let Statics =
   makeRow : makeRow,
   makeRowZeroed : makeRowZeroed,
 
-  fromVector : fromVector,
+  fromVectorImage : fromVectorImage,
   fromScalar : fromScalar,
   fromScalarForReading : fromScalarForReading,
   from : from,
@@ -3342,7 +3342,7 @@ let Extend =
 
   convertToClass : convertToClass,
 
-  fromVector : fromVector,
+  fromVectorImage : fromVectorImage,
   fromScalar : fromScalar,
   fromScalarForReading : fromScalarForReading,
   from : from,

@@ -2,6 +2,12 @@
 
 'use strict';
 
+/*
+cd C:\pro\web\Dave\git\trunk
+cls && debugnode builder\include\dwtools\amath\space.test\Space.test.s v:5 r:identical
+cls && node builder/Test.s builder\include\dwtools\amath v:2 n:1
+*/
+
 if( typeof module !== 'undefined' )
 {
 
@@ -6454,7 +6460,9 @@ function pivot( test )
 
 }
 
-//
+// --
+// etc
+// --
 
 function addAtomWise( test )
 {
@@ -10032,7 +10040,67 @@ function polynomClosestFor( test )
   });
 
   logger.log( polynom );
-  test.equivalent( polynom,[ 1/12,3/4 ] );
+  test.equivalent( polynom,[ 1/12, 3/4 ] );
+
+}
+
+//
+
+function identical( test )
+{
+
+  // test.case = 'trivial';
+  //
+  // var m1 = space.makeIdentity([ 3,3 ]);
+  // var m2 = space.makeIdentity([ 3,3 ]);
+  // var got = m1.identicalWith( m2 );
+  // test.identical( got, true );
+  //
+  // /* */
+  //
+  // test.case = 'with strides';
+  //
+  // var m1 = new _.Space
+  // ({
+  //   buffer : new Float32Array([ 1, 3, 5 ]),
+  //   dims : [ 3,1 ],
+  //   inputTransposing : 0,
+  // });
+  //
+  // var m2 = new _.Space
+  // ({
+  //   buffer : new Float32Array([ 0, 1,2, 3,4, 5,6, 7 ]),
+  //   offset : 1,
+  //   inputTransposing : 0,
+  //   strides : [ 2,6 ],
+  //   dims : [ 3,1 ],
+  // });
+  //
+  // var got = m1.identicalWith( m2 );
+  // test.identical( got, true );
+
+  /* */
+
+  test.case = 'with strides';
+
+  var m1 = new _.Space
+  ({
+    buffer : new Float32Array([ 1, 3, 5 ]),
+    dims : [ 3, Infinity ],
+    inputTransposing : 0,
+  });
+
+  var m2 = new _.Space
+  ({
+    buffer : new Float32Array([ 1, 3, 5 ]),
+    dims : [ 3, Infinity ],
+    inputTransposing : 0,
+  });
+
+  debugger;
+  var got = m1.identicalWith( m2 );
+  debugger;
+  test.identical( got, true );
 
 }
 
@@ -10100,6 +10168,8 @@ var Self =
     lineSwap : lineSwap,
     pivot : pivot,
 
+    /* etc */
+
     addAtomWise : addAtomWise,
     subAtomWise : subAtomWise,
 
@@ -10121,6 +10191,8 @@ var Self =
 
     polynomExactFor : polynomExactFor,
     polynomClosestFor : polynomClosestFor,
+
+    // identical : identical,
 
   },
 
