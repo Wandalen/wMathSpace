@@ -10,7 +10,7 @@ debugger;
 
 let jpgPath = 'C:/Users/pabel/Desktop/Trabajo/lions.jpg'
 let s = _.Space.make([ 3, 3 ]);
-// s.huffmanDecoder( jpgPath )
+//s.huffmanDecoder( jpgPath )
 
 logger.log('')
 logger.log('Next Image')

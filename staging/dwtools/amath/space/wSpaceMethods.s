@@ -3690,6 +3690,7 @@ function huffmanDecoder( jpgPath )
 
   // SET MARKERS:
 
+  logger.log( 'IMAGE MARKERS')
   let hfTables = new Map();
   let hf = 0;
   let startFrame = 0; // Start of Frame
@@ -3706,11 +3707,11 @@ function huffmanDecoder( jpgPath )
       {
         logger.log('Start of Image', i );
       }
-      if( dataViewHex[ i ] === 'DB' )
+      else if( dataViewHex[ i ] === 'DB' )
       {
         logger.log('Quantization Table', i );
       }
-      if( dataViewHex[ i ] === 'C4' )
+      else if( dataViewHex[ i ] === 'C4' )
       {
         logger.log('Huffman Table', i );
         hfTables.set( 'Table' + String( hf + 1 ) + 'start', i + 2 );
@@ -3718,63 +3719,70 @@ function huffmanDecoder( jpgPath )
         hfTables.set( 'Table' + String( hf + 1 ) + 'end', i + length );
         hf = hf + 1;
       }
-      if( dataViewHex[ i ] === 'DC' )
+      else if( dataViewHex[ i ] === 'DC' )
       {
         logger.log('Number of lines', i );
       }
-      if( dataViewHex[ i ] === 'DA' )
+      else if( dataViewHex[ i ] === 'DA' )
       {
         logger.log('Start of Scan', i );
         startScan = i + 1;
       }
-      if( dataViewHex[ i ] === 'C0' )
+      else if( dataViewHex[ i ] === 'C0' )
       {
         logger.log('Start of Frame', i );
         startFrame = i + 1;
       }
-      if( dataViewHex[ i ] === 'DD' )
+      else if( dataViewHex[ i ] === 'DD' )
       {
         logger.log('Restart interval', i );
       }
-      if( dataViewHex[ i ] === 'FE' )
+      else if( dataViewHex[ i ] === 'FE' )
       {
         logger.log('Comment', i );
       }
-      if( dataViewHex[ i ] === 'E0' )
+      else if( dataViewHex[ i ] === 'E0' )
       {
         logger.log('JFIF specification', i );
       }
-      if( dataViewHex[ i ] === 'D9' )
+      else if( dataViewHex[ i ] === 'D9' )
       {
         logger.log('End of image', i );
         endImage = i;
       }
-      if( dataViewHex[ i ] === '00' )
+      else if( dataViewHex[ i ] === '00' )
       {
-        //logger.log('Stuff byte', i );
-        dataViewHex[ i ] = '';
+        logger.log('Stuff byte - remove 00 ', i );
+        //dataViewHex[ i ] = '';º11ss
+        dataViewHex.splice( i, 1 );
+        dataViewByte.splice( i, 1 );
       }
       else
       {
-        logger.log( 'Marker: FF',dataViewHex[ i ] )
+        logger.log( 'Marker without meaning - remove FF: FF ',dataViewHex[ i ] )
+        // dataViewHex[ i - 1 ] = '';
+        dataViewHex.splice( i - 1, 1 );
+        dataViewByte.splice( i - 1, 1 );
       }
     }
   }
-
+  logger.log('Borders', startScan, endImage )
   _.assert( hf === 4 || hf === 2, 'JPG doesn´t have 2 or 4 DHT markers')
 
   // GET IMAGE ( Scan ) DATA:
 
-  let image = _.array.makeArrayOfLengthZeroed( endImage - startScan );
-  let imageH = _.array.makeArrayOfLengthZeroed( endImage - startScan );
-  let imageB = _.array.makeArrayOfLengthZeroed( endImage - startScan );
+  let image = _.array.makeArrayOfLengthZeroed( endImage - startScan + 1 );
+  let imageH = _.array.makeArrayOfLengthZeroed( endImage - startScan + 1 );
+  let imageB = _.array.makeArrayOfLengthZeroed( endImage - startScan + 1 );
 
+  logger.log('Image', image.length )
   for( let i = 0; i < image.length; i++ )
   {
     image[ i ] = dataViewByte[ startScan + i - 2 ];
     imageH[ i ] = dataViewHex[ startScan + i - 2 ];
     imageB[ i ] = ( dataViewByte[ startScan + i - 2 ] ).toString( 2 );
   }
+
 
   // GET HUFFMAN TABLES:
 
@@ -3835,7 +3843,7 @@ function huffmanDecoder( jpgPath )
 
         for( let j = 0; j < values.length; j ++ )
         {
-          values[ j ] = hfTableArrayH[ 17 + v ];
+          values[ j ] = hfTableArray[ 17 + v ];
           v = v + 1;
         }
         h.set( 'l' + String( i + 1 ), values );
@@ -3916,21 +3924,20 @@ function huffmanDecoder( jpgPath )
   }
 
   logger.log('')
-  logger.log('GET HUFFMAN TABLES')
+  logger.log('HUFFMAN TABLES')
   getHuffmanTables( dataViewByte, hfTables );
   logger.log( hfTables )
 
   //GET SCAN DATA :
 
   logger.log('')
-  logger.log('Start of scan')
+  logger.log('START OF SCAN')
 
   //Number of components
-
   let components = new Map();
-  let componentsNum = image[ 4 ];
+  let numOfComponents = image[ 4 ];
 
-  for( let c = 0; c < componentsNum; c++ )
+  for( let c = 0; c < numOfComponents; c++ )
   {
     // Get Number of HT
     let ac = '';
@@ -3958,231 +3965,318 @@ function huffmanDecoder( jpgPath )
       }
     }
 
+    components.set( 'numOfComponents', numOfComponents );
     components.set( 'C' + String( component ) + 'Ac', parseInt( ac, 10 ) );
     components.set( 'C' + String( component ) + 'Dc', parseInt( dc, 10 ) );
   }
 
+  // GET FRAME INFORMATION:
 
+  let frameData = new Map();
+  let lengthFrame = 8 + numOfComponents * 3;
+  let frameB = _.array.makeArrayOfLength( lengthFrame );
+  let frameH = _.array.makeArrayOfLength( lengthFrame );
 
-  // Number of bytes
+  for( let f = 0; f < lengthFrame; f ++ )
+  {
+    frameB[ f ] = dataViewByte[ startFrame + f ];
+    frameH[ f ] = dataViewHex[ startFrame + f ];
+  }
+
+  let imageHeight = frameB[ 3 ]*256 + frameB[ 4 ];
+  let imageWidth = frameB[ 5 ]*256 + frameB[ 6 ];
+  _.assert( imageHeight > 0 && imageWidth > 0, 'Image height and width must be superior to zero' );
+  let numOfComponentsF = frameB[ 7 ];
+  _.assert( numOfComponentsF === numOfComponents, 'Different number of components between frame and scan' );
+  logger.log('Dimensions', imageHeight, imageWidth )
+
+  // Get Sampling factors and Quantization table code
+  let vMax = 0;
+  let hMax = 0;
+  for( let cf = 0; cf < numOfComponents; cf++ )
+  {
+    let component = frameB[ 8 + 3*cf ];
+    let samplingF = Number(  frameB[ 8 + 3*cf + 1 ] ).toString( 2 );
+    let qT = frameB[ 8 + 3*cf + 2 ];
+    let h = '';
+    let v = '';
+
+    for( let u = 0; u < samplingF.length; u++ )
+    {
+      if( samplingF.length < 4 )
+      {
+        h = 0;
+        v = v + samplingF.charAt( u );
+      }
+      else
+      {
+        if( samplingF.length - u > 4)
+        {
+          h = h + samplingF.charAt( u );
+        }
+        else
+        {
+          v = v + samplingF.charAt( u )
+        }
+      }
+    }
+
+    h = parseInt( h, 2);
+    v = parseInt( v, 2);
+
+    if( v > vMax )
+    vMax = v;
+
+    if( h > hMax )
+    hMax = h;
+
+    frameData.set( 'numOfComponents', numOfComponents );
+    frameData.set( 'C' + String( component ) + 'H', h );
+    frameData.set( 'C' + String( component ) + 'V', v );
+    frameData.set( 'C' + String( component ) + 'QT', qT );
+  }
+  logger.log('')
+  logger.log('FRAME DATA')
+  logger.log( frameData );
+  logger.log('')
+
+  // Number of blocks
+  let numOfBlocks = Math.ceil( imageHeight / (8 * hMax ) ) * Math.ceil( imageWidth / ( 8 * vMax ) );
+  logger.log('Number of blocks: ', numOfBlocks );
+
+  // Get Scan data bytes
   let length = 2 + image[ 2 ]*256 + image[ 3 ];
+  logger.log('Scan length', imageB.length )
   let imageString = '';
+
   for( let i = length; i < imageB.length; i++ )
   {
+    while( imageB[ i ].length < 8 )
+    {
+      imageB[ i ] = '0' + imageB[ i ];
+    }
+
+    _.assert( imageB[ i ].length === 8 );
     imageString = imageString + imageB[ i ].toString();
   }
 
-  /*
-    let index = 0;
-    let l = 1;
-    while( index < imageB.length / 5 )
-    {
-      let y = _.array.makeArrayOfLengthZeroed( 64 );
-      let cb = _.array.makeArrayOfLengthZeroed( 64 );
-      let cr = _.array.makeArrayOfLengthZeroed( 64 );
-      logger.log('');
-      logger.log( l, '8x8 unit ', index );
-      index = getBlock( hfTables, imageString, index, y, cb, cr );
-      //logger.log( index );
-      logger.log( 'Y', y )
-      logger.log( 'Cb', cb )
-      logger.log( 'Cr', cr )
-
-      l = l + 1;
-    }
-  */
-  let index = 0;
-
-  getBlock( components, hfTables, imageString, index );
-
-
   // Get Block Info
-  function getBlock( components, hfTables, imageS, index )
+  function getBlock( components, frameData, hfTables, imageS, index )
   {
-
     let i = index;     // counter
     let numOfBytes = imageString.length;
     _.assert( i < numOfBytes );
 
-    let numOfComponents = components.size / 2 ;
-
-    for( let c = 1; c <= numOfComponents; c++ )
+    for( let c = 1; c <= components.get( 'numOfComponents' ); c++ )
     {
-      let comp = _.array.makeArrayOfLengthZeroed( 64 );
-
-      // DC
-      let Dc = 0;
-      let table = components.get( 'C' + String( c ) + 'Dc' );
-
-      //Get HT
-      let codes;
-      let values;
-
-      for( let t = 1; t <= hfTables.size / 6; t++ )
+      for( let vf = 0; vf < frameData.get( 'C' + String( c ) + 'V' ); vf++ )
       {
-        if( hfTables.get( 'Table' + t + 'AcDc' ) === 0 )
+        for( let hf = 0; hf < frameData.get( 'C' + String( c ) + 'H' ); hf++ )
         {
-          if( hfTables.get( 'Table' + t + 'ID' ) === table )
+          let comp = _.array.makeArrayOfLengthZeroed( 64 );
+
+          // DC
+          let Dc = 0;
+          let table = components.get( 'C' + String( c ) + 'Dc' );
+          //Get HT
+          let codes;
+          let values;
+
+          for( let t = 1; t <= hfTables.size / 6; t++ )
           {
-            codes = hfTables.get( 'Table' + t + 'Codes' );
-            values = hfTables.get( 'Table' + t + 'Values' );
-          }
-        }
-      }
-
-      let num = '';  // bit sequence
-      let code = ''; // huffman code
-      let value = ''; // value related to the huffman code
-      let diffBinary = '';
-
-      while( code === '' )
-      {
-        num = num + imageS.charAt( i );
-
-        for( let j = 0; j < codes.length; j++ )
-        {
-          let binaryCode = codes[ j ];
-
-          if( num === binaryCode.toString() )
-          {
-            code = num;
-            value = values[ j ];
-          }
-        }
-        i = i + 1;
-      }
-
-      if( value != '00' )
-      {
-        for( let f = 0; f < parseInt( value ); f++)
-        {
-          diffBinary = diffBinary + imageString.charAt( i );
-          i = i + 1;
-        }
-        Dc = binaryToByte( diffBinary );
-        comp[ 0 ] = Dc;
-      }
-      else
-      {
-        comp[ 0 ] = 0;
-      }
-
-      components.set( 'C' + String( c ), comp );
-
-      // AC
-      let Ac = 0;
-      table = components.get( 'C' + String( c ) + 'Ac' );
-
-      //Get HT
-      for( let t = 1; t <= hfTables.size / 6; t++ )
-      {
-        if( hfTables.get( 'Table' + t + 'AcDc' ) === 1 )
-        {
-          if( hfTables.get( 'Table' + t + 'ID' ) === table )
-          {
-            codes = hfTables.get( 'Table' + t + 'Codes' );
-            values = hfTables.get( 'Table' + t + 'Values' );
-          }
-        }
-      }
-      logger.log('AC')
-      logger.log('AC', codes)
-      logger.log('AC', values)
-
-      let j = 1;
-      value = ''; // value related to the huffman code
-      while( j < 64 && value != '00')
-      {
-        num = '';  // bit sequence
-        code = ''; // huffman code
-        value = ''; // value related to the huffman code
-
-        while( code === '' )
-        {
-          num = num + imageS.charAt( i );
-
-          for( let r = 0; r < codes.length; r++ )
-          {
-            let binaryCode = codes[ r ];
-            if( num === binaryCode.toString() )
+            if( hfTables.get( 'Table' + t + 'AcDc' ) === Dc )
             {
-              code = num;
-              value = values[ r ];
+              if( hfTables.get( 'Table' + t + 'ID' ) === table )
+              {
+                codes = hfTables.get( 'Table' + t + 'Codes' );
+                values = hfTables.get( 'Table' + t + 'Values' );
+              }
             }
           }
-          i = i + 1;
-        }
 
-        if( value != '00' )
-        {
-          let numValue = parseInt( value, 10 );
-          let binValue = Number( numValue ).toString( 2 );
+          let num = '';  // bit sequence
+          let code = ''; // huffman code
+          let value = ''; // value related to the huffman code
+          let diffBinary = '';
 
-          if( binValue.length < 5 )
+          while( code === ''  && num.length < 17 )
           {
-            let diffBinary = '';
+            num = num + imageS.charAt( i );
+
+            for( let j = 0; j < codes.length; j++ )
+            {
+              let binaryCode = codes[ j ];
+
+              if( num === binaryCode.toString() )
+              {
+                code = num;
+                value = values[ j ];
+              }
+            }
+            i = i + 1;
+            if( num.length === 17 )
+            {
+              _.assert( value !== '', 'DC H CODE NOT FOUND' )
+            }
+          }
+        //  logger.log('code', code , 'value', value );
+
+          if( value != '00' )
+          {
             for( let f = 0; f < parseInt( value ); f++)
             {
               diffBinary = diffBinary + imageString.charAt( i );
               i = i + 1;
             }
+            Dc = binaryToByte( diffBinary );
 
-            let Ac = binaryToByte( diffBinary );
-            logger.log('code ', code, value, 'result ', diffBinary, Ac )
-            comp[ j ] = Ac;
+            comp[ 0 ] = Dc;
+            _.assert( _.numberIs( comp[ 0 ] ) && !isNaN( comp[ 0 ] ) );
           }
           else
           {
-            let newValue = '';
-            let zeros = '';
+            comp[ 0 ] = 0;
+          }
+          // logger.log('Get', diffBinary, ' for', comp[ 0 ])
 
-            for( let u = 0; u < binValue.length; u++ )
+          // AC
+
+          let Ac = 1;
+          table = components.get( 'C' + String( c ) + 'Ac' );
+
+          //Get HT
+          for( let t = 1; t <= hfTables.size / 6; t++ )
+          {
+            if( hfTables.get( 'Table' + t + 'AcDc' ) === Ac )
             {
-              if( binValue.length - u > 4 )
+              if( hfTables.get( 'Table' + t + 'ID' ) === table )
               {
-                zeros = zeros + binValue.charAt( u );
+                codes = hfTables.get( 'Table' + t + 'Codes' );
+                values = hfTables.get( 'Table' + t + 'Values' );
+              }
+            }
+          }
+
+          debugger;
+          let j = 1;
+          value = ''; // value related to the huffman code
+          while( j < 64 && value != '00')
+          {
+            num = '';  // bit sequence
+            code = ''; // huffman code
+            value = ''; // value related to the huffman code
+
+            while( code === '' && num.length < 17 )
+            {
+              num = num + imageS.charAt( i );
+
+              for( let r = 0; r < codes.length; r++ )
+              {
+                let binaryCode = codes[ r ];
+                if( num === binaryCode.toString() )
+                {
+                  code = num;
+                  value = values[ r ];
+                }
+              }
+              i = i + 1;
+
+              if( num.length === 17 )
+              {
+                _.assert( value !== '', 'AC H CODE NOT FOUND' )
+              }
+            }
+          //  logger.log('code', code , 'value', value );
+
+            if( value != '00' )
+            {
+              let binValue = Number( value ).toString( 2 );
+
+              if( binValue.length < 5 )
+              {
+                let diffBinary = '';
+                for( let f = 0; f < parseInt( value ); f++)
+                {
+                  diffBinary = diffBinary + imageString.charAt( i );
+                  i = i + 1;
+                }
+
+                let Ac = binaryToByte( diffBinary );
+                comp[ j ] = Ac;
+                _.assert( _.numberIs( comp[ j ] ) && !isNaN( comp[ j ] ) );
+              //  logger.log('Get', diffBinary, ' for', comp[ j ])
               }
               else
               {
-                newValue = newValue + binValue.charAt( u );
+              //  logger.log('ZEROS')
+              //  logger.log('Value', value, binValue )
+                let newValue = '';
+                let zeros = '';
+
+                for( let u = 0; u < binValue.length; u++ )
+                {
+                  if( binValue.length - u > 4 )
+                  {
+                    zeros = zeros + binValue.charAt( u );
+                  }
+                  else
+                  {
+                    newValue = newValue + binValue.charAt( u );
+                  }
+                }
+                let numZeros = parseInt( zeros, 2 );
+                for( let z = 0; z < numZeros; z++ )
+                {
+                  comp[ j ] = 0;
+                  j = j + 1;
+                }
+              //  logger.log('Get', zeros, ' for', numZeros, ' zeros')
+                let diffBinary = '';
+                let numNewValue = parseInt( newValue, 2 );
+
+                for( let f = 0; f < numNewValue; f++)
+                {
+                  diffBinary = diffBinary + imageString.charAt( i );
+                  i = i + 1;
+                }
+                let Ac = binaryToByte( diffBinary );
+
+                if( diffBinary === '' )
+                Ac = 0;
+
+                comp[ j ] = Ac;
+
+                _.assert( _.numberIs( comp[ j ] ) && !isNaN( comp[ j ] ) );
               }
             }
-            let numZeros = parseInt( zeros, 2 );
-            for( let z = 0; z < numZeros; z++ )
-            {
-              comp[ j ] = 0;
-              j = j + 1;
-            }
-
-            let diffBinary = '';
-            let numNewValue = parseInt( newValue, 2 );
-            for( let f = 0; f < numNewValue; f++)
-            {
-              diffBinary = diffBinary + imageString.charAt( i );
-              i = i + 1;
-            }
-
-            let Ac = binaryToByte( diffBinary );
-            logger.log( 'START ZEROS CODE FOR  = ', binValue, 'where zeros = ', zeros, numZeros, 'and the new value = ', newValue, numNewValue)
-            logger.log( 'result ',diffBinary, Ac)
-            comp[ j ] = Ac;
+            j = j + 1;
           }
+          components.set( 'C' + String( c ) +'-' + String( vf + 1 ) + String( hf + 1 ), comp );
         }
-        else {  logger.log( 'END OF BLOCK') }
-        j = j + 1;
       }
-
-
     }
 
-
+    index = i;
+    return index;
   }
 
-  logger.log( 'Components' )
-  logger.log( components )
+  // LOOP OVER ALL THE IMAGE
+
+  let index = 0;
+  for( let b = 0; b < numOfBlocks; b++ )
+  {
+    logger.log('');
+    logger.log( '16x16 block number', b + 1 );
+    index = getBlock( components, frameData, hfTables, imageString, index );
+    logger.log( 'C1-1', components.get( 'C1-11') )
+    logger.log( 'C1-2', components.get( 'C1-12') )
+    logger.log( 'C1-3', components.get( 'C1-21') )
+    logger.log( 'C1-4', components.get( 'C1-22') )
+    logger.log( 'C2-1', components.get( 'C2-11') )
+    logger.log( 'C3-1', components.get( 'C3-11') )
+  }
 
 }
-
 
 // --
 // relations
