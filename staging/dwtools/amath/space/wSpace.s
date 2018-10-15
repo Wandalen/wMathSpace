@@ -3476,9 +3476,9 @@ _.assert( _.routineIs( _.ArrayNameSpaces.Float32.makeArrayOfLength ) );
 
 //
 
-_.accessorForbid( Self.prototype, Forbids );
-_.accessorReadOnly( Self.prototype, ReadOnlyAccessors );
-_.accessor( Self.prototype, Accessors );
+_.accessor.forbid( Self.prototype, Forbids );
+_.accessor.readOnly( Self.prototype, ReadOnlyAccessors );
+_.accessor.declare( Self.prototype, Accessors );
 
 //
 
