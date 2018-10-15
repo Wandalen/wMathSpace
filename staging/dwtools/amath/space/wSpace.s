@@ -1517,9 +1517,9 @@ function _equalAre( it )
 {
 
   _.assert( arguments.length === 1, 'expects exactly three argument' );
-  _.assert( it.context.onNumbersAreEqual );
+  _.assert( _.routineIs( it.context.onNumbersAreEqual ) );
 
-  debugger;
+  // debugger;
   it.looking = false;
 
   if( !( it.src2 instanceof Self ) )
@@ -3476,9 +3476,9 @@ _.assert( _.routineIs( _.ArrayNameSpaces.Float32.makeArrayOfLength ) );
 
 //
 
-_.accessorForbid( Self.prototype, Forbids );
-_.accessorReadOnly( Self.prototype, ReadOnlyAccessors );
-_.accessor( Self.prototype, Accessors );
+_.accessor.forbid( Self.prototype, Forbids );
+_.accessor.readOnly( Self.prototype, ReadOnlyAccessors );
+_.accessor.declare( Self.prototype, Accessors );
 
 //
 
