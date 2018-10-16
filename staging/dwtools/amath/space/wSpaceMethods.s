@@ -3876,6 +3876,26 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
 
 //
 
+function dequantizeVector( components, frameData, qTables )
+{
+  for (var [ key, value ] of components )
+  {
+    if( typeof( value ) === 'object')
+    {
+      let tableIndex = frameData.get( 'C' + key.charAt( 1 )+ 'QT' )
+
+      let quant = qTables.get( 'Table' + String( tableIndex ) );
+      Array.from( value );
+      for( let v = 0; v < value.length; v++ )
+      {
+        value[ v ] = value[ v ]*quant[ v ];
+      }
+    }
+  }
+}
+
+//
+
 function decodeJPG( jpgPath )
 {
   //GET DATA:
@@ -3915,10 +3935,11 @@ function decodeJPG( jpgPath )
       }
       else if( dataViewHex[ i ] === 'DB' )
       {
-        logger.log('Quantization Table', i, ':', dataViewHex[ i - 1 ], dataViewHex[ i ], dataViewHex[ i + 1 ], dataViewHex[ i + 2 ], dataViewHex[ i + 3 ] );
+        logger.log('Quantization Table', i );
         let length = dataViewByte[ i + 1 ]*256 + dataViewByte[ i + 2 ];
-        logger.log('QT length', length)
-        logger.log('Quantization Table :', dataViewHex[ i+ length - 1 ], dataViewHex[ i + length ] ); // End of QT
+        qTables.set( 'Table' + String( qt ) + 'start', i + 3 );
+        qTables.set( 'Table' + String( qt ) + 'length', length );
+        qt = qt + 1;
       }
       else if( dataViewHex[ i ] === 'C4' )
       {
@@ -3991,6 +4012,145 @@ function decodeJPG( jpgPath )
     imageB[ i ] = ( dataViewByte[ startScan + i - 2 ] ).toString( 2 );
   }
 
+  //Number of components
+  let components = new Map();
+  let numOfComponents = image[ 4 ];
+
+  for( let c = 0; c < numOfComponents; c++ )
+  {
+    // Get Number of HT
+    let ac = '';
+    let dc = '';
+    let component = image[ 5 + 2*c ];
+    let type = imageB[ 5 + 2*c + 1 ];
+
+    for( let u = 0; u < type.length; u++ )
+    {
+      if( type.length < 4 )
+      {
+        dc = 0;
+        ac = ac + type.charAt( u );
+      }
+      else
+      {
+        if( type.length - u > 4)
+        {
+          dc = dc + type.charAt( u );
+        }
+        else
+        {
+          ac = ac + type.charAt( u )
+        }
+      }
+    }
+
+    components.set( 'numOfComponents', numOfComponents );
+    components.set( 'C' + String( component ) + 'Ac', parseInt( ac, 10 ) );
+    components.set( 'C' + String( component ) + 'Dc', parseInt( dc, 10 ) );
+  }
+
+  // GET FRAME INFORMATION:
+
+  let frameData = new Map();
+  let lengthFrame = 8 + numOfComponents * 3;
+  let frameB = _.array.makeArrayOfLength( lengthFrame );
+  let frameH = _.array.makeArrayOfLength( lengthFrame );
+
+  for( let f = 0; f < lengthFrame; f ++ )
+  {
+    frameB[ f ] = dataViewByte[ startFrame + f ];
+    frameH[ f ] = dataViewHex[ startFrame + f ];
+  }
+
+  let imageHeight = frameB[ 3 ]*256 + frameB[ 4 ];
+  let imageWidth = frameB[ 5 ]*256 + frameB[ 6 ];
+  _.assert( imageHeight > 0 && imageWidth > 0, 'Image height and width must be superior to zero' );
+  let numOfComponentsF = frameB[ 7 ];
+  _.assert( numOfComponentsF === numOfComponents, 'Different number of components between frame and scan' );
+  logger.log('Dimensions', imageHeight, 'x', imageWidth, 'pixels' )
+
+  // Get Sampling factors and Quantization table code
+  let vMax = 0;
+  let hMax = 0;
+  let numOfQT = 0;
+  let oldQT = '';
+
+  for( let cf = 0; cf < numOfComponents; cf++ )
+  {
+    let component = frameB[ 8 + 3*cf ];
+    let samplingF = Number(  frameB[ 8 + 3*cf + 1 ] ).toString( 2 );
+    let qT = frameB[ 8 + 3*cf + 2 ];
+
+    if( oldQT !== qT )
+    numOfQT = numOfQT + 1;
+
+    oldQT = qT;
+
+    let h = '';
+    let v = '';
+
+    for( let u = 0; u < samplingF.length; u++ )
+    {
+      if( samplingF.length < 4 )
+      {
+        h = 0;
+        v = v + samplingF.charAt( u );
+      }
+      else
+      {
+        if( samplingF.length - u > 4)
+        {
+          h = h + samplingF.charAt( u );
+        }
+        else
+        {
+          v = v + samplingF.charAt( u )
+        }
+      }
+    }
+
+    h = parseInt( h, 2);
+    v = parseInt( v, 2);
+
+    if( v > vMax )
+    vMax = v;
+
+    if( h > hMax )
+    hMax = h;
+
+    frameData.set( 'numOfComponents', numOfComponents );
+    frameData.set( 'numOfQT', numOfQT );
+    frameData.set( 'C' + String( component ) + 'H', h );
+    frameData.set( 'C' + String( component ) + 'V', v );
+    frameData.set( 'C' + String( component ) + 'QT', qT );
+  }
+  logger.log('')
+  logger.log('FRAME DATA')
+  logger.log( frameData );
+  logger.log('')
+
+  // GET QUANTIZATION TABLES:
+
+  for( let q = 0; q < qt; q++ )
+  {
+    let length = qTables.get( 'Table' + String( q ) + 'length' );
+    let numOfQTables = length / 65;
+    numOfQTables = Math.round( numOfQTables );
+
+    for( let t = 0; t < numOfQTables; t++ )
+    {
+      let qTable = _.array.makeArrayOfLengthZeroed( 64 );
+      for( let e = 0; e < 64; e++ )
+      {
+        qTable[ e ] = dataViewByte[ qTables.get( 'Table' + String( q ) + 'start' ) + e + 65 * t + 1];
+      }
+      qTables.set( 'Table' + String( dataViewByte[ qTables.get( 'Table' + String( q ) + 'start' ) + 65 * t ] ), qTable )
+    }
+  }
+
+  logger.log('')
+  logger.log('QUANTIZATION TABLES')
+  logger.log( qTables )
 
   // GET HUFFMAN TABLES:
 
@@ -4141,113 +4301,6 @@ function decodeJPG( jpgPath )
   logger.log('')
   logger.log('START OF SCAN')
 
-  //Number of components
-  let components = new Map();
-  let numOfComponents = image[ 4 ];
-
-  for( let c = 0; c < numOfComponents; c++ )
-  {
-    // Get Number of HT
-    let ac = '';
-    let dc = '';
-    let component = image[ 5 + 2*c ];
-    let type = imageB[ 5 + 2*c + 1 ];
-
-    for( let u = 0; u < type.length; u++ )
-    {
-      if( type.length < 4 )
-      {
-        dc = 0;
-        ac = ac + type.charAt( u );
-      }
-      else
-      {
-        if( type.length - u > 4)
-        {
-          dc = dc + type.charAt( u );
-        }
-        else
-        {
-          ac = ac + type.charAt( u )
-        }
-      }
-    }
-
-    components.set( 'numOfComponents', numOfComponents );
-    components.set( 'C' + String( component ) + 'Ac', parseInt( ac, 10 ) );
-    components.set( 'C' + String( component ) + 'Dc', parseInt( dc, 10 ) );
-  }
-
-  // GET FRAME INFORMATION:
-
-  let frameData = new Map();
-  let lengthFrame = 8 + numOfComponents * 3;
-  let frameB = _.array.makeArrayOfLength( lengthFrame );
-  let frameH = _.array.makeArrayOfLength( lengthFrame );
-
-  for( let f = 0; f < lengthFrame; f ++ )
-  {
-    frameB[ f ] = dataViewByte[ startFrame + f ];
-    frameH[ f ] = dataViewHex[ startFrame + f ];
-  }
-
-  let imageHeight = frameB[ 3 ]*256 + frameB[ 4 ];
-  let imageWidth = frameB[ 5 ]*256 + frameB[ 6 ];
-  _.assert( imageHeight > 0 && imageWidth > 0, 'Image height and width must be superior to zero' );
-  let numOfComponentsF = frameB[ 7 ];
-  _.assert( numOfComponentsF === numOfComponents, 'Different number of components between frame and scan' );
-  logger.log('Dimensions', imageHeight, 'x', imageWidth, 'pixels' )
-
-  // Get Sampling factors and Quantization table code
-  let vMax = 0;
-  let hMax = 0;
-  for( let cf = 0; cf < numOfComponents; cf++ )
-  {
-    let component = frameB[ 8 + 3*cf ];
-    let samplingF = Number(  frameB[ 8 + 3*cf + 1 ] ).toString( 2 );
-    let qT = frameB[ 8 + 3*cf + 2 ];
-    let h = '';
-    let v = '';
-
-    for( let u = 0; u < samplingF.length; u++ )
-    {
-      if( samplingF.length < 4 )
-      {
-        h = 0;
-        v = v + samplingF.charAt( u );
-      }
-      else
-      {
-        if( samplingF.length - u > 4)
-        {
-          h = h + samplingF.charAt( u );
-        }
-        else
-        {
-          v = v + samplingF.charAt( u )
-        }
-      }
-    }
-
-    h = parseInt( h, 2);
-    v = parseInt( v, 2);
-
-    if( v > vMax )
-    vMax = v;
-
-    if( h > hMax )
-    hMax = h;
-
-    frameData.set( 'numOfComponents', numOfComponents );
-    frameData.set( 'C' + String( component ) + 'H', h );
-    frameData.set( 'C' + String( component ) + 'V', v );
-    frameData.set( 'C' + String( component ) + 'QT', qT );
-  }
-  logger.log('')
-  logger.log('FRAME DATA')
-  logger.log( frameData );
-  logger.log('')
-
   // Number of blocks
   let numOfBlocks = Math.ceil( imageHeight / (8 * hMax ) ) * Math.ceil( imageWidth / ( 8 * vMax ) );
   logger.log('Number of blocks: ', numOfBlocks );
@@ -4271,8 +4324,9 @@ function decodeJPG( jpgPath )
   // Get Block Info
 
   // LOOP OVER ALL THE IMAGE
-  decodeHuffman( components, frameData, hfTables, imageString, 0 );
-  /*
+//  decodeHuffman( components, frameData, hfTables, imageString, 0 );
+//  dequantizeVector( components, frameData, qTables );
+
   let index = 0;
   for( let b = 0; b < numOfBlocks; b++ )
   {
@@ -4280,6 +4334,7 @@ function decodeJPG( jpgPath )
     logger.log( '16x16 block number', b + 1 );
 
     index = decodeHuffman( components, frameData, hfTables, imageString, index );
+    dequantizeVector( components, frameData, qTables );
     logger.log( 'C1-1', components.get( 'C1-11') )
     logger.log( 'C1-2', components.get( 'C1-12') )
     logger.log( 'C1-3', components.get( 'C1-21') )
@@ -4287,7 +4342,7 @@ function decodeJPG( jpgPath )
     logger.log( 'C2-1', components.get( 'C2-11') )
     logger.log( 'C3-1', components.get( 'C3-11') )
   }
-  */
+
 }
 
 // --
@@ -4568,6 +4623,7 @@ let Extend =
   binaryToByte : binaryToByte,
   increaseBinary : increaseBinary,
   decodeHuffman : decodeHuffman,
+  dequantizeVector : dequantizeVector,
   decodeJPG : decodeJPG,
 
   //
