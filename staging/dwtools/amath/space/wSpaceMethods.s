@@ -3896,6 +3896,34 @@ function dequantizeVector( components, frameData, qTables )
 
 //
 
+function zigzagOrder( components )
+{
+  for (var [ key, value ] of components )
+  {
+    if( typeof( value ) === 'object')
+    {
+      let space = _.Space.make( [ 8, 8 ] );
+      Array.from( value );
+      let i = [ 0, 0, 1, 2, 1, 0, 0, 1, 2, 3, 4, 3, 2, 1, 0, 0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1, 0, 0, 1, 2,
+      3, 4, 5, 6, 7, 7, 6, 5, 4, 3, 2, 1, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 3, 4, 5, 6, 7, 7, 6, 5, 6, 7, 7 ];
+      let j = [ 0, 1, 0, 0, 1, 2, 3, 2, 1, 0, 0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0, 0, 1, 2, 3, 4, 5, 6, 7, 6, 5,
+      4, 3, 2, 1, 0, 1, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 3, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 5, 6, 7, 7, 6, 7 ];
+
+      _.assert( value.length === i.length )
+
+      for( let v = 0; v < value.length; v++ )
+      {
+        space.atomSet( [ i[ v ], j[ v ] ], value[ v ] );
+      }
+      
+      components.set( key, space );
+    }
+  }
+  return components;
+}
+
+//
+
 function decodeJPG( jpgPath )
 {
   //GET DATA:
@@ -4324,16 +4352,44 @@ function decodeJPG( jpgPath )
   // Get Block Info
 
   // LOOP OVER ALL THE IMAGE
-//  decodeHuffman( components, frameData, hfTables, imageString, 0 );
-//  dequantizeVector( components, frameData, qTables );
+  decodeHuffman( components, frameData, hfTables, imageString, 0 );
+  dequantizeVector( components, frameData, qTables );
+  zigzagOrder( components );
 
+  for (var [ key, value ] of components )
+  {
+    if( typeof( value ) === 'object')
+    {
+      logger.log( key )
+      logger.log( value )
+      logger.log( '' )
+    }
+  }
+/*
   let index = 0;
-  for( let b = 0; b < numOfBlocks; b++ )
+  let oldDValues = new Map();
+//  for( let b = 0; b < numOfBlocks; b++ )
+  for( let b = 0; b < 2; b++ )
   {
     logger.log('');
     logger.log( '16x16 block number', b + 1 );
 
     index = decodeHuffman( components, frameData, hfTables, imageString, index );
+
+    // Increase DC term
+    for (var [ key, value ] of components )
+    {
+      if( typeof( value ) === 'object')
+      {
+        Array.from( value );
+        if( b !== 0 )
+        {
+          value[ 0 ] = value[ 0 ] + oldDValues.get( key );
+        }
+        oldDValues.set( key, value[ 0 ] );
+      }
+    }
+
     dequantizeVector( components, frameData, qTables );
     logger.log( 'C1-1', components.get( 'C1-11') )
     logger.log( 'C1-2', components.get( 'C1-12') )
@@ -4342,7 +4398,7 @@ function decodeJPG( jpgPath )
     logger.log( 'C2-1', components.get( 'C2-11') )
     logger.log( 'C3-1', components.get( 'C3-11') )
   }
-
+*/
 }
 
 // --
@@ -4624,6 +4680,7 @@ let Extend =
   increaseBinary : increaseBinary,
   decodeHuffman : decodeHuffman,
   dequantizeVector : dequantizeVector,
+  zigzagOrder : zigzagOrder,
   decodeJPG : decodeJPG,
 
   //
