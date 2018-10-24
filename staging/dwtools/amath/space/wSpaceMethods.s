@@ -3878,7 +3878,7 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
 
 function dequantizeVector( components, frameData, qTables )
 {
-  for (var [ key, value ] of components )
+  for ( let [ key, value ] of components )
   {
     if( typeof( value ) === 'object')
     {
@@ -3898,7 +3898,7 @@ function dequantizeVector( components, frameData, qTables )
 
 function zigzagOrder( components )
 {
-  for (var [ key, value ] of components )
+  for ( let [ key, value ] of components )
   {
     if( typeof( value ) === 'object')
     {
@@ -3915,11 +3915,142 @@ function zigzagOrder( components )
       {
         space.atomSet( [ i[ v ], j[ v ] ], value[ v ] );
       }
-      
+
       components.set( key, space );
+
     }
   }
-  return components;
+}
+
+//
+
+function iDCT( values )
+{
+
+  function c( u, v )
+  {
+    if( u === 0 && v === 0 )
+    {
+      return 1 / 2;
+    }
+    else if( u === 0 || v === 0  )
+    {
+      return 1 / Math.sqrt( 2 );
+    }
+    else
+    {
+      return 1;
+    }
+  }
+
+  let space = _.Space.make( [ 8, 8 ] );
+
+  _.assert( _.spaceIs( values ) );
+
+  for( let i = 0; i < 8; i++ )
+  {
+    for( let j = 0; j < 8; j++ )
+    {
+      let val = 0;
+      for( let u = 0; u < 8; u ++ )
+      {
+        for( let v = 0; v < 8; v ++ )
+        {
+          val = val + c( u, v ) * values.atomGet( [ u, v ] ) * Math.cos( Math.PI * u * ( 2 * i + 1 ) / 16 ) * Math.cos( Math.PI * v * ( 2 * j + 1 ) / 16 );
+        }
+      }
+
+      val = val / 4;
+      val = 128 + val; // levelshift
+
+      //_.assert( 0 <= val && val <= 255 );
+      space.atomSet( [ i, j ], val );
+    }
+  }
+
+  return space;
+}
+
+//
+
+function setSameSize( components, frameData )
+{
+  let oldComp = '';
+  let compPart = 0;
+  let vMax = frameData.get( 'vMax' );
+  let hMax = frameData.get( 'hMax' );
+  for ( let [ key, value ] of components )
+  {
+    if( typeof( value ) === 'object')
+    {
+      let comp = key.slice( 0, 2 );
+      let dims = _.Space.dimsOf( value );
+      logger.log('COMP', comp,'DIMS', dims );
+      if( comp !== oldComp )
+      {
+        var newComp = _.Space.make( [ dims[ 0 ]*vMax, dims[ 1 ]*hMax ] );
+        oldComp = comp;
+      }
+
+      let h = frameData.get( comp + 'H' );
+      let v = frameData.get( comp + 'V' );
+      let place = key.slice( key.length - 2 );
+
+      logger.log('H', h, 'V', v,' Place', place );
+      let hTimes = hMax / h;
+      let vTimes = vMax / v;
+
+      logger.log('Htimes', hTimes, 'V', vTimes );
+
+      for( let x = 0; x < dims[ 0 ]; x++ )
+      {
+        for( let y = 0; y < dims[ 1 ]; y++ )
+        {
+          //logger.log('Value', newComp )
+          for( let ht = 0; ht < hTimes; ht++ )
+          {
+            for( let vt = 0; vt < vTimes; vt++ )
+            {
+              let posx = x * vTimes + vt + dims[ 0 ] * ( Number( place.charAt( 0 ) ) - 1 );
+              let posy = y * hTimes + ht + dims[ 1 ] * ( Number( place.charAt( 1 ) ) - 1 );
+              newComp.atomSet( [ posx, posy ], value.atomGet( [ x, y ] ) );
+            }
+          }
+        }
+      }
+
+      logger.log( newComp )
+    }
+  }
+}
+
+//
+
+function ycbcrToRGB( components, frameData )
+{
+  let r = _.Space.make( [ 16, 16 ] );
+  let g = _.Space.make( [ 16, 16 ] );
+  let b = _.Space.make( [ 16, 16 ] );
+
+  for ( let [ key, value ] of components )
+  {
+    if( typeof( value ) === 'object')
+    {
+      let space = _.Space.make( [ 8, 8 ] );
+      Array.from( value );
+      logger.log( key, value );
+      if( key.slice( 0, 2 ) == 'C1' )
+      {
+        for( let x = 0; x < 16; x++ )
+        {
+          for( let y = 0; y < 16; y++ )
+          {
+
+          }
+        }
+      }
+    }
+  }
 }
 
 //
@@ -4148,6 +4279,8 @@ function decodeJPG( jpgPath )
 
     frameData.set( 'numOfComponents', numOfComponents );
     frameData.set( 'numOfQT', numOfQT );
+    frameData.set( 'vMax', vMax );
+    frameData.set( 'hMax', hMax );
     frameData.set( 'C' + String( component ) + 'H', h );
     frameData.set( 'C' + String( component ) + 'V', v );
     frameData.set( 'C' + String( component ) + 'QT', qT );
@@ -4256,7 +4389,7 @@ function decodeJPG( jpgPath )
         if( h.get( 'l' + String( j + 1 ) ).length !== 0 )
         {
           let codeArray = h.get( 'lb' + String( j + 1 ) );
-          for( var f = 0; f < valueArray.length; f++ )
+          for( let f = 0; f < valueArray.length; f++ )
           {
             hfTableValues[ s ] = valueArray[ f ];
             hfTableCodes[ s ] = codeArray[ f ];
@@ -4349,35 +4482,25 @@ function decodeJPG( jpgPath )
     imageString = imageString + imageB[ i ].toString();
   }
 
-  // Get Block Info
 
   // LOOP OVER ALL THE IMAGE
-  decodeHuffman( components, frameData, hfTables, imageString, 0 );
-  dequantizeVector( components, frameData, qTables );
-  zigzagOrder( components );
 
-  for (var [ key, value ] of components )
-  {
-    if( typeof( value ) === 'object')
-    {
-      logger.log( key )
-      logger.log( value )
-      logger.log( '' )
-    }
-  }
-/*
   let index = 0;
   let oldDValues = new Map();
-//  for( let b = 0; b < numOfBlocks; b++ )
-  for( let b = 0; b < 2; b++ )
+//   for( let b = 0; b < numOfBlocks; b++ )  // all blocks
+  for( let b = 0; b < 1; b++ )  // one blocks
   {
     logger.log('');
     logger.log( '16x16 block number', b + 1 );
 
     index = decodeHuffman( components, frameData, hfTables, imageString, index );
+    logger.log('COMPONENTS')
+    logger.log( components )
+    logger.log( '' )
 
     // Increase DC term
-    for (var [ key, value ] of components )
+
+    for ( let [ key, value ] of components )
     {
       if( typeof( value ) === 'object')
       {
@@ -4391,14 +4514,30 @@ function decodeJPG( jpgPath )
     }
 
     dequantizeVector( components, frameData, qTables );
-    logger.log( 'C1-1', components.get( 'C1-11') )
-    logger.log( 'C1-2', components.get( 'C1-12') )
-    logger.log( 'C1-3', components.get( 'C1-21') )
-    logger.log( 'C1-4', components.get( 'C1-22') )
-    logger.log( 'C2-1', components.get( 'C2-11') )
-    logger.log( 'C3-1', components.get( 'C3-11') )
+
+    logger.log('COMPONENTS')
+    logger.log( components )
+    logger.log( '' )
+
+    zigzagOrder( components );
+
+    for ( let [ key, value ] of components )
+    {
+      if( typeof( value ) === 'object')
+      {
+        let s = iDCT( value );
+        components.set( key, s );
+        logger.log( components.get( key ))
+        logger.log( '')
+      }
+    }
+
+
+    setSameSize( components, frameData );
+    // ycbcrToRGB( components );
+
   }
-*/
+
 }
 
 // --
@@ -4681,6 +4820,9 @@ let Extend =
   decodeHuffman : decodeHuffman,
   dequantizeVector : dequantizeVector,
   zigzagOrder : zigzagOrder,
+  iDCT : iDCT,
+  setSameSize : setSameSize,
+  ycbcrToRGB : ycbcrToRGB,
   decodeJPG : decodeJPG,
 
   //
