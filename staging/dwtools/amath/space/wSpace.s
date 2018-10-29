@@ -168,7 +168,7 @@ function _traverseAct( it )
     return it.dst;
   }
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( it.resetting !== undefined );
   _.assert( !!it.dst );
   // _.assert( it.dst._changeBegin );
@@ -324,7 +324,7 @@ function copy( src )
 {
   let self = this;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   return self._copy( src,0 );
 }
@@ -335,7 +335,7 @@ function copyResetting( src )
 {
   let self = this;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   return self._copy( src,1 );
 }
@@ -346,7 +346,7 @@ function copyFromScalar( src )
 {
   let self = this;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.numberIs( src ) );
 
   self.atomEach( ( it ) => self.atomSet( it.indexNd,src ) );
@@ -605,7 +605,7 @@ function atomsPerSpaceForDimensions( dims )
 {
   let result = 1;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.arrayIs( dims ) );
 
   for( let d = dims.length-1 ; d >= 0 ; d-- )
@@ -772,7 +772,7 @@ function stridesForDimensions( dims,transposing )
 function stridesRoll( strides )
 {
 
-  _.assert( arguments.length === 1, 'expects single argument' ); debugger;
+  _.assert( arguments.length === 1, 'Expects single argument' ); debugger;
 
   for( let s = strides.length-2 ; s >= 0 ; s-- )
   strides[ s ] = strides[ s+1 ]*strides[ s ];
@@ -826,7 +826,7 @@ function _bufferCopy( src )
   let self = this;
   self._changeBegin();
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.longIs( src ) );
   _.assert( self.atomsPerSpace === src.length,'space',self.dims,'should have',self.atomsPerSpace,'atoms, but got',src.length );
 
@@ -1020,7 +1020,7 @@ function _adjustAct()
     }
     else
     {
-      _.assert( _.longIs( self.buffer ),'expects buffer' );
+      _.assert( _.longIs( self.buffer ),'Expects buffer' );
       if( self.buffer.length - self.offset > 0 )
       {
         self[ dimsSymbol ] = [ self.buffer.length - self.offset,1 ];
@@ -1213,8 +1213,8 @@ function _breadthSet( breadth )
   else if( _.bufferTypedIs( breadth ) )
   breadth = _.arrayFrom( breadth );
 
-  _.assert( arguments.length === 1, 'expects single argument' );
-  _.assert( breadth === null || _.arrayIs( breadth ),'expects array (-breadth-) but got',_.strTypeOf( breadth ) );
+  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( breadth === null || _.arrayIs( breadth ),'Expects array (-breadth-) but got',_.strTypeOf( breadth ) );
 
   if( breadth === self.breadth )
   return;
@@ -1254,7 +1254,7 @@ function _dimsSet( src )
 
   // console.log( '_dimsSet' );
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   if( src )
   {
@@ -1302,7 +1302,7 @@ function expand( expand )
 
   /* */
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( expand.length === self.dims.length );
   // _.assert( left.length === self.dims.length );
   // _.assert( right.length === self.dims.length );
@@ -1391,7 +1391,7 @@ function hasShape( src )
   if( src instanceof Self )
   src = src.dims;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.arrayIs( src ) );
 
   return _.arrayIdentical( self.dims,src );
@@ -1414,7 +1414,7 @@ function flatAtomIndexFrom( indexNd )
 {
   let self = this;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   let result = self._flatAtomIndexFromIndexNd( indexNd,self._stridesEffective );
 
@@ -1451,7 +1451,7 @@ function flatGranuleIndexFrom( indexNd )
 
   debugger;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( indexNd.length <= self._stridesEffective.length );
 
   let f = self._stridesEffective.length - indexNd.length;
@@ -1569,7 +1569,7 @@ _.routineExtend( _equalAre, _._entityEqual );
 // {
 //   let self = this;
 //
-//   _.assert( arguments.length === 1, 'expects single argument' );
+//   _.assert( arguments.length === 1, 'Expects single argument' );
 //
 //   if( !( src instanceof Self ) )
 //   return false;
@@ -1593,7 +1593,7 @@ _.routineExtend( _equalAre, _._entityEqual );
 
 function is( src )
 {
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   return _.spaceIs( src );
 }
 
@@ -1724,7 +1724,7 @@ function _bufferFrom( src )
   let proto = this.Self.prototype;
   let dst = src;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.longIs( src ) || _.vectorIs( src ) );
 
   if( !_.constructorIsBuffer( proto.array.ArrayType ) )
@@ -1776,9 +1776,9 @@ function subspace( subspace )
 {
   let self = this;
 
-  _.assert( arguments.length === 1,'expects single argument' );
-  _.assert( _.arrayIs( subspace ),'expects array (-subspace-)' );
-  _.assert( subspace.length <= self.dims.length,'expects array (-subspace-) of length of self.dims' );
+  _.assert( arguments.length === 1,'Expects single argument' );
+  _.assert( _.arrayIs( subspace ),'Expects array (-subspace-)' );
+  _.assert( subspace.length <= self.dims.length,'Expects array (-subspace-) of length of self.dims' );
 
   for( let s = subspace.length ; s < self.dims.length ; s++ )
   subspace.unshift( _.all );
@@ -1839,7 +1839,7 @@ function atomWhile( o )
   if( _.routineIs( o ) )
   o = { onAtom : o }
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.routineOptions( atomWhile,o );
   _.assert( _.routineIs( o.onAtom ) );
 
@@ -1914,7 +1914,7 @@ function atomWiseReduceWithFlatVector( onVector )
   let self = this;
   let result;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( self.strideOfElement === self.atomsPerElement );
 
   debugger;
@@ -2086,7 +2086,7 @@ function atomWiseHomogeneous( o )
   /* verification */
 
   _.assert( !proto.instanceIs() );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( o.dst instanceof Self || o.reducing );
   _.assert( !o.dst || o.dst.dims.length === 2, 'not implemented' );
   _.assert( !o.dst || _.arrayIdentical( o.dst.dims,dims ) )
@@ -2230,7 +2230,7 @@ atomWiseHomogeneous.defaults =
 //   _.assertMapHasOnly( o,atomWiseHomogeneousZip.defaults );
 //   _.assert( o.srcs[ 0 ] instanceof Self );
 //   _.assert( !proto.instanceIs() );
-//   _.assert( arguments.length === 1, 'expects single argument' );
+//   _.assert( arguments.length === 1, 'Expects single argument' );
 //   _.assert( o.dst.dims.length === 2, 'not implemented' );
 //   _.assert( _.arrayIdentical( o.dst.dims,dims ) )
 //
@@ -2388,7 +2388,7 @@ function _lineEachCollecting( o )
   // let returningNumber = o.onEach.returningNumber === true;
 
   _.assert( self.dims.length === 2 );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.longIs( o.args ) );
   _.assert( o.length >= 0 );
   _.assert( _.boolLike( o.returningNumber ) );
@@ -2488,7 +2488,7 @@ function rowEachCollecting( onEach , args , returningNumber )
 //   let self = this;
 //   let onVector = o.onVector;
 //
-//   _.assert( arguments.length === 1, 'expects single argument' );
+//   _.assert( arguments.length === 1, 'Expects single argument' );
 //   _.routineOptions( _reduceToScalar,o );
 //   _.assert( self.dims === 2,'not implemented' );
 //
@@ -2527,7 +2527,7 @@ function rowEachCollecting( onEach , args , returningNumber )
 function atomFlatGet( index )
 {
   let i = this.offset+index;
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.numberIs( index ) );
   _.assert( i < this.buffer.length );
   _.assert( this.occupiedRange[ 0 ] <= i && i < this.occupiedRange[ 1 ] );
@@ -2553,7 +2553,7 @@ function atomFlatSet( index,value )
 function atomGet( index )
 {
   let i = this.flatAtomIndexFrom( index );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( i < this.buffer.length );
   _.assert( this.occupiedRange[ 0 ] <= i && i < this.occupiedRange[ 1 ] );
   _.assert( index[ 0 ] < this.dims[ 0 ] );
@@ -2586,7 +2586,7 @@ function atomsGet( range )
   _.assert( _.longIs( range ) );
   _.assert( range.length === 2 );
   _.assert( self.breadth.length === 1 );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( range[ 1 ] >= range[ 0 ] );
 
   debugger;
@@ -2668,7 +2668,7 @@ function elementsInRangeGet( range )
   _.assert( _.longIs( range ) );
   _.assert( range.length === 2 );
   _.assert( self.breadth.length === 1 );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( range[ 1 ] >= range[ 0 ] );
 
   _.assert( self.strideOfElement === self.atomsPerElement,'elementsInRangeGet :','cant make single row for elements with extra stride' );
@@ -2706,7 +2706,7 @@ function eGet( index )
   _.assert( this.dims.length === 2,'not implemented' );
   _.assert( 0 <= index && index < this.dims[ this.dims.length-1 ],'out of bound' );
   _.assert( _.numberIs( index ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   let result = vector.fromSubArrayWithStride
   (
@@ -2853,7 +2853,7 @@ function rowVectorGet( index )
   _.assert( this.dims.length === 2,'not implemented' );
   _.assert( 0 <= index && index < this.dims[ 0 ],'out of bound' );
   _.assert( _.numberIs( index ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   let result = vector.fromSubArrayWithStride
   (
@@ -2899,7 +2899,7 @@ function colVectorGet( index )
   _.assert( this.dims.length === 2,'not implemented' );
   _.assert( 0 <= index && index < this.dims[ 1 ],'out of bound' );
   _.assert( _.numberIs( index ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   let result = vector.fromSubArrayWithStride
   (
@@ -2963,7 +2963,7 @@ function pivotForward( pivots )
 {
   let self = this;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( pivots.length === self.dims.length );
 
   for( let d = 0 ; d < pivots.length ; d++ )
@@ -2984,7 +2984,7 @@ function pivotBackward( pivots )
 {
   let self = this;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( pivots.length === self.dims.length );
 
   for( let d = 0 ; d < pivots.length ; d++ )

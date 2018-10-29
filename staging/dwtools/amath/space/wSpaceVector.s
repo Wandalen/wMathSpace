@@ -233,7 +233,7 @@ function declareAtomWiseHomogeneousWithScalarRoutines( routine,rname )
   {
     let self = this;
 
-    _.assert( arguments.length === 1, 'expects single argument' );
+    _.assert( arguments.length === 1, 'Expects single argument' );
     _.assert( _.numberIs( arguments[ 0 ] ) );
 
     self.atomWiseWithAssign( handleAtom2,arguments );
