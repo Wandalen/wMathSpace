@@ -450,7 +450,7 @@ function convertToClass( cls,src )
 
   _.assert( !_.instanceIs( this ) );
   _.assert( _.constructorIs( cls ) );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   if( src.constructor === cls )
   return src;
@@ -566,7 +566,7 @@ function fromScalar( scalar,dims )
 
   _.assert( !this.instanceIs() );
   _.assert( _.arrayIs( dims ) );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.numberIs( scalar );
 
   let result = new this.Self
@@ -586,7 +586,7 @@ function fromScalarForReading( scalar,dims )
 
   _.assert( !this.instanceIs() );
   _.assert( _.arrayIs( dims ) );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.numberIs( scalar );
 
   let buffer = this.array.makeArrayOfLength( 1 );
@@ -671,7 +671,7 @@ function fromTransformations( position, quaternion, scale )
 {
   let self = this;
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
 
   self.fromQuat( quaternion );
   self.scaleApply( scale );
@@ -792,7 +792,7 @@ function fromAxisAndAngle( axis,angle )
   let z = axis.eGet( 2 );
 
   _.assert( axis.length === 3 );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   let s = Math.sin( angle );
   let c = Math.cos( angle );
@@ -865,7 +865,7 @@ function fromAxisAndAngleWithScale( axis,angle )
   let z = axis.eGet( 2 ) / m;
 
   _.assert( axis.length === 3 );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   let s = Math.sin( angle );
   let c = Math.cos( angle );
@@ -916,7 +916,7 @@ function _tempBorrow( src,dims,index )
 {
   let cls;
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
   _.assert( src instanceof Self || src === null );
   _.assert( _.arrayIs( dims ) || dims instanceof Self || dims === null );
 
@@ -1037,7 +1037,7 @@ function spacePow( exponent )
 function mul_static( dst,srcs )
 {
 
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( _.arrayIs( srcs ) );
   _.assert( srcs.length >= 2 );
 
@@ -1141,7 +1141,7 @@ function mul2Matrices_static( dst,src1,src2 )
     dst = this.make([ src1.dims[ 0 ],src2.dims[ 1 ] ]);
   }
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
   _.assert( src1.dims.length === 2 );
   _.assert( src2.dims.length === 2 );
   _.assert( dst instanceof Self );
@@ -1174,7 +1174,7 @@ function mul2Matrices( src1,src2 )
 {
   let dst = this;
 
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   return dst.Self.mul2Matrices( dst,src1,src2 );
 }
@@ -2038,7 +2038,7 @@ function _pivotRook( i,o )
 {
   let self = this;
 
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( o.pivots )
 
   let row1 = self.rowVectorGet( i ).subarray( i );
@@ -2076,7 +2076,7 @@ function _pivotRook( i,o )
 
 function solve( x,m,y )
 {
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
   return this.solveWithTrianglesPivoting( x,m,y )
 }
 
@@ -2324,7 +2324,7 @@ function _solveTriangleWithRoutine( args,onSolve )
   let y = args[ 2 ];
 
   _.assert( args.length === 3 );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( y );
 
   if( _.spaceIs( y ) )
@@ -2821,7 +2821,7 @@ function formPerspective( fov, size, depth )
   // debugger;
   // _.assert( 0,'not tested' );
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
   _.assert( size.length === 2 );
   _.assert( depth.length === 2 );
   _.assert( self.hasShape([ 4,4 ]) );
@@ -2864,7 +2864,7 @@ function formFrustum( horizontal, vertical, depth )
   // debugger;
   // _.assert( 0,'not tested' );
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
   _.assert( horizontal.length === 2 );
   _.assert( vertical.length === 2 );
   _.assert( depth.length === 2 );
@@ -2913,7 +2913,7 @@ function formOrthographic( horizontal, vertical, depth )
   // debugger;
   // _.assert( 0,'not tested' );
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
   _.assert( horizontal.length === 2 );
   _.assert( vertical.length === 2 );
   _.assert( depth.length === 2 );
