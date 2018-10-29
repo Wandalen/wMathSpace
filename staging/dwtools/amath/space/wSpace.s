@@ -1525,24 +1525,28 @@ function _equalAre( it )
   if( !( it.src2 instanceof Self ) )
   {
     it.result = false;
+    debugger;
     return it.result;
   }
 
   if( it.src.length !== it.src2.length )
   {
     it.result = false;
+    debugger;
     return it.result;
   }
 
   if( it.src.buffer.constructor !== it.src2.buffer.constructor )
   {
     it.result = false;
+    debugger;
     return it.result;
   }
 
   if( !_.arrayIdentical( it.src.breadth,it.src2.breadth )  )
   {
     it.result = false;
+    debugger;
     return it.result;
   }
 
@@ -1552,6 +1556,8 @@ function _equalAre( it )
     return it.context.onNumbersAreEqual( atom,atom2 );
   });
 
+  debugger;
+  _.assert( _.boolIs( it.result ) );
   return it.result;
 }
 
