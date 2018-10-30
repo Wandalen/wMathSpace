@@ -8,14 +8,14 @@ var _ = wTools;
 
 debugger;
 
-let jpgPath = 'C:/Users/pabel/Desktop/Trabajo/Kos/Images/lions.jpg'
+let jpgPath = 'C:/Users/pabel/Desktop/Trabajo/Kos/JPEGdecoder/Images/lions.jpg'
 let s = _.Space.make([ 3, 3 ]);
 // s.decodeJPG( jpgPath );
 
 logger.log('')
 logger.log('Next Image')
 logger.log('')
-let jpgPath1 = 'C:/Users/pabel/Desktop/Trabajo/Kos/Images/fuego.jpg'
+let jpgPath1 = 'C:/Users/pabel/Desktop/Trabajo/Kos/JPEGdecoder/Images/fuego.jpg'
 let s1 = _.Space.make([ 3, 3 ]);
 // s1.decodeJPG( jpgPath1 );
 
@@ -23,6 +23,9 @@ let s1 = _.Space.make([ 3, 3 ]);
 logger.log('')
 logger.log('Next Image')
 logger.log('')
-let jpgPath2 = 'C:/Users/pabel/Desktop/Trabajo/Kos/Images/cara.jpg'
+let jpgPath2 = 'C:/Users/pabel/Desktop/Trabajo/Kos/JPEGdecoder/Images/mini8.jpg'
 let s2 = _.Space.make([ 3, 3 ]);
-s2.decodeJPG( jpgPath2 );
+
+let result = s2.decodeJPG( jpgPath2 );
+
+logger.log( result );

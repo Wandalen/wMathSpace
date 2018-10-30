@@ -3692,6 +3692,7 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
         // DC
         let Dc = 0;
         let table = components.get( 'C' + String( c ) + 'Dc' );
+
         //Get HT
         let codes;
         let values;
@@ -3751,7 +3752,7 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
         {
           comp[ 0 ] = 0;
         }
-        // logger.log('Get', diffBinary, ' for', comp[ 0 ])
+        //logger.log(String( c ),'Get', diffBinary, ' for', comp[ 0 ])
 
         // AC
 
@@ -3962,8 +3963,8 @@ function iDCT( values )
 
       val = val / 4;
       val = 128 + val; // levelshift
+      // val = Math.round( val );
 
-      //_.assert( 0 <= val && val <= 255 );
       space.atomSet( [ i, j ], val );
     }
   }
@@ -3973,7 +3974,7 @@ function iDCT( values )
 
 //
 
-function setSameSize( components, frameData )
+function setSameSize( components, frameData, finalComps )
 {
   let oldComp = '';
   let compPart = 0;
@@ -3985,7 +3986,7 @@ function setSameSize( components, frameData )
     {
       let comp = key.slice( 0, 2 );
       let dims = _.Space.dimsOf( value );
-      logger.log('COMP', comp,'DIMS', dims );
+
       if( comp !== oldComp )
       {
         var newComp = _.Space.make( [ dims[ 0 ]*vMax, dims[ 1 ]*hMax ] );
@@ -3996,17 +3997,13 @@ function setSameSize( components, frameData )
       let v = frameData.get( comp + 'V' );
       let place = key.slice( key.length - 2 );
 
-      logger.log('H', h, 'V', v,' Place', place );
       let hTimes = hMax / h;
       let vTimes = vMax / v;
-
-      logger.log('Htimes', hTimes, 'V', vTimes );
 
       for( let x = 0; x < dims[ 0 ]; x++ )
       {
         for( let y = 0; y < dims[ 1 ]; y++ )
         {
-          //logger.log('Value', newComp )
           for( let ht = 0; ht < hTimes; ht++ )
           {
             for( let vt = 0; vt < vTimes; vt++ )
@@ -4019,38 +4016,80 @@ function setSameSize( components, frameData )
         }
       }
 
-      logger.log( newComp )
+      finalComps.set( comp, newComp );
     }
   }
 }
 
 //
 
-function ycbcrToRGB( components, frameData )
+function ycbcrToRGB( finalComps, frameData )
 {
-  let r = _.Space.make( [ 16, 16 ] );
-  let g = _.Space.make( [ 16, 16 ] );
-  let b = _.Space.make( [ 16, 16 ] );
+  let vMax = frameData.get( 'vMax' );
+  let hMax = frameData.get( 'hMax' );
+  let r = _.Space.make( [ 8 * vMax, 8 * hMax ] );
+  let g = _.Space.make( [ 8 * vMax, 8 * hMax ] );
+  let b = _.Space.make( [ 8 * vMax, 8 * hMax ] );
 
-  for ( let [ key, value ] of components )
+  _.assert( frameData.get( 'numOfComponents' ) === 3 );
+  let yComp = finalComps.get( 'C1' );
+  let cbComp = finalComps.get( 'C2' );
+  let crComp = finalComps.get( 'C3' );
+
+  for( let x = 0; x < 8 * vMax; x++ )
   {
-    if( typeof( value ) === 'object')
+    for( let y = 0; y < 8 * hMax; y++ )
     {
-      let space = _.Space.make( [ 8, 8 ] );
-      Array.from( value );
-      logger.log( key, value );
-      if( key.slice( 0, 2 ) == 'C1' )
-      {
-        for( let x = 0; x < 16; x++ )
-        {
-          for( let y = 0; y < 16; y++ )
-          {
+      let yValue = yComp.atomGet( [ x, y ] );
+      let cbValue = cbComp.atomGet( [ x, y ] );
+      let crValue = crComp.atomGet( [ x, y ] );
 
-          }
-        }
-      }
+      let rValue = yValue + 1.402 * ( crValue - 128 );
+      rValue = Math.round( rValue );
+
+      if( rValue < 0 )
+      rValue = 0;
+
+      if( rValue > 255 )
+      rValue = 255;
+
+      _.assert( 0 <= rValue && rValue <= 255 );
+      r.atomSet( [ x, y ], rValue );
+
+      let gValue = yValue - 0.34414 * ( cbValue - 128 ) - 0.71414 * ( crValue - 128 );
+      gValue = Math.round( gValue );
+
+      if( gValue < 0 )
+      gValue = 0;
+
+      if( gValue > 255 )
+      gValue = 255;
+
+      _.assert( 0 <= gValue && gValue <= 255 );
+      g.atomSet( [ x, y ], gValue );
+
+      let bValue = yValue + 1.772 * ( cbValue - 128 );
+      bValue = Math.round( bValue );
+
+      if( bValue < 0 )
+      bValue = 0;
+
+      if( bValue > 255 )
+      bValue = 255;
+
+      _.assert( 0 <= bValue && bValue <= 255 );
+      b.atomSet( [ x, y ], bValue );
+      //logger.log(bValue)
+
     }
   }
+
+  finalComps.set( 'R', r );
+  finalComps.set( 'G', g );
+  finalComps.set( 'B', b );
+  finalComps.delete( 'C1' );
+  finalComps.delete( 'C2' );
+  finalComps.delete( 'C3' );
 }
 
 //
@@ -4482,61 +4521,146 @@ function decodeJPG( jpgPath )
     imageString = imageString + imageB[ i ].toString();
   }
 
+  // MAKE IMAGE DIVISIBLE BY 8:
+
+  let oneBlock = false;
+  if( imageHeight === 8 && imageWidth === 8 )
+  oneBlock = true;
+
+  let rH = imageHeight % ( 8 * vMax );
+  let rW = imageWidth % ( 8 * hMax );
+
+  while( rH !== 0 )
+  {
+    imageHeight = imageHeight + 1;
+    rH = imageHeight % ( 8 * vMax );
+  }
+
+  while( rW !== 0 )
+  {
+    imageWidth = imageWidth + 1;
+    rW = imageWidth % ( 8 * hMax );
+  }
+
+  if( oneBlock === true )
+  {
+    var imageValues = new Uint8Array( 4 * 8 * 8 );
+  }
+  else
+  {
+    var imageValues = new Uint8Array( 4 * imageHeight * imageWidth );
+  }
 
   // LOOP OVER ALL THE IMAGE
 
   let index = 0;
   let oldDValues = new Map();
-//   for( let b = 0; b < numOfBlocks; b++ )  // all blocks
-  for( let b = 0; b < 1; b++ )  // one blocks
+  let finalComps = new Map();
+  let hNumOfBlocks = imageWidth / ( 8 * hMax );
+  let vNumOfBlocks = imageHeight / ( 8 * vMax );
+
+//  for( let b = 0; b < 1; b++ )  // one blocks
+  let b = 0;
+  for( let bv = 0; bv < vNumOfBlocks; bv++ )  // loop through vertical blocks
   {
-    logger.log('');
-    logger.log( '16x16 block number', b + 1 );
-
-    index = decodeHuffman( components, frameData, hfTables, imageString, index );
-    logger.log('COMPONENTS')
-    logger.log( components )
-    logger.log( '' )
-
-    // Increase DC term
-
-    for ( let [ key, value ] of components )
+    for( let bh = 0; bh < hNumOfBlocks; bh++ )  // loop through horizontal blocks
     {
-      if( typeof( value ) === 'object')
+      index = decodeHuffman( components, frameData, hfTables, imageString, index );
+
+      // Increase DC term
+
+      for ( let [ key, value ] of components )
       {
-        Array.from( value );
-        if( b !== 0 )
+        if( typeof( value ) === 'object')
         {
-          value[ 0 ] = value[ 0 ] + oldDValues.get( key );
+          Array.from( value );
+          if( b !== 0 )
+          {
+            value[ 0 ] = value[ 0 ] + oldDValues.get( key );
+          }
+          oldDValues.set( key, value[ 0 ] );
         }
-        oldDValues.set( key, value[ 0 ] );
       }
-    }
 
-    dequantizeVector( components, frameData, qTables );
+      dequantizeVector( components, frameData, qTables );
 
-    logger.log('COMPONENTS')
-    logger.log( components )
-    logger.log( '' )
+      zigzagOrder( components );
 
-    zigzagOrder( components );
-
-    for ( let [ key, value ] of components )
-    {
-      if( typeof( value ) === 'object')
+      for ( let [ key, value ] of components )
       {
-        let s = iDCT( value );
-        components.set( key, s );
-        logger.log( components.get( key ))
-        logger.log( '')
+        if( typeof( value ) === 'object')
+        {
+          let s = iDCT( value );
+          components.set( key, s );
+        }
       }
+
+      setSameSize( components, frameData, finalComps );
+
+      ycbcrToRGB( finalComps, frameData );
+
+      let xMax = _.Space.dimsOf( finalComps.get( 'R' ) )[ 0 ];
+      let yMax = _.Space.dimsOf( finalComps.get( 'R' ) )[ 1 ];
+
+      // FILL IMAGE DATA ARRAY
+      if( oneBlock  === false )
+      {
+        let imageIndex = bv * xMax * yMax * hNumOfBlocks * 4 + bh * xMax * 4;
+        for( let x = 0; x < xMax; x++ )
+        {
+          for( let y = 0; y < yMax; y++ )
+          {
+            imageValues[ imageIndex ] = finalComps.get( 'R' ).atomGet( [ x, y ] );
+            imageIndex = imageIndex + 1;
+            imageValues[ imageIndex ] = finalComps.get( 'G' ).atomGet( [ x, y ] );
+            imageIndex = imageIndex + 1;
+            imageValues[ imageIndex ] = finalComps.get( 'B' ).atomGet( [ x, y ] );
+            imageIndex = imageIndex + 1;
+            imageValues[ imageIndex ] = 255;
+            imageIndex = imageIndex + 1;
+            _.assert( imageIndex <= imageValues.length, imageIndex );
+          }
+          imageIndex = imageIndex + 4 * yMax * ( hNumOfBlocks - 1 );
+        }
+      }
+      else
+      {
+        let imageIndex = 0;
+        for( let x = 0; x < 8; x++ )
+        {
+          for( let y = 0; y < 8; y++ )
+          {
+            imageValues[ imageIndex ] = finalComps.get( 'R' ).atomGet( [ x, y ] );
+            imageIndex = imageIndex + 1;
+            imageValues[ imageIndex ] = finalComps.get( 'G' ).atomGet( [ x, y ] );
+            imageIndex = imageIndex + 1;
+            imageValues[ imageIndex ] = finalComps.get( 'B' ).atomGet( [ x, y ] );
+            imageIndex = imageIndex + 1;
+            imageValues[ imageIndex ] = 255;
+            imageIndex = imageIndex + 1;
+            _.assert( imageIndex <= imageValues.length, imageIndex );
+          }
+        }
+      }
+
+
+      /*
+      logger.log('RESULT')
+      for ( let [ key, value ] of finalComps )
+      {
+        logger.log( key, value )
+        logger.log( '')
+        if( typeof( value ) === 'object')
+        {
+
+        }
+      }
+      */
+      b = b + 1;
+
     }
-
-
-    setSameSize( components, frameData );
-    // ycbcrToRGB( components );
-
   }
+  return imageValues;
 
 }
 

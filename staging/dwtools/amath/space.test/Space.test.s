@@ -11411,7 +11411,7 @@ var Self =
     polynomExactFor : polynomExactFor,
     polynomClosestFor : polynomClosestFor,
 
-    identical : identical, 
+    identical : identical,
 
     isDiagonal : isDiagonal,
     isUpperTriangle : isUpperTriangle,
