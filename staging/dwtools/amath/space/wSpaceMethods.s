@@ -66,7 +66,7 @@ function makeSquare( buffer )
   _.assert( _.prototypeIs( this ) || _.constructorIs( this ) );
   _.assert( _.longIs( buffer ) || _.numberIs( buffer ) );
   _.assert( _.numberIsInt( length ),'makeSquare expects square buffer' );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   let dims = [ length,length ];
   let atomsPerSpace = this.atomsPerSpaceForDimensions( dims );
@@ -100,7 +100,7 @@ function makeZero( dims )
 
   _.assert( !this.instanceIs() );
   _.assert( _.longIs( dims ) || _.numberIs( dims ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   if( _.numberIs( dims ) )
   dims = [ dims,dims ];
@@ -129,7 +129,7 @@ function makeIdentity( dims )
 
   _.assert( !this.instanceIs() );
   _.assert( _.longIs( dims ) || _.numberIs( dims ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   if( _.numberIs( dims ) )
   dims = [ dims,dims ];
@@ -208,7 +208,7 @@ function makeDiagonal( diagonal )
   _.assert( !this.instanceIs() );
   _.assert( _.prototypeIs( this ) || _.constructorIs( this ) );
   _.assert( _.arrayIs( diagonal ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   /* */
 
@@ -298,7 +298,7 @@ function makeLine( o )
 
   _.assert( !this.instanceIs() );
   _.assert( _.spaceIs( o.buffer ) || _.vectorIs( o.buffer ) || _.arrayIs( o.buffer ) || _.bufferTypedIs( o.buffer ) || _.numberIs( o.buffer ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.routineOptions( makeLine,o );
 
   /* */
@@ -450,7 +450,7 @@ function convertToClass( cls,src )
 
   _.assert( !_.instanceIs( this ) );
   _.assert( _.constructorIs( cls ) );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   if( src.constructor === cls )
   return src;
@@ -533,7 +533,7 @@ function fromVectorImage( src )
   let result;
 
   _.assert( !this.instanceIs() );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   if( _.vectorIs( src ) )
   {
@@ -566,7 +566,7 @@ function fromScalar( scalar,dims )
 
   _.assert( !this.instanceIs() );
   _.assert( _.arrayIs( dims ) );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.numberIs( scalar );
 
   let result = new this.Self
@@ -586,7 +586,7 @@ function fromScalarForReading( scalar,dims )
 
   _.assert( !this.instanceIs() );
   _.assert( _.arrayIs( dims ) );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.numberIs( scalar );
 
   let buffer = this.array.makeArrayOfLength( 1 );
@@ -671,7 +671,7 @@ function fromTransformations( position, quaternion, scale )
 {
   let self = this;
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
 
   self.fromQuat( quaternion );
   self.scaleApply( scale );
@@ -695,7 +695,7 @@ function fromQuat( q )
   _.assert( self.atomsPerElement >= 3 );
   _.assert( self.length >= 3 );
   _.assert( q.length === 4 );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   let x2 = x + x, y2 = y + y, z2 = z + z;
   let xx = x * x2, xy = x * y2, xz = x * z2;
@@ -744,7 +744,7 @@ function fromQuatWithScale( q )
   _.assert( self.atomsPerElement >= 3 );
   _.assert( self.length >= 3 );
   _.assert( q.length === 4 );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   let x2 = x + x, y2 = y + y, z2 = z + z;
   let xx = x * x2, xy = x * y2, xz = x * z2;
@@ -792,7 +792,7 @@ function fromAxisAndAngle( axis,angle )
   let z = axis.eGet( 2 );
 
   _.assert( axis.length === 3 );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   let s = Math.sin( angle );
   let c = Math.cos( angle );
@@ -844,7 +844,7 @@ function fromEuler( euler )
 
   // _.assert( self.dims[ 0 ] >= 3 );
   // _.assert( self.dims[ 1 ] >= 3 );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   _.euler.toMatrix( euler,self );
 
@@ -865,7 +865,7 @@ function fromAxisAndAngleWithScale( axis,angle )
   let z = axis.eGet( 2 ) / m;
 
   _.assert( axis.length === 3 );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   let s = Math.sin( angle );
   let c = Math.cos( angle );
@@ -916,7 +916,7 @@ function _tempBorrow( src,dims,index )
 {
   let cls;
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
   _.assert( src instanceof Self || src === null );
   _.assert( _.arrayIs( dims ) || dims instanceof Self || dims === null );
 
@@ -1024,7 +1024,7 @@ function spacePow( exponent )
 {
 
   _.assert( _.instanceIs( this ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   let t = this.tempBorrow( this );
 
@@ -1037,7 +1037,7 @@ function spacePow( exponent )
 function mul_static( dst,srcs )
 {
 
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( _.arrayIs( srcs ) );
   _.assert( srcs.length >= 2 );
 
@@ -1122,7 +1122,7 @@ function mul( srcs )
 {
   let dst = this;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.arrayIs( srcs ) );
 
   return dst.Self.mul( dst,srcs );
@@ -1141,7 +1141,7 @@ function mul2Matrices_static( dst,src1,src2 )
     dst = this.make([ src1.dims[ 0 ],src2.dims[ 1 ] ]);
   }
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
   _.assert( src1.dims.length === 2 );
   _.assert( src2.dims.length === 2 );
   _.assert( dst instanceof Self );
@@ -1149,7 +1149,7 @@ function mul2Matrices_static( dst,src1,src2 )
   _.assert( src2 instanceof Self );
   _.assert( dst !== src1 );
   _.assert( dst !== src2 );
-  _.assert( src1.dims[ 1 ] === src2.dims[ 0 ],'expects src1.dims[ 1 ] === src2.dims[ 0 ]' );
+  _.assert( src1.dims[ 1 ] === src2.dims[ 0 ],'Expects src1.dims[ 1 ] === src2.dims[ 0 ]' );
   _.assert( src1.dims[ 0 ] === dst.dims[ 0 ] );
   _.assert( src2.dims[ 1 ] === dst.dims[ 1 ] );
 
@@ -1174,7 +1174,7 @@ function mul2Matrices( src1,src2 )
 {
   let dst = this;
 
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   return dst.Self.mul2Matrices( dst,src1,src2 );
 }
@@ -1185,7 +1185,7 @@ function mulLeft( src )
 {
   let dst = this;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   // debugger;
 
@@ -1200,7 +1200,7 @@ function mulRight( src )
 {
   let dst = this;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   // debugger;
 
@@ -1215,7 +1215,7 @@ function mulRight( src )
 // function _mulMatrix( src )
 // {
 //
-//   _.assert( arguments.length === 1, 'expects single argument' );
+//   _.assert( arguments.length === 1, 'Expects single argument' );
 //   _.assert( src.breadth.length === 1 );
 //
 //   let self = this;
@@ -1243,7 +1243,7 @@ function mulRight( src )
 // {
 //   let self = this;
 //
-//   _.assert( arguments.length === 1, 'expects single argument' );
+//   _.assert( arguments.length === 1, 'Expects single argument' );
 //   _.assert( self.breadth.length === 1 );
 //
 //   let result = self._mulMatrix( src );
@@ -1257,7 +1257,7 @@ function mulRight( src )
 // {
 //   let self = this;
 //
-//   _.assert( arguments.length === 1, 'expects single argument' );
+//   _.assert( arguments.length === 1, 'Expects single argument' );
 //   _.assert( src.dims.length === 2 );
 //   _.assert( self.dims.length === 2 );
 //
@@ -1307,7 +1307,7 @@ function diagonalSet( src )
 
   src = vector.fromMaybeNumber( src,length );
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( self.dims.length === 2 );
   _.assert( src.length === length );
 
@@ -1343,7 +1343,7 @@ function triangleLowerSet( src )
   let nrow = self.nrow;
   let ncol = self.ncol;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( self.dims.length === 2 );
 
   _.assert( _.numberIs( src ) || src instanceof Self );
@@ -1385,7 +1385,7 @@ function triangleUpperSet( src )
   let nrow = self.nrow;
   let ncol = self.ncol;
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( self.dims.length === 2 );
 
   _.assert( _.numberIs( src ) || src instanceof Self );
@@ -2038,7 +2038,7 @@ function _pivotRook( i,o )
 {
   let self = this;
 
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( o.pivots )
 
   let row1 = self.rowVectorGet( i ).subarray( i );
@@ -2076,7 +2076,7 @@ function _pivotRook( i,o )
 
 function solve( x,m,y )
 {
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
   return this.solveWithTrianglesPivoting( x,m,y )
 }
 
@@ -2113,7 +2113,7 @@ function _solveOptions( args )
   if( !_.spaceIs( o.x ) )
   o.x = vector.from( o.x );
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( this.shapesAreSame( o.x , o.y ) );
   _.assert( o.m.dims[ 0 ] === this.nrowOf( o.x ) );
 
@@ -2324,7 +2324,7 @@ function _solveTriangleWithRoutine( args,onSolve )
   let y = args[ 2 ];
 
   _.assert( args.length === 3 );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( y );
 
   if( _.spaceIs( y ) )
@@ -2471,7 +2471,7 @@ function solveTriangleUpperNormal( x,m,y )
 function solveGeneral( o )
 {
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.routineOptions( solveGeneral,o );
 
   /* */
@@ -2601,7 +2601,7 @@ function copyAndInvert( src )
 
   _.assert( self.dims.length === 2 );
   _.assert( self.isSquare() );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   self.copy( src );
   self.invert();
@@ -2685,7 +2685,7 @@ function _linearModel( o )
 {
 
   _.routineOptions( polynomExactFor,o );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( o.order >= 1 );
 
   if( o.points )
@@ -2762,7 +2762,7 @@ function polynomExactFor( o )
 {
 
   _.routineOptions( polynomExactFor,o );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   if( o.points )
   _.assert( o.order === null || o.order === o.points.length );
@@ -2785,7 +2785,7 @@ function polynomClosestFor( o )
 {
 
   _.routineOptions( polynomExactFor,o );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   let model = this._linearModel( o );
 
@@ -2821,7 +2821,7 @@ function formPerspective( fov, size, depth )
   // debugger;
   // _.assert( 0,'not tested' );
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
   _.assert( size.length === 2 );
   _.assert( depth.length === 2 );
   _.assert( self.hasShape([ 4,4 ]) );
@@ -2864,7 +2864,7 @@ function formFrustum( horizontal, vertical, depth )
   // debugger;
   // _.assert( 0,'not tested' );
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
   _.assert( horizontal.length === 2 );
   _.assert( vertical.length === 2 );
   _.assert( depth.length === 2 );
@@ -2913,7 +2913,7 @@ function formOrthographic( horizontal, vertical, depth )
   // debugger;
   // _.assert( 0,'not tested' );
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
   _.assert( horizontal.length === 2 );
   _.assert( vertical.length === 2 );
   _.assert( depth.length === 2 );
@@ -3022,7 +3022,7 @@ function closest( insElement )
     distance : +Infinity,
   }
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   for( let i = 0 ; i < self.length ; i += 1 )
   {
@@ -3053,7 +3053,7 @@ function furthest( insElement )
     distance : -Infinity,
   }
 
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   for( let i = 0 ; i < self.length ; i += 1 )
   {
