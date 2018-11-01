@@ -89,6 +89,7 @@ build :
       compiled : 0
     steps :
       - step::grab.debug
+      - step::grab.dependencies
 
   .debug.compiled :
     setting :
@@ -122,4 +123,3 @@ build :
       - concurrent :
         - build::.debug
         - build::.release.compiled
-
