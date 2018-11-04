@@ -1,6 +1,6 @@
 (function _FromVector_s_() {
 
-'use strict'; aaa
+'use strict';
 
 //
 

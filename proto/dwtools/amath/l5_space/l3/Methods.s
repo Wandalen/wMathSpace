@@ -1,6 +1,6 @@
 (function _Methods_s_() {
 
-'use strict'; aaa
+'use strict';
 
 let _ = _global_.wTools;
 let vector = _.vector;

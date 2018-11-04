@@ -1,6 +1,6 @@
 ( function _Space_test_s_( ) {
 
-'use strict'; aaa
+'use strict';
 
 /*
 cd C:\pro\web\Dave\git\trunk
