@@ -1,4 +1,4 @@
-(function _wSpaceMethods_s_() {
+(function _Methods_s_() {
 
 'use strict'; aaa
 
