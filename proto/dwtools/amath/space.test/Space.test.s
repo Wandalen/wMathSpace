@@ -1,6 +1,6 @@
 ( function _Space_test_s_( ) {
 
-'use strict';
+'use strict'; aaa
 
 /*
 cd C:\pro\web\Dave\git\trunk
@@ -32,7 +32,7 @@ if( typeof module !== 'undefined' )
 
   _.include( 'wTesting' );
 
-  require( '../space/wSpace.s' );
+  require( '../l5_space/Main.s' );
 
 }
 

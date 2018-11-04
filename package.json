@@ -11,9 +11,9 @@
     }
   ],
   "license": "MIT",
-  "main": "staging/dwtools/amath/space/wSpace.s",
+  "main": "proto/dwtools/amath/space/wSpace.s",
   "files": [
-    "staging/dwtools/amath/space",
+    "proto/dwtools/amath/space",
     "production"
   ],
   "scripts": {

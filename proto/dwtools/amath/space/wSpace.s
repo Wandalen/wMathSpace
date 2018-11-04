@@ -1,6 +1,6 @@
 (function _wSpace_s_() {
 
-'use strict';
+'use strict'; aaa
 
 /**
   @module Tools/math/Space - Collection of functions for matrix math. MathSpace introduces class Space which is a multidimensional structure which in the most trivial case is Matrix of scalars. A matrix of specific form could also be classified as a vector. MathSpace heavily relly on MathVector, which introduces VectorImage. VectorImage is a reference, it does not contain data but only refer on actual ( aka Long ) container of lined data.  Use MathSpace for arithmetic operations with matrices, to triangulate, permutate or transform matrix, to get a specific or the general solution of a system of linear equations, to get LU, QR decomposition, for SVD or PCA. Also, Space is a convenient and efficient data container, you may use it to continuously store huge an array of arrays or for matrix computation.
@@ -37,8 +37,8 @@ if( typeof module !== 'undefined' )
   _.include( 'wMathVector' );
   _.include( 'wCopyable' );
 
-  // require( '../arithmetic/cScalar.s' );
-  // require( '../cvector/Base.s' );
+  // require( '../l1/Scalar.s' );
+  // require( '../l3_vector/Base.s' );
 
 }
 
@@ -1495,21 +1495,21 @@ function transpose()
 
 //
 
-function equalWith( ins,o )
-{
-  debugger; xxx
-  let it = equalWith.lookContinue( equalWith, arguments );
-  let result = this._equalAre( it );
-  return result;
-  // _entityEqualIteratorMake
-
-  // let self = this;
-  // let o = _._entityEqualIteratorMake( o || Object.create( null ) );
-  // _.assert( arguments.length <= 2 );
-  // return self._equalAre( self,ins,o );
-}
-
-_.routineExtend( equalWith, _._entityEqual );
+// function equalWith( ins,o )
+// {
+//   debugger; xxx
+//   let it = equalWith.lookContinue( equalWith, arguments );
+//   let result = this._equalAre( it );
+//   return result;
+//   // _entityEqualIteratorMake
+//
+//   // let self = this;
+//   // let o = _._entityEqualIteratorMake( o || Object.create( null ) );
+//   // _.assert( arguments.length <= 2 );
+//   // return self._equalAre( self,ins,o );
+// }
+//
+// _.routineExtend( equalWith, _._entityEqual );
 
 //
 
@@ -1518,8 +1518,10 @@ function _equalAre( it )
 
   _.assert( arguments.length === 1, 'Expects exactly three argument' );
   _.assert( _.routineIs( it.context.onNumbersAreEqual ) );
+  _.assert( _.prototypeOf( it.looker, it ) );
 
-  // debugger;
+  debugger;
+
   it.looking = false;
 
   if( !( it.src2 instanceof Self ) )
@@ -3370,7 +3372,7 @@ let Proto =
   transpose : transpose,
 
   _equalAre : _equalAre,
-  equalWith : equalWith,
+  // equalWith : equalWith,
 
   is : is,
   toStr : toStr,
@@ -3495,8 +3497,8 @@ _global_.wSpace = _.Space = Self;
 
 if( typeof module !== 'undefined' )
 {
-  require( './wSpaceMethods.s' );
-  require( './wSpaceVector.s' );
+  require( './l3/FromVector.s' );
+  require( './l3/Methods.s' );
 }
 
 })();
