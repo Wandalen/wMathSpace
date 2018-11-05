@@ -3497,6 +3497,8 @@ if( typeof module !== 'undefined' )
 {
   require( './wSpaceMethods.s' );
   require( './wSpaceVector.s' );
+  require( './Jpg.s' );
+  require( './Svd.s' );
 }
 
 })();

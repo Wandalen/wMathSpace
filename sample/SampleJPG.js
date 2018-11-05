@@ -6,6 +6,10 @@ var _ = wTools;
 
  // Manipulates local drive
 
+let matrix = _.Space.makeSquare([ 1,2,3,4 ]);
+logger.log( matrix )
+logger.log( matrix.isDiagonal( ) );
+logger.log( matrix.byteToHex( '011' ) );
 debugger;
 
 let jpgPath = 'C:/Users/pabel/Desktop/Trabajo/Kos/JPEGdecoder/Images/lions.jpg'
