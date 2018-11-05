@@ -14,7 +14,7 @@
   "main": "proto/dwtools/amath/l5_space/Main.s",
   "files": [
     "proto/dwtools/amath/l5_space",
-    "production"
+    "proto/dwtools/Tools.s", "production"
   ],
   "scripts": {
     "test": "wtest staging",
