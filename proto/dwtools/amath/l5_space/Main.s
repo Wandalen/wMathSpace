@@ -1921,7 +1921,7 @@ function atomWiseReduceWithFlatVector( onVector )
 
   debugger;
 
-  let result = onVector( self.asVector() );
+  result = onVector( self.asVector() );
 
   return result;
 }
