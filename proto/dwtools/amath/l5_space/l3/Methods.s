@@ -1,4 +1,4 @@
-(function _wSpaceMethods_s_() {
+(function _Methods_s_() {
 
 'use strict';
 
@@ -1674,7 +1674,7 @@ function scaleAroundSet( scale,center )
   /* */
 
   debugger;
-  let center = vector.fromArray( center );
+  center = vector.fromArray( center );
   let pos = vector.slice( scale );
   pos = vector.fromArray( pos );
   vector.mulScalar( pos,-1 );

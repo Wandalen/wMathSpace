@@ -32,7 +32,7 @@ if( typeof module !== 'undefined' )
 
   _.include( 'wTesting' );
 
-  require( '../space/wSpace.s' );
+  require( '../l5_space/Main.s' );
 
 }
 

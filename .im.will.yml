@@ -1,0 +1,88 @@
+
+submodule :
+
+path :
+
+  proto : './proto'
+  out.debug : './out.debug'
+  out.release : './out.release'
+
+reflector :
+
+  .current :
+    reflectMap :
+    - .
+
+  reflect.release :
+    reflectMap :
+      reflector::.release : path::out.release
+
+  reflect.debug :
+    reflectMap :
+      reflector::.debug : path::out.debug
+
+step :
+
+  reflect.debug :
+    inherit : reflect
+    reflector : reflector::reflect.debug
+    criterion :
+      debug : 1
+  reflect.release :
+    inherit : reflect
+    reflector : reflector::reflect.release
+    criterion :
+      debug : 0
+
+  reflect.dependencies.debug :
+    inherit : reflect
+    reflector : reflector::reflect.dependencies.debug
+  reflect.dependencies.release :
+    inherit : reflect
+    reflector : reflector::reflect.dependencies.release
+
+build :
+
+  .debug :
+    default : 1
+    criterion :
+      debug : 1
+      raw : 1
+      release : 0
+      compiled : 0
+    steps :
+      - step::reflect.debug
+      - step::reflect.dependencies.debug
+
+  .debug.compiled :
+    criterion :
+      debug : 1
+      raw : 0
+      release : 0
+      compiled : 1
+    steps :
+      - step::reflect.debug
+
+  .release.raw :
+    criterion :
+      debug : 0
+      raw : 1
+      release : 1
+      compiled : 0
+    steps :
+      - step::reflect.release
+
+  .release.compiled :
+    criterion :
+      debug : 0
+      raw : 0
+      release : 1
+      compiled : 1
+    steps :
+      - step::reflect.release
+
+  all :
+    steps :
+      - concurrent :
+        - build::.debug
+        - build::.release.compiled

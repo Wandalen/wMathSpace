@@ -1,4 +1,4 @@
-(function _wSpace_s_() {
+(function _Main_s_() {
 
 'use strict';
 
@@ -37,8 +37,8 @@ if( typeof module !== 'undefined' )
   _.include( 'wMathVector' );
   _.include( 'wCopyable' );
 
-  // require( '../arithmetic/cScalar.s' );
-  // require( '../cvector/Base.s' );
+  // require( '../l1/Scalar.s' );
+  // require( '../l3_vector/Base.s' );
 
 }
 
@@ -1495,21 +1495,21 @@ function transpose()
 
 //
 
-function equalWith( ins,o )
-{
-  debugger; xxx
-  let it = equalWith.lookContinue( equalWith, arguments );
-  let result = this._equalAre( it );
-  return result;
-  // _entityEqualIteratorMake
-
-  // let self = this;
-  // let o = _._entityEqualIteratorMake( o || Object.create( null ) );
-  // _.assert( arguments.length <= 2 );
-  // return self._equalAre( self,ins,o );
-}
-
-_.routineExtend( equalWith, _._entityEqual );
+// function equalWith( ins,o )
+// {
+//   debugger; xxx
+//   let it = equalWith.lookContinue( equalWith, arguments );
+//   let result = this._equalAre( it );
+//   return result;
+//   // _entityEqualIteratorMake
+//
+//   // let self = this;
+//   // let o = _._entityEqualIteratorMake( o || Object.create( null ) );
+//   // _.assert( arguments.length <= 2 );
+//   // return self._equalAre( self,ins,o );
+// }
+//
+// _.routineExtend( equalWith, _._entityEqual );
 
 //
 
@@ -1518,8 +1518,10 @@ function _equalAre( it )
 
   _.assert( arguments.length === 1, 'Expects exactly three argument' );
   _.assert( _.routineIs( it.context.onNumbersAreEqual ) );
+  _.assert( _.prototypeOf( it.looker, it ) );
 
-  // debugger;
+  debugger;
+
   it.looking = false;
 
   if( !( it.src2 instanceof Self ) )
@@ -1919,7 +1921,7 @@ function atomWiseReduceWithFlatVector( onVector )
 
   debugger;
 
-  let result = onVector( self.asVector() );
+  result = onVector( self.asVector() );
 
   return result;
 }
@@ -3370,7 +3372,7 @@ let Proto =
   transpose : transpose,
 
   _equalAre : _equalAre,
-  equalWith : equalWith,
+  // equalWith : equalWith,
 
   is : is,
   toStr : toStr,
@@ -3495,10 +3497,10 @@ _global_.wSpace = _.Space = Self;
 
 if( typeof module !== 'undefined' )
 {
-  require( './wSpaceMethods.s' );
-  require( './wSpaceVector.s' );
-  require( './Jpg.s' );
-  require( './Svd.s' );
+  require( './l3/FromVector.s' );
+  require( './l3/Methods.s' );
+  require( './l3/Svd.s' );
+  require( './l3/Jpg.s' );
 }
 
 })();

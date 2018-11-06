@@ -1,4 +1,4 @@
-(function _wSpaceVector_s_() {
+(function _FromVector_s_() {
 
 'use strict';
 
