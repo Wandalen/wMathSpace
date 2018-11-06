@@ -26,7 +26,7 @@ if( typeof module !== 'undefined' )
 
   _.include( 'wTesting' );
 
-  require( '../space/wSpace.s' );
+  require( '../l5_space/Main.s' );
 
 }
 
@@ -1294,6 +1294,6 @@ var Self =
 
 Self = wTestSuite( Self );
 if( typeof module !== 'undefined' && !module.parent )
-_.Tester.test( Self.name );
+_global_.wTester.test( Self.name );
 
 })();
