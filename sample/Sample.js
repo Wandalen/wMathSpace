@@ -28,3 +28,5 @@ var expected = _.Space.make([ 3,3 ]).copy
 var uxl = _.Space.mul( null,[ u,l ] );
 console.log( 'got\n' + uxl.toStr() );
 console.log( 'expected\n' + expected.toStr() );
+
+console.log( 'HEX', expected.byteToHex( '01' ) )

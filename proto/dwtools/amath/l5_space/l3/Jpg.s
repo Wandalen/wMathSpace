@@ -30,6 +30,9 @@ _.assert( _.routineIs( Self ),'wSpace is not defined, please include wSpace.s fi
 //Number to HEX
 function byteToHex( b )
 {
+  _.assert( arguments.length === 1 );
+  _.assert( _.strIs( b ) || _.numberIs( b ) );
+
   let hexChar = ["0", "1", "2", "3", "4", "5", "6", "7","8", "9", "A", "B", "C", "D", "E", "F"];
   return hexChar[ ( b >> 4 ) & 0x0f ] + hexChar[ b & 0x0f ];
 }
@@ -38,6 +41,9 @@ function byteToHex( b )
 // BinaryToByte
 function binaryToByte( b )
 {
+  _.assert( arguments.length === 1 );
+  _.assert( _.strIs( b ) );
+
   let byte = 0;
   if( b.charAt( 0 ) ==  1  )
   {
@@ -57,6 +63,9 @@ function binaryToByte( b )
 // Increase binary number
 function increaseBinary( b )
 {
+  _.assert( arguments.length === 1 );
+  _.assert( _.strIs( b ) );
+  
   let newBin = parseInt( b, 2 ) + 1;
   let bin = newBin.toString( 2 );
   while( bin.length < b.length )
@@ -1052,12 +1061,14 @@ let Extend =
   byteToHex : byteToHex,
   binaryToByte : binaryToByte,
   increaseBinary : increaseBinary,
+
   decodeHuffman : decodeHuffman,
   dequantizeVector : dequantizeVector,
   zigzagOrder : zigzagOrder,
   iDCT : iDCT,
   setSameSize : setSameSize,
   ycbcrToRGB : ycbcrToRGB,
+
   decodeJPG : decodeJPG,
 
 }
