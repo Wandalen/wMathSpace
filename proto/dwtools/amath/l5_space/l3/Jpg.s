@@ -65,7 +65,7 @@ function increaseBinary( b )
 {
   _.assert( arguments.length === 1 );
   _.assert( _.strIs( b ) );
-  
+
   let newBin = parseInt( b, 2 ) + 1;
   let bin = newBin.toString( 2 );
   while( bin.length < b.length )
@@ -301,6 +301,7 @@ function dequantizeVector( components, frameData, qTables )
 
 function zigzagOrder( components )
 {
+  _.assert( arguments.length === 1 );
   for ( let [ key, value ] of components )
   {
     if( typeof( value ) === 'object')
@@ -312,14 +313,15 @@ function zigzagOrder( components )
       let j = [ 0, 1, 0, 0, 1, 2, 3, 2, 1, 0, 0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0, 0, 1, 2, 3, 4, 5, 6, 7, 6, 5,
       4, 3, 2, 1, 0, 1, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 3, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 5, 6, 7, 7, 6, 7 ];
 
-      _.assert( value.length === i.length )
-
-      for( let v = 0; v < value.length; v++ )
+      if( value.length === i.length )
       {
-        space.atomSet( [ i[ v ], j[ v ] ], value[ v ] );
-      }
+        for( let v = 0; v < value.length; v++ )
+        {
+          space.atomSet( [ i[ v ], j[ v ] ], value[ v ] );
+        }
 
-      components.set( key, space );
+        components.set( key, space );
+      }
 
     }
   }
@@ -370,7 +372,6 @@ function iDCT( values )
       space.atomSet( [ i, j ], val );
     }
   }
-
   return space;
 }
 
