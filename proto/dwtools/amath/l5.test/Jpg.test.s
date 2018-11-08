@@ -517,6 +517,115 @@ function decodeHuffman( test )
 
 //
 
+function dequantizeVector( test )
+{
+  var space = _.Space.make([ 3,3 ]);
+
+  test.case = 'One dequantization Table'; /* */
+
+  var components = new Map();
+  components.set( 'C1', [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ] );
+
+  var frameData = new Map();
+  frameData.set( 'C1QT', 1 );
+
+  var qTables = new Map();
+  qTables.set( 'Table1', [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] );
+
+  space.dequantizeVector( components, frameData, qTables );
+
+  var expected = [ 10, 18, 24, 28, 30, 30, 28, 24, 18, 10 ];
+
+  test.identical( expected, components.get( 'C1' ) );
+
+  test.case = 'Two dequantization Tables'; /* */
+
+  var components = new Map();
+  components.set( 'C1', [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ] );
+  components.set( 'C2', [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 11, 12, 13 ] );
+
+  var frameData = new Map();
+  frameData.set( 'C1QT', 0 );
+  frameData.set( 'C2QT', 1 );
+
+  var qTables = new Map();
+  qTables.set( 'Table0', [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] );
+  qTables.set( 'Table1', [ 1, 0, 3, 0, 5, 0, 7, 0, 9, 0, -1, 0, -1 ] );
+
+  space.dequantizeVector( components, frameData, qTables );
+
+  var expected1 = [ 10, 18, 24, 28, 30, 30, 28, 24, 18, 10 ];
+  var expected2 = [ 10, 0, 24, 0, 30, 0, 28, 0, 18, 0, -11, 0, -13 ];
+
+  test.identical( expected1, components.get( 'C1' ) );
+  test.identical( expected2, components.get( 'C2' ) );
+
+  test.case = 'Dequantization Divide values by 2'; /* */
+
+  var components = new Map();
+  components.set( 'C1', [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ] );
+  components.set( 'C2', [ 10, 20 ,30, 40, 50, 60, 70, 80, 90, 100 ] );
+
+  var frameData = new Map();
+  frameData.set( 'C1QT', 1 );
+  frameData.set( 'C2QT', 1 );
+
+  var qTables = new Map();
+  qTables.set( 'Table1', [ 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 ] );
+
+  space.dequantizeVector( components, frameData, qTables );
+
+  var expected1 = [ 5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5 ];
+  var expected2 = [ 5, 10, 15, 20, 25, 30, 35, 40, 45, 50 ];
+
+  test.identical( expected1, components.get( 'C1' ) );
+  test.identical( expected2, components.get( 'C2' ) );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'Quantization table and component have different length'; /* */
+
+  var components = new Map();
+  components.set( 'C1', [ 10, 9, 8, 7 ] );
+
+  var frameData = new Map();
+  frameData.set( 'C1QT', 1 );
+
+  var qTables = new Map();
+  qTables.set( 'Table1', [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] );
+
+  test.shouldThrowErrorSync( () => space.dequantizeVector( components, frameData, qTables ) );
+
+  test.case = 'Not space instance'; /* */
+
+  var space = 'space';
+  test.shouldThrowErrorSync( () => space.dequantizeVector( components, frameData, qTables ) );
+  var space = NaN;
+  test.shouldThrowErrorSync( () => space.dequantizeVector( components, frameData, qTables ) );
+  var space = null;
+  test.shouldThrowErrorSync( () => space.dequantizeVector( components, frameData, qTables ) );
+  var space = [ 0, 0, 0 ];
+  test.shouldThrowErrorSync( () => space.dequantizeVector( components, frameData, qTables ) );
+  var space = _.vector.from( [ 0, 0, 0 ] );
+  test.shouldThrowErrorSync( () => space.dequantizeVector( components, frameData, qTables ) );
+
+  test.case = 'Wrong number/type of args'; /* */
+
+  var space = _.Space.make([ 3,3 ]);
+  test.shouldThrowErrorSync( () => space.dequantizeVector( ) );
+  test.shouldThrowErrorSync( () => space.dequantizeVector( components, frameData ) );
+  test.shouldThrowErrorSync( () => space.dequantizeVector( components, frameData, qTables, 0 ) );
+  test.shouldThrowErrorSync( () => space.dequantizeVector( null, frameData, qTables ) );
+  test.shouldThrowErrorSync( () => space.dequantizeVector( components, undefined, qTables ) );
+  test.shouldThrowErrorSync( () => space.dequantizeVector( components, frameData, NaN ) );
+
+}
+
+//
+
 function zigzagOrder( test )
 {
   var space = _.Space.make([ 3,3 ]);
@@ -728,13 +837,12 @@ var Self =
     increaseBinary : increaseBinary,
 
     decodeHuffman : decodeHuffman,
-
+    dequantizeVector : dequantizeVector,
     zigzagOrder : zigzagOrder,
     iDCT : iDCT,
 
     /*
 
-    dequantizeVector : dequantizeVector,
     setSameSize : setSameSize,
     ycbcrToRGB : ycbcrToRGB,
 

@@ -294,6 +294,8 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
 
 function dequantizeVector( components, frameData, qTables )
 {
+  _.assert( arguments.length === 3, 'decodeHuffman :','Expects exactly three arguments' );
+
   for ( let [ key, value ] of components )
   {
     if( typeof( value ) === 'object')
@@ -302,6 +304,7 @@ function dequantizeVector( components, frameData, qTables )
 
       let quant = qTables.get( 'Table' + String( tableIndex ) );
       Array.from( value );
+      _.assert( value.length === quant.length, 'The quantization table and the component must have the same length')
       for( let v = 0; v < value.length; v++ )
       {
         value[ v ] = value[ v ]*quant[ v ];
