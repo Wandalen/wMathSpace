@@ -7546,17 +7546,17 @@ function colRowWiseOperations( test )
   test.case = 'reduceToMaxColWise'; /* */
 
   var max = space1.reduceToMaxColWise();
-  max = _.entitySelect( max,'*.value' );
+  max = _.entitySelect( max,'*/value' );
   test.identical( max,[ 10,111,30 ] );
   var max = space2.reduceToMaxColWise();
-  max = _.entitySelect( max,'*.value' );
+  max = _.entitySelect( max,'*/value' );
   test.identical( max,[ 10,20,30 ] );
 
   var max = empty1.reduceToMaxColWise();
-  max = _.entitySelect( max,'*.value' );
+  max = _.entitySelect( max,'*/value' );
   test.identical( max,[] );
   var max = empty2.reduceToMaxColWise();
-  max = _.entitySelect( max,'*.value' );
+  max = _.entitySelect( max,'*/value' );
   test.identical( max,[ -Infinity,-Infinity ] );
 
   test.case = 'reduceToMaxValueColWise'; /* */
@@ -7573,17 +7573,17 @@ function colRowWiseOperations( test )
   test.case = 'reduceToMaxRowWise'; /* */
 
   var max = space1.reduceToMaxRowWise();
-  max = _.entitySelect( max,'*.value' );
+  max = _.entitySelect( max,'*/value' );
   test.identical( max,[ 0,3,30,111 ] );
   var max = space2.reduceToMaxRowWise();
-  max = _.entitySelect( max,'*.value' );
+  max = _.entitySelect( max,'*/value' );
   test.identical( max,[ 10,20,30,20 ] );
 
   var max = empty1.reduceToMaxRowWise();
-  max = _.entitySelect( max,'*.value' );
+  max = _.entitySelect( max,'*/value' );
   test.identical( max,[ -Infinity,-Infinity ] );
   var max = empty2.reduceToMaxRowWise();
-  max = _.entitySelect( max,'*.value' );
+  max = _.entitySelect( max,'*/value' );
   test.identical( max,[] );
 
   test.case = 'reduceToMaxValueRowWise'; /* */
