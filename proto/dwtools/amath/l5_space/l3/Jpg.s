@@ -41,8 +41,8 @@ function byteToHex( b )
 // BinaryToByte
 function binaryToByte( b )
 {
-  _.assert( arguments.length === 1 );
-  _.assert( _.strIs( b ) );
+  _.assert( arguments.length === 1,'binaryToByte :','Expects only one argument' );
+  _.assert( _.strIs( b ),'binaryToByte :','Expects string'  );
 
   let byte = 0;
   if( b.charAt( 0 ) ==  1  )
@@ -63,8 +63,8 @@ function binaryToByte( b )
 // Increase binary number
 function increaseBinary( b )
 {
-  _.assert( arguments.length === 1 );
-  _.assert( _.strIs( b ) );
+  _.assert( arguments.length === 1,'increaseBinary :','Expects only one argument' );
+  _.assert( _.strIs( b ), 'increaseBinary :','Expects string' );
 
   let newBin = parseInt( b, 2 ) + 1;
   let bin = newBin.toString( 2 );
@@ -79,9 +79,16 @@ function increaseBinary( b )
 
 function decodeHuffman( components, frameData, hfTables, imageS, index )
 {
+  _.assert( 4 <= arguments.length && arguments.length <= 5, 'decodeHuffman :','Expects four or five arguments' );
+  _.assert( _.strIs( imageS ), 'decodeHuffman :','Expects image as string of binary code' );
+
+  if( arguments.length === 4 )
+  index = 0;
+
+  logger.log( hfTables )
   let i = index;     // counter
   let numOfBytes = imageS.length;
-  _.assert( i < numOfBytes );
+  _.assert( i < numOfBytes, 'decodeHuffman :','Index must be inferior to imageString.length' );
 
   for( let c = 1; c <= components.get( 'numOfComponents' ); c++ )
   {
@@ -131,9 +138,11 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
             }
           }
           i = i + 1;
+          _.assert( i < numOfBytes + 1, 'decodeHuffman :','DC Huffman code not found' );
+
           if( num.length === 17 )
           {
-            _.assert( value !== '', 'DC H CODE NOT FOUND' )
+            _.assert( value !== '', 'decodeHuffman :', 'DC Huffman code not found' )
           }
         }
         //  logger.log('code', code , 'value', value );
@@ -144,6 +153,7 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
           {
             diffBinary = diffBinary + imageS.charAt( i );
             i = i + 1;
+            _.assert( i < numOfBytes + 1, 'decodeHuffman :', 'DC Huffman code not found' );
           }
           Dc = binaryToByte( diffBinary );
 
@@ -197,10 +207,11 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
               }
             }
             i = i + 1;
+            _.assert( i < numOfBytes + 1, 'decodeHuffman :', 'AC Huffman code not found' );
 
             if( num.length === 17 )
             {
-              _.assert( value !== '', 'AC H CODE NOT FOUND' )
+              _.assert( value !== '', 'decodeHuffman :', 'AC Huffman code not found' )
             }
           }
           //  logger.log('code', code , 'value', value );
@@ -216,6 +227,7 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
               {
                 diffBinary = diffBinary + imageS.charAt( i );
                 i = i + 1;
+                _.assert( i < numOfBytes + 1, 'decodeHuffman :', 'AC Huffman code not found' );
               }
 
               let Ac = binaryToByte( diffBinary );
@@ -225,8 +237,8 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
             }
             else
             {
-              //  logger.log('ZEROS')
-              //  logger.log('Value', value, binValue )
+              logger.log('ZEROS')
+              logger.log('Value', value, binValue )
               let newValue = '';
               let zeros = '';
 
@@ -255,6 +267,7 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
               {
                 diffBinary = diffBinary + imageS.charAt( i );
                 i = i + 1;
+                _.assert( i < numOfBytes + 1, 'decodeHuffman :', 'AC Huffman code not found' );
               }
               let Ac = binaryToByte( diffBinary );
 

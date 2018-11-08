@@ -351,6 +351,172 @@ function increaseBinary( test )
 
 //
 
+function decodeHuffman( test )
+{
+  var space = _.Space.make([ 3,3 ]);
+
+  test.case = 'Test huffman decoding'; /* */
+
+  var components = new Map();
+  components.set( 'numOfComponents', 1 );
+  components.set( 'C1Dc', 0 );
+  components.set( 'C1Ac', 0 );
+
+  var frameData = new Map();
+  frameData.set( 'C1V', 1 );
+  frameData.set( 'C1H', 1 );
+
+  var hfTables = new Map();
+  hfTables.set( 'Table1start', undefined )
+  hfTables.set( 'Table1end', undefined )
+  hfTables.set( 'Table1AcDc', 0 )
+  hfTables.set( 'Table1ID', 0 )
+  hfTables.set( 'Table1Codes', [ '00', '010', '011', '100', '101', '1110'] )
+  hfTables.set( 'Table1Values', [ 0, 1, 2, 3, 4, 5 ] )
+  hfTables.set( 'Table2start', undefined )
+  hfTables.set( 'Table2end', undefined )
+  hfTables.set( 'Table2AcDc', 1 )
+  hfTables.set( 'Table2ID', 0 )
+  hfTables.set( 'Table2Codes', [ '00', '01', '100', '1010', '1011', '1100' ] )
+  hfTables.set( 'Table2Values', [ 0, 1, 2, 3, 4, 5 ] )
+
+  var imageS = '0111010101111001111001011000';
+  space.decodeHuffman( components, frameData, hfTables, imageS, 0 );
+
+  var expected =  [ 2, 7, 3, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
+
+  test.identical( expected, components.get( 'C1-11' ) );
+
+  test.case = 'Test huffman decoding with zeros'; /* */
+
+  var components = new Map();
+  components.set( 'numOfComponents', 1 );
+  components.set( 'C1Dc', 0 );
+  components.set( 'C1Ac', 0 );
+
+  var frameData = new Map();
+  frameData.set( 'C1V', 1 );
+  frameData.set( 'C1H', 1 );
+
+  var hfTables = new Map();
+  hfTables.set( 'Table1start', undefined )
+  hfTables.set( 'Table1end', undefined )
+  hfTables.set( 'Table1AcDc', 0 )
+  hfTables.set( 'Table1ID', 0 )
+  hfTables.set( 'Table1Codes', [ '00', '010', '011', '100', '101', '1110'] )
+  hfTables.set( 'Table1Values', [ 0, 1, 2, 3, 4, 5 ] )
+  hfTables.set( 'Table2start', undefined )
+  hfTables.set( 'Table2end', undefined )
+  hfTables.set( 'Table2AcDc', 1 )
+  hfTables.set( 'Table2ID', 0 )
+  hfTables.set( 'Table2Codes', [ '00', '01', '100', '1010', '1011', '1100' ] )
+  hfTables.set( 'Table2Values', [ 0, 1, 2, 3, 4, 20 ] )
+
+  var imageS = '01110101011110011110010111001100';
+  space.decodeHuffman( components, frameData, hfTables, imageS );
+
+  var expected =  [ 2, 7, 3, 0, 11, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
+
+  test.identical( expected, components.get( 'C1-11' ) );
+
+  test.case = 'Index > 0'; /* */
+
+  var components = new Map();
+  components.set( 'numOfComponents', 1 );
+  components.set( 'C1Dc', 0 );
+  components.set( 'C1Ac', 0 );
+
+  var frameData = new Map();
+  frameData.set( 'C1V', 1 );
+  frameData.set( 'C1H', 1 );
+
+  var hfTables = new Map();
+  hfTables.set( 'Table1start', undefined )
+  hfTables.set( 'Table1end', undefined )
+  hfTables.set( 'Table1AcDc', 0 )
+  hfTables.set( 'Table1ID', 0 )
+  hfTables.set( 'Table1Codes', [ '00', '010', '011', '100', '101', '1110'] )
+  hfTables.set( 'Table1Values', [ 0, 1, 2, 3, 4, 5 ] )
+  hfTables.set( 'Table2start', undefined )
+  hfTables.set( 'Table2end', undefined )
+  hfTables.set( 'Table2AcDc', 1 )
+  hfTables.set( 'Table2ID', 0 )
+  hfTables.set( 'Table2Codes', [ '00', '01', '100', '1010', '1011', '1100' ] )
+  hfTables.set( 'Table2Values', [ 0, 1, 2, 3, 4, 20 ] )
+
+  var imageS = 'START:01110101011110011110010111001100';
+  space.decodeHuffman( components, frameData, hfTables, imageS, 6 );
+
+  var expected =  [ 2, 7, 3, 0, 11, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
+
+  test.identical( expected, components.get( 'C1-11' ) );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'Code not found'; /* */
+
+  var components = new Map();
+  components.set( 'numOfComponents', 1 );
+  components.set( 'C1Dc', 0 );
+  components.set( 'C1Ac', 0 );
+
+  var frameData = new Map();
+  frameData.set( 'C1V', 1 );
+  frameData.set( 'C1H', 1 );
+
+  var hfTables = new Map();
+  hfTables.set( 'Table1start', undefined )
+  hfTables.set( 'Table1end', undefined )
+  hfTables.set( 'Table1AcDc', 0 )
+  hfTables.set( 'Table1ID', 0 )
+  hfTables.set( 'Table1Codes', [ '00', '010', '011', '100', '101', '1110'] )
+  hfTables.set( 'Table1Values', [ 0, 1, 2, 3, 4, 5 ] )
+  hfTables.set( 'Table2start', undefined )
+  hfTables.set( 'Table2end', undefined )
+  hfTables.set( 'Table2AcDc', 1 )
+  hfTables.set( 'Table2ID', 0 )
+  hfTables.set( 'Table2Codes', [ '00', '01', '100', '1010', '1011', '1100' ] )
+  hfTables.set( 'Table2Values', [ 0, 1, 2, 3, 4, 20 ] )
+
+  var imageS = 'START:0111010101111001111001011100110111';
+
+  test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, imageS ) );
+
+  test.case = 'Not space instance'; /* */
+
+  var space = 'space';
+  test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, imageS ) );
+  var space = NaN;
+  test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, imageS ) );
+  var space = null;
+  test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, imageS ) );
+  var space = [ 0, 0, 0 ];
+  test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, imageS ) );
+  var space = _.vector.from( [ 0, 0, 0 ] );
+  test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, imageS ) );
+
+  test.case = 'Wrong number/type of args'; /* */
+
+  var space = _.Space.make([ 3,3 ]);
+  test.shouldThrowErrorSync( () => space.decodeHuffman(  ) );
+  test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables ) );
+  test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, imageS, 0, 1 ) );
+  test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, 0 ) );
+  test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, null ) );
+  test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, NaN ) );
+  test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, undefined ) );
+
+
+}
+
+//
+
 function zigzagOrder( test )
 {
   var space = _.Space.make([ 3,3 ]);
@@ -392,7 +558,6 @@ function zigzagOrder( test )
       0,     1,  48,  49, 57, 58, 62, 63
     ]);
   test.identical( expected, components.get( 'C3' ) );
-
 
   /* */
 
@@ -562,18 +727,19 @@ var Self =
     binaryToByte : binaryToByte,
     increaseBinary : increaseBinary,
 
+    decodeHuffman : decodeHuffman,
+
     zigzagOrder : zigzagOrder,
     iDCT : iDCT,
 
-
     /*
 
-    decodeHuffman : decodeHuffman,
     dequantizeVector : dequantizeVector,
     setSameSize : setSameSize,
     ycbcrToRGB : ycbcrToRGB,
 
     decodeJPG : decodeJPG,
+
     */
   },
 
