@@ -47,7 +47,7 @@ var sqrt = _.sqrt;
 
 function byteToHex( test )
 {
-  var space = _.Space.make([ 3,3 ]);
+  var space = _.Space.make([ 3, 3 ]);
 
   // Input is string
 
@@ -132,12 +132,10 @@ function byteToHex( test )
   test.shouldThrowErrorSync( () => space.byteToHex( 3 ));
   var space = [ 0, 0, 0 ];
   test.shouldThrowErrorSync( () => space.byteToHex( 4 ));
-  var space = _.vector.from( [ 0, 0, 0 ] );
-  test.shouldThrowErrorSync( () => space.byteToHex( 5 ));
 
   test.case = 'Wrong number/type of args'; /* */
 
-  var space = _.Space.make([ 3,3 ]);
+  var space = _.Space.make([ 3, 3 ]);
   test.shouldThrowErrorSync( () => space.byteToHex( ));
   test.shouldThrowErrorSync( () => space.byteToHex( 5, 6 ));
   test.shouldThrowErrorSync( () => space.byteToHex( 5, '6', 7 ));
@@ -151,7 +149,7 @@ function byteToHex( test )
 
 function binaryToByte( test )
 {
-  var space = _.Space.make([ 3,3 ]);
+  var space = _.Space.make([ 3, 3 ]);
 
   test.case = 'Positive numbers'; /* */
 
@@ -232,12 +230,10 @@ function binaryToByte( test )
   test.shouldThrowErrorSync( () => space.binaryToByte( '3' ));
   var space = [ 0, 0, 0 ];
   test.shouldThrowErrorSync( () => space.binaryToByte( '4' ));
-  var space = _.vector.from( [ 0, 0, 0 ] );
-  test.shouldThrowErrorSync( () => space.binaryToByte( '5' ));
 
   test.case = 'Wrong number/type of args'; /* */
 
-  var space = _.Space.make([ 3,3 ]);
+  var space = _.Space.make([ 3, 3 ]);
   test.shouldThrowErrorSync( () => space.binaryToByte( ));
   test.shouldThrowErrorSync( () => space.binaryToByte( '01', '11' ));
   test.shouldThrowErrorSync( () => space.binaryToByte( '01', '11', '100' ));
@@ -252,7 +248,7 @@ function binaryToByte( test )
 
 function increaseBinary( test )
 {
-  var space = _.Space.make([ 3,3 ]);
+  var space = _.Space.make([ 3, 3 ]);
 
   test.case = 'Positive numbers'; /* */
 
@@ -333,12 +329,10 @@ function increaseBinary( test )
   test.shouldThrowErrorSync( () => space.increaseBinary( '3' ));
   var space = [ 0, 0, 0 ];
   test.shouldThrowErrorSync( () => space.increaseBinary( '4' ));
-  var space = _.vector.from( [ 0, 0, 0 ] );
-  test.shouldThrowErrorSync( () => space.increaseBinary( '5' ));
 
   test.case = 'Wrong number/type of args'; /* */
 
-  var space = _.Space.make([ 3,3 ]);
+  var space = _.Space.make([ 3, 3 ]);
   test.shouldThrowErrorSync( () => space.increaseBinary( ));
   test.shouldThrowErrorSync( () => space.increaseBinary( '01', '11' ));
   test.shouldThrowErrorSync( () => space.increaseBinary( '01', '11', '100' ));
@@ -353,7 +347,7 @@ function increaseBinary( test )
 
 function decodeHuffman( test )
 {
-  var space = _.Space.make([ 3,3 ]);
+  var space = _.Space.make([ 3, 3 ]);
 
   test.case = 'Test huffman decoding'; /* */
 
@@ -498,12 +492,10 @@ function decodeHuffman( test )
   test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, imageS ) );
   var space = [ 0, 0, 0 ];
   test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, imageS ) );
-  var space = _.vector.from( [ 0, 0, 0 ] );
-  test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, imageS ) );
 
   test.case = 'Wrong number/type of args'; /* */
 
-  var space = _.Space.make([ 3,3 ]);
+  var space = _.Space.make([ 3, 3 ]);
   test.shouldThrowErrorSync( () => space.decodeHuffman(  ) );
   test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables ) );
   test.shouldThrowErrorSync( () => space.decodeHuffman( components, frameData, hfTables, imageS, 0, 1 ) );
@@ -519,7 +511,7 @@ function decodeHuffman( test )
 
 function dequantizeVector( test )
 {
-  var space = _.Space.make([ 3,3 ]);
+  var space = _.Space.make([ 3, 3 ]);
 
   test.case = 'One dequantization Table'; /* */
 
@@ -609,12 +601,10 @@ function dequantizeVector( test )
   test.shouldThrowErrorSync( () => space.dequantizeVector( components, frameData, qTables ) );
   var space = [ 0, 0, 0 ];
   test.shouldThrowErrorSync( () => space.dequantizeVector( components, frameData, qTables ) );
-  var space = _.vector.from( [ 0, 0, 0 ] );
-  test.shouldThrowErrorSync( () => space.dequantizeVector( components, frameData, qTables ) );
 
   test.case = 'Wrong number/type of args'; /* */
 
-  var space = _.Space.make([ 3,3 ]);
+  var space = _.Space.make([ 3, 3 ]);
   test.shouldThrowErrorSync( () => space.dequantizeVector( ) );
   test.shouldThrowErrorSync( () => space.dequantizeVector( components, frameData ) );
   test.shouldThrowErrorSync( () => space.dequantizeVector( components, frameData, qTables, 0 ) );
@@ -628,7 +618,7 @@ function dequantizeVector( test )
 
 function zigzagOrder( test )
 {
-  var space = _.Space.make([ 3,3 ]);
+  var space = _.Space.make([ 3, 3 ]);
 
   test.case = 'zigzag reorder'; /* */
   var components = new Map();
@@ -683,12 +673,10 @@ function zigzagOrder( test )
   test.shouldThrowErrorSync( () => space.zigzagOrder( components ));
   var space = [ 0, 0, 0 ];
   test.shouldThrowErrorSync( () => space.zigzagOrder( components ));
-  var space = _.vector.from( [ 0, 0, 0 ] );
-  test.shouldThrowErrorSync( () => space.zigzagOrder( components ));
 
   test.case = 'Wrong number/type of args'; /* */
 
-  var space = _.Space.make([ 3,3 ]);
+  var space = _.Space.make([ 3, 3 ]);
   test.shouldThrowErrorSync( () => space.zigzagOrder( ));
   test.shouldThrowErrorSync( () => space.zigzagOrder( '01', '11' ));
   test.shouldThrowErrorSync( () => space.zigzagOrder( '01', '11', '100' ));
@@ -703,7 +691,7 @@ function zigzagOrder( test )
 
 function iDCT( test )
 {
-  var space = _.Space.make([ 3,3 ]);
+  var space = _.Space.make([ 3, 3 ]);
 
   test.case = 'Pixeled A'; /* */
 
@@ -797,12 +785,10 @@ function iDCT( test )
   test.shouldThrowErrorSync( () => space.iDCT( components ));
   var space = [ 0, 0, 0 ];
   test.shouldThrowErrorSync( () => space.iDCT( components ));
-  var space = _.vector.from( [ 0, 0, 0 ] );
-  test.shouldThrowErrorSync( () => space.iDCT( components ));
 
   test.case = 'Wrong number/type of args'; /* */
 
-  var space = _.Space.make([ 3,3 ]);
+  var space = _.Space.make([ 3, 3 ]);
   test.shouldThrowErrorSync( () => space.iDCT( ));
   test.shouldThrowErrorSync( () => space.iDCT( '01', '11' ));
   test.shouldThrowErrorSync( () => space.iDCT( '01', '11', '100' ));
@@ -814,6 +800,390 @@ function iDCT( test )
 }
 
 iDCT.accuracy = 1E-3;
+
+//
+
+function setSameSize( test )
+{
+  var space = _.Space.make([ 3, 3 ]);
+
+  test.case = 'Component of same size'; /* */
+
+  var components = new Map();
+  components.set( 'C1-11', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 1,
+    4, 5
+  ]));
+
+  var frameData = new Map();
+  frameData.set( 'vMax', 1 );
+  frameData.set( 'hMax', 1 );
+  frameData.set( 'C1H', 1 );
+  frameData.set( 'C1V', 1 );
+
+  var finalComps = new Map();
+
+  space.setSameSize( components, frameData, finalComps );
+
+  var expected = _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 1,
+    4, 5
+  ]);
+
+  test.identical( expected, finalComps.get( 'C1' ) );
+
+  test.case = 'Component smaller than block in vertical direction'; /* */
+
+  var components = new Map();
+  components.set( 'C1-11', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 1,
+    4, 5
+  ]));
+
+  var frameData = new Map();
+  frameData.set( 'vMax', 2 );
+  frameData.set( 'hMax', 1 );
+  frameData.set( 'C1H', 1 );
+  frameData.set( 'C1V', 1 );
+
+  var finalComps = new Map();
+
+  space.setSameSize( components, frameData, finalComps );
+
+  var expected = _.Space.make([ 4, 2 ]).copy
+  ([
+    0, 1,
+    0, 1,
+    4, 5,
+    4, 5
+  ]);
+
+  test.identical( expected, finalComps.get( 'C1' ) );
+
+  test.case = 'Component smaller than block in horizontal direction'; /* */
+
+  var components = new Map();
+  components.set( 'C1-11', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 1,
+    4, 5
+  ]));
+
+  var frameData = new Map();
+  frameData.set( 'vMax', 1 );
+  frameData.set( 'hMax', 2 );
+  frameData.set( 'C1H', 1 );
+  frameData.set( 'C1V', 1 );
+
+  var finalComps = new Map();
+
+  space.setSameSize( components, frameData, finalComps );
+
+  var expected = _.Space.make([ 2, 4 ]).copy
+  ([
+    0, 0, 1, 1,
+    4, 4, 5, 5
+  ]);
+
+  test.identical( expected, finalComps.get( 'C1' ) );
+
+  test.case = 'Component smaller than block in both directions'; /* */
+
+  var components = new Map();
+  components.set( 'C1-11', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 1,
+    4, 5
+  ]));
+
+  var frameData = new Map();
+  frameData.set( 'vMax', 2 );
+  frameData.set( 'hMax', 2 );
+  frameData.set( 'C1H', 1 );
+  frameData.set( 'C1V', 1 );
+
+  var finalComps = new Map();
+
+  space.setSameSize( components, frameData, finalComps );
+
+  var expected = _.Space.make([ 4, 4 ]).copy
+  ([
+    0, 0, 1, 1,
+    0, 0, 1, 1,
+    4, 4, 5, 5,
+    4, 4, 5, 5
+  ]);
+
+  test.identical( expected, finalComps.get( 'C1' ) );
+
+  test.case = 'Component in 2 pieces - horizontal'; /* */
+
+  var components = new Map();
+  components.set( 'C1-11', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 1,
+    4, 5
+  ]));
+  components.set( 'C1-12', _.Space.make([ 2, 2 ]).copy
+  ([
+    2, 3,
+    6, 7
+  ]));
+
+  var frameData = new Map();
+  frameData.set( 'vMax', 1 );
+  frameData.set( 'hMax', 2 );
+  frameData.set( 'C1H', 2 );
+  frameData.set( 'C1V', 1 );
+
+  var finalComps = new Map();
+
+  space.setSameSize( components, frameData, finalComps );
+
+  var expected = _.Space.make([ 2, 4 ]).copy
+  ([
+    0, 1, 2, 3,
+    4, 5, 6, 7,
+  ]);
+
+  test.identical( expected, finalComps.get( 'C1' ) );
+
+  test.case = 'Component in 2 pieces - horizontal and expanded'; /* */
+
+  var components = new Map();
+  components.set( 'C1-11', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 1,
+    4, 5
+  ]));
+  components.set( 'C1-12', _.Space.make([ 2, 2 ]).copy
+  ([
+    2, 3,
+    6, 7
+  ]));
+
+  var frameData = new Map();
+  frameData.set( 'vMax', 2 );
+  frameData.set( 'hMax', 2 );
+  frameData.set( 'C1H', 2 );
+  frameData.set( 'C1V', 1 );
+
+  var finalComps = new Map();
+
+  space.setSameSize( components, frameData, finalComps );
+
+  var expected = _.Space.make([ 4, 4 ]).copy
+  ([
+    0, 1, 2, 3,
+    0, 1, 2, 3,
+    4, 5, 6, 7,
+    4, 5, 6, 7
+  ]);
+
+  test.identical( expected, finalComps.get( 'C1' ) );
+
+  test.case = 'Component in 2 pieces - vertical'; /* */
+
+  var components = new Map();
+  components.set( 'C1-11', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 1,
+    4, 5
+  ]));
+  components.set( 'C1-21', _.Space.make([ 2, 2 ]).copy
+  ([
+    2, 3,
+    6, 7
+  ]));
+
+  var frameData = new Map();
+  frameData.set( 'vMax', 2 );
+  frameData.set( 'hMax', 1 );
+  frameData.set( 'C1H', 1 );
+  frameData.set( 'C1V', 2 );
+
+  var finalComps = new Map();
+
+  space.setSameSize( components, frameData, finalComps );
+
+  var expected = _.Space.make([ 4, 2 ]).copy
+  ([
+    0, 1,
+    4, 5,
+    2, 3,
+    6, 7
+  ]);
+
+  test.identical( expected, finalComps.get( 'C1' ) );
+
+  test.case = 'Component in 2 pieces - vertical expanded'; /* */
+
+  var components = new Map();
+  components.set( 'C1-11', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 1,
+    4, 5
+  ]));
+  components.set( 'C1-21', _.Space.make([ 2, 2 ]).copy
+  ([
+    2, 3,
+    6, 7
+  ]));
+
+  var frameData = new Map();
+  frameData.set( 'vMax', 2 );
+  frameData.set( 'hMax', 2 );
+  frameData.set( 'C1H', 1 );
+  frameData.set( 'C1V', 2 );
+
+  var finalComps = new Map();
+
+  space.setSameSize( components, frameData, finalComps );
+
+  var expected = _.Space.make([ 4, 4 ]).copy
+  ([
+    0, 0, 1, 1,
+    4, 4, 5, 5,
+    2, 2, 3, 3,
+    6, 6, 7, 7
+  ]);
+
+  test.identical( expected, finalComps.get( 'C1' ) );
+
+  test.case = 'Component in 4 pieces'; /* */
+
+  var components = new Map();
+  components.set( 'C1-11', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 1,
+    4, 5
+  ]));
+  components.set( 'C1-12', _.Space.make([ 2, 2 ]).copy
+  ([
+    2, 3,
+    6, 7
+  ]));
+  components.set( 'C1-21', _.Space.make([ 2, 2 ]).copy
+  ([
+    8, 9,
+    12, 13
+  ]));
+  components.set( 'C1-22', _.Space.make([ 2, 2 ]).copy
+  ([
+    10, 11,
+    14, 15
+  ]));
+
+  var frameData = new Map();
+  frameData.set( 'vMax', 2 );
+  frameData.set( 'hMax', 2 );
+  frameData.set( 'C1H', 2 );
+  frameData.set( 'C1V', 2 );
+
+  var finalComps = new Map();
+
+  space.setSameSize( components, frameData, finalComps );
+
+  var expected = _.Space.make([ 4, 4 ]).copy
+  ([
+    0, 1, 2, 3,
+    4, 5, 6, 7,
+    8, 9, 10, 11,
+    12, 13, 14, 15
+  ]);
+
+  test.identical( expected, finalComps.get( 'C1' ) );
+  var space = _.Space.make([ 3, 3 ]);
+
+  test.case = 'Two different components'; /* */
+
+  var components = new Map();
+  components.set( 'C1-11', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 1,
+    2, 3
+  ]));
+  components.set( 'C2-11', _.Space.make([ 2, 2 ]).copy
+  ([
+    1, 1,
+    1, 1
+  ]));
+  components.set( 'C2-12', _.Space.make([ 2, 2 ]).copy
+  ([
+    2, 2,
+    2, 2
+  ]));
+  components.set( 'C2-21', _.Space.make([ 2, 2 ]).copy
+  ([
+    3, 3,
+    3, 3
+  ]));
+  components.set( 'C2-22', _.Space.make([ 2, 2 ]).copy
+  ([
+    4, 4,
+    4, 4
+  ]));
+
+  var frameData = new Map();
+  frameData.set( 'vMax', 2 );
+  frameData.set( 'hMax', 2 );
+  frameData.set( 'C1H', 1 );
+  frameData.set( 'C1V', 1 );
+  frameData.set( 'C2H', 2 );
+  frameData.set( 'C2V', 2 );
+
+  var finalComps = new Map();
+
+  space.setSameSize( components, frameData, finalComps );
+
+  var expected1 = _.Space.make([ 4, 4 ]).copy
+  ([
+    0, 0, 1, 1,
+    0, 0, 1, 1,
+    2, 2, 3, 3,
+    2, 2, 3, 3
+  ]);
+  test.identical( expected1, finalComps.get( 'C1' ) );
+
+  var expected2 = _.Space.make([ 4, 4 ]).copy
+  ([
+    1, 1, 2, 2,
+    1, 1, 2, 2,
+    3, 3, 4, 4,
+    3, 3, 4, 4
+  ]);
+  test.identical( expected2, finalComps.get( 'C2' ) );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'Not space instance'; /* */
+
+  var space = 'space';
+  test.shouldThrowErrorSync( () => space.setSameSize( components, frameData, finalComps ) );
+  var space = NaN;
+  test.shouldThrowErrorSync( () => space.setSameSize( components, frameData, finalComps ) );
+  var space = null;
+  test.shouldThrowErrorSync( () => space.setSameSize( components, frameData, finalComps ) );
+  var space = [ 0, 0, 0 ];
+  test.shouldThrowErrorSync( () => space.setSameSize( components, frameData, finalComps ) );
+
+  test.case = 'Wrong number/type of args'; /* */
+
+  var space = _.Space.make([ 3, 3 ]);
+  test.shouldThrowErrorSync( () => space.setSameSize( ) );
+  test.shouldThrowErrorSync( () => space.setSameSize( components, frameData ) );
+  test.shouldThrowErrorSync( () => space.setSameSize( components, frameData, finalComps, 0 ) );
+  test.shouldThrowErrorSync( () => space.setSameSize( null, frameData, finalComps ) );
+  test.shouldThrowErrorSync( () => space.setSameSize( components, undefined, finalComps ) );
+  test.shouldThrowErrorSync( () => space.setSameSize( components, frameData, NaN ) );
+
+}
 
 
 // --
@@ -841,9 +1211,9 @@ var Self =
     zigzagOrder : zigzagOrder,
     iDCT : iDCT,
 
-    /*
-
     setSameSize : setSameSize,
+
+    /*
     ycbcrToRGB : ycbcrToRGB,
 
     decodeJPG : decodeJPG,

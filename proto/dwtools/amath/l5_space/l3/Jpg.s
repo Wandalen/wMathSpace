@@ -395,25 +395,27 @@ function iDCT( values )
 
 function setSameSize( components, frameData, finalComps )
 {
+  _.assert( arguments.length === 3, 'setSameSize :','Expects exactly three arguments' );
   let oldComp = '';
   let compPart = 0;
-  let vMax = frameData.get( 'vMax' );
-  let hMax = frameData.get( 'hMax' );
+  let vMax = frameData.get( 'vMax' );  // max number of subBlocks per block in vertical
+  let hMax = frameData.get( 'hMax' );  // max number of subBlocks per block in horizontal
   for ( let [ key, value ] of components )
   {
+    logger.log( key, value)
     if( typeof( value ) === 'object')
     {
       let comp = key.slice( 0, 2 );
       let dims = _.Space.dimsOf( value );
-
+      logger.log( 'C', comp)
       if( comp !== oldComp )
       {
         var newComp = _.Space.make( [ dims[ 0 ]*vMax, dims[ 1 ]*hMax ] );
         oldComp = comp;
       }
 
-      let h = frameData.get( comp + 'H' );
-      let v = frameData.get( comp + 'V' );
+      let h = frameData.get( comp + 'H' );  // number of subBlocks per block in vertical for the component
+      let v = frameData.get( comp + 'V' );  // number of subBlocks per block in horizontal for the component
       let place = key.slice( key.length - 2 );
 
       let hTimes = hMax / h;
@@ -429,12 +431,13 @@ function setSameSize( components, frameData, finalComps )
             {
               let posx = x * vTimes + vt + dims[ 0 ] * ( Number( place.charAt( 0 ) ) - 1 );
               let posy = y * hTimes + ht + dims[ 1 ] * ( Number( place.charAt( 1 ) ) - 1 );
+
               newComp.atomSet( [ posx, posy ], value.atomGet( [ x, y ] ) );
             }
           }
         }
       }
-
+      logger.log(comp )
       finalComps.set( comp, newComp );
     }
   }
