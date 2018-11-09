@@ -1185,6 +1185,275 @@ function setSameSize( test )
 
 }
 
+//
+
+function ycbcrToRGB( test )
+{
+  var space = _.Space.make([ 3, 3 ]);
+
+  test.case = 'Red'; /* */
+
+  var finalComps = new Map();
+
+  // Y
+  finalComps.set( 'C1', _.Space.make([ 2, 2 ]).copy
+  ([
+    150, 150,
+    150, 150
+  ]));
+
+  // Cb
+  finalComps.set( 'C2', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 0,
+    0, 0
+  ]));
+
+  // Cr
+  finalComps.set( 'C3', _.Space.make([ 2, 2 ]).copy
+  ([
+    255, 255,
+    255, 255
+  ]));
+
+  space.ycbcrToRGB( finalComps );
+
+  var expectedR = _.Space.make([ 2, 2 ]).copy
+  ([
+    255, 255,
+    255, 255
+  ]);
+
+  var expectedG = _.Space.make([ 2, 2 ]).copy
+  ([
+    103, 103,
+    103, 103
+  ]);
+
+  var expectedB = _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 0,
+    0, 0
+  ]);
+
+  test.identical( expectedR, finalComps.get( 'R' ) );
+  test.identical( expectedG, finalComps.get( 'G' ) );
+  test.identical( expectedB, finalComps.get( 'B' ) );
+
+  test.case = 'Green'; /* */
+
+  var finalComps = new Map();
+
+  // Y
+  finalComps.set( 'C1', _.Space.make([ 2, 2 ]).copy
+  ([
+    150, 150,
+    150, 150
+  ]));
+
+  // Cb
+  finalComps.set( 'C2', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 0,
+    0, 0
+  ]));
+
+  // Cr
+  finalComps.set( 'C3', _.Space.make([ 2, 2 ]).copy
+  ([
+    -255, -255,
+    -255, -255
+  ]));
+
+  space.ycbcrToRGB( finalComps );
+
+  var expectedR = _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 0,
+    0, 0
+  ]);
+
+  var expectedG = _.Space.make([ 2, 2 ]).copy
+  ([
+    255, 255,
+    255, 255
+  ]);
+
+  var expectedB = _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 0,
+    0, 0
+  ]);
+
+  test.identical( expectedR, finalComps.get( 'R' ) );
+  test.identical( expectedG, finalComps.get( 'G' ) );
+  test.identical( expectedB, finalComps.get( 'B' ) );
+
+  test.case = 'Blue'; /* */
+
+  var finalComps = new Map();
+
+  // Y
+  finalComps.set( 'C1', _.Space.make([ 2, 2 ]).copy
+  ([
+    100, 100,
+    100, 100
+  ]));
+
+  // Cb
+  finalComps.set( 'C2', _.Space.make([ 2, 2 ]).copy
+  ([
+    255, 255,
+    255, 255
+  ]));
+
+  // Cr
+  finalComps.set( 'C3', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 0,
+    0, 0
+  ]));
+
+
+  space.ycbcrToRGB( finalComps );
+
+  var expectedR = _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 0,
+    0, 0
+  ]);
+
+  var expectedG = _.Space.make([ 2, 2 ]).copy
+  ([
+    148, 148,
+    148, 148
+  ]);
+
+  var expectedB = _.Space.make([ 2, 2 ]).copy
+  ([
+    255, 255,
+    255, 255
+  ]);
+
+  test.identical( expectedR, finalComps.get( 'R' ) );
+  test.identical( expectedG, finalComps.get( 'G' ) );
+  test.identical( expectedB, finalComps.get( 'B' ) );
+
+  test.case = 'Mixed colors'; /* */
+
+  var finalComps = new Map();
+  finalComps.set( 'C1', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 50,
+    100, 150
+  ]));
+  finalComps.set( 'C2', _.Space.make([ 2, 2 ]).copy
+  ([
+    255, 150,
+    50, 0
+  ]));
+  finalComps.set( 'C3', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 50,
+    150, 255
+  ]));
+
+  space.ycbcrToRGB( finalComps );
+
+  var expectedR = _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 0,
+    131, 255
+  ]);
+
+  var expectedG = _.Space.make([ 2, 2 ]).copy
+  ([
+    48, 98,
+    111, 103
+  ]);
+
+  var expectedB = _.Space.make([ 2, 2 ]).copy
+  ([
+    225, 89,
+    0, 0
+  ]);
+
+  test.identical( expectedR, finalComps.get( 'R' ) );
+  test.identical( expectedG, finalComps.get( 'G' ) );
+  test.identical( expectedB, finalComps.get( 'B' ) );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  test.case = 'Not space instance'; /* */
+
+  var space = 'space';
+  test.shouldThrowErrorSync( () => space.ycbcrToRGB( finalComps ) );
+  var space = NaN;
+  test.shouldThrowErrorSync( () => space.ycbcrToRGB( finalComps ) );
+  var space = null;
+  test.shouldThrowErrorSync( () => space.ycbcrToRGB( finalComps ) );
+  var space = [ 0, 0, 0 ];
+  test.shouldThrowErrorSync( () => space.ycbcrToRGB( finalComps ) );
+
+  test.case = 'Wrong number/type of args'; /* */
+
+  var space = _.Space.make([ 3, 3 ]);
+  test.shouldThrowErrorSync( () => space.ycbcrToRGB( ) );
+  test.shouldThrowErrorSync( () => space.ycbcrToRGB( finalComps, finalComps ) );
+  test.shouldThrowErrorSync( () => space.ycbcrToRGB( null ) );
+  test.shouldThrowErrorSync( () => space.ycbcrToRGB( undefined ) );
+  test.shouldThrowErrorSync( () => space.ycbcrToRGB( NaN ) );
+  test.shouldThrowErrorSync( () => space.ycbcrToRGB( 'finalComps' ) );
+
+  test.case = 'Not enough components'; /* */
+
+  var space = _.Space.make([ 3, 3 ]);
+
+  var finalComps = new Map();
+  finalComps.set( 'C1', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 50,
+    100, 150
+  ]));
+  finalComps.set( 'C2', _.Space.make([ 2, 2 ]).copy
+  ([
+    255, 150,
+    50, 0
+  ]));
+  test.shouldThrowErrorSync( () => space.ycbcrToRGB( finalComps ) );
+
+  test.case = 'Too many components'; /* */
+
+  var space = _.Space.make([ 3, 3 ]);
+
+  var finalComps = new Map();
+  finalComps.set( 'C1', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 50,
+    100, 150
+  ]));
+  finalComps.set( 'C2', _.Space.make([ 2, 2 ]).copy
+  ([
+    255, 150,
+    50, 0
+  ]));
+  finalComps.set( 'C3', _.Space.make([ 2, 2 ]).copy
+  ([
+    0, 50,
+    100, 150
+  ]));
+  finalComps.set( 'C4', _.Space.make([ 2, 2 ]).copy
+  ([
+    255, 150,
+    50, 0
+  ]));
+  test.shouldThrowErrorSync( () => space.ycbcrToRGB( finalComps ) );
+
+}
+
 
 // --
 // declare
@@ -1213,8 +1482,9 @@ var Self =
 
     setSameSize : setSameSize,
 
-    /*
     ycbcrToRGB : ycbcrToRGB,
+
+    /*
 
     decodeJPG : decodeJPG,
 

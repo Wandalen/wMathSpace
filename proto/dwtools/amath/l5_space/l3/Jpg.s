@@ -85,7 +85,6 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
   if( arguments.length === 4 )
   index = 0;
 
-  logger.log( hfTables )
   let i = index;     // counter
   let numOfBytes = imageS.length;
   _.assert( i < numOfBytes, 'decodeHuffman :','Index must be inferior to imageString.length' );
@@ -237,8 +236,6 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
             }
             else
             {
-              logger.log('ZEROS')
-              logger.log('Value', value, binValue )
               let newValue = '';
               let zeros = '';
 
@@ -402,12 +399,12 @@ function setSameSize( components, frameData, finalComps )
   let hMax = frameData.get( 'hMax' );  // max number of subBlocks per block in horizontal
   for ( let [ key, value ] of components )
   {
-    logger.log( key, value)
+
     if( typeof( value ) === 'object')
     {
       let comp = key.slice( 0, 2 );
       let dims = _.Space.dimsOf( value );
-      logger.log( 'C', comp)
+
       if( comp !== oldComp )
       {
         var newComp = _.Space.make( [ dims[ 0 ]*vMax, dims[ 1 ]*hMax ] );
@@ -437,7 +434,7 @@ function setSameSize( components, frameData, finalComps )
           }
         }
       }
-      logger.log(comp )
+
       finalComps.set( comp, newComp );
     }
   }
@@ -445,22 +442,33 @@ function setSameSize( components, frameData, finalComps )
 
 //
 
-function ycbcrToRGB( finalComps, frameData )
+function ycbcrToRGB( finalComps )
 {
-  let vMax = frameData.get( 'vMax' );
-  let hMax = frameData.get( 'hMax' );
-  let r = _.Space.make( [ 8 * vMax, 8 * hMax ] );
-  let g = _.Space.make( [ 8 * vMax, 8 * hMax ] );
-  let b = _.Space.make( [ 8 * vMax, 8 * hMax ] );
+  _.assert( arguments.length === 1, 'ycbcrToRGB expects exactly one argument')
+  _.assert( finalComps.size === 3 );
 
-  _.assert( frameData.get( 'numOfComponents' ) === 3 );
   let yComp = finalComps.get( 'C1' );
+  let yDimh = _.Space.dimsOf( yComp )[ 1 ];
+  let yDimv = _.Space.dimsOf( yComp )[ 0 ];
   let cbComp = finalComps.get( 'C2' );
+  let cbDimh = _.Space.dimsOf( cbComp )[ 1 ];
+  let cbDimv = _.Space.dimsOf( cbComp )[ 0 ];
   let crComp = finalComps.get( 'C3' );
+  let crDimh = _.Space.dimsOf( crComp )[ 1 ];
+  let crDimv = _.Space.dimsOf( crComp )[ 0 ];
 
-  for( let x = 0; x < 8 * vMax; x++ )
+  _.assert( yDimh == crDimh );
+  _.assert( yDimh == cbDimh);
+  _.assert( yDimv == crDimv );
+  _.assert( yDimv == cbDimv);
+
+  let r = _.Space.make( [ yDimv, yDimh ] );
+  let g = _.Space.make( [ yDimv, yDimh ] );
+  let b = _.Space.make( [ yDimv, yDimh ] );
+
+  for( let x = 0; x < yDimv; x++ )
   {
-    for( let y = 0; y < 8 * hMax; y++ )
+    for( let y = 0; y < yDimh; y++ )
     {
       let yValue = yComp.atomGet( [ x, y ] );
       let cbValue = cbComp.atomGet( [ x, y ] );
@@ -1004,7 +1012,7 @@ function decodeJPG( jpgPath )
 
       setSameSize( components, frameData, finalComps );
 
-      ycbcrToRGB( finalComps, frameData );
+      ycbcrToRGB( finalComps );
 
       let xMax = _.Space.dimsOf( finalComps.get( 'R' ) )[ 0 ];
       let yMax = _.Space.dimsOf( finalComps.get( 'R' ) )[ 1 ];
