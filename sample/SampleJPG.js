@@ -29,7 +29,7 @@ logger.log('Next Image')
 logger.log('')
 let jpgPath2 = 'C:/Users/pabel/Desktop/Trabajo/Kos/JPEGdecoder/Images/mini8.jpg'
 let s2 = _.Space.make([ 3, 3 ]);
-
-let result = s2.decodeJPG( jpgPath2 );
+let data = s2.getData( jpgPath2 );
+let result = s2.decodeJPG( data );
 
 logger.log( result );

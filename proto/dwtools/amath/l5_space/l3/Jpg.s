@@ -27,6 +27,24 @@ _.assert( _.routineIs( Self ),'wSpace is not defined, please include wSpace.s fi
 // CONVERSION AND AUXILIARY FUNCTIONS:
 //
 
+//Get Image data
+function getData( jpgPath )
+{
+  _.assert( arguments.length === 1, 'getData expects only one argument' );
+  _.assert( typeof jpgPath === 'string' || jpgPath instanceof String );
+
+  let provider = _.FileProvider.HardDrive();
+
+  let data = provider.fileRead
+  ({
+    filePath : jpgPath,
+    sync : 1,
+    encoding : 'buffer.bytes'
+  });
+
+  return data;
+}
+
 //Number to HEX
 function byteToHex( b )
 {
@@ -445,7 +463,7 @@ function setSameSize( components, frameData, finalComps )
 function ycbcrToRGB( finalComps )
 {
   _.assert( arguments.length === 1, 'ycbcrToRGB expects exactly one argument')
-  _.assert( finalComps.size === 3 );
+  _.assert( finalComps.size === 3 || finalComps.size === 6 );
 
   let yComp = finalComps.get( 'C1' );
   let yDimh = _.Space.dimsOf( yComp )[ 1 ];
@@ -523,20 +541,13 @@ function ycbcrToRGB( finalComps )
 
 //
 
-function decodeJPG( jpgPath )
+function decodeJPG( data )
 {
-  //GET DATA:
-
-  let provider = _.FileProvider.HardDrive();
-
-  let data = provider.fileRead
-  ({
-    filePath : jpgPath,
-    sync : 1,
-    encoding : 'buffer.bytes'
-  });
+  _.assert( arguments.length === 1, 'decodeJPG expects only one argument' );
+  _.assert( _.longIs( data ), 'decodeJPG expects long' );
 
   let dataViewByte = Array.from( data );
+  logger.log( dataViewByte )
   let dataViewHex = Array.from( data ).slice();
 
   // SET MARKERS:
@@ -1085,6 +1096,7 @@ function decodeJPG( jpgPath )
 
 let Extend =
 {
+  getData : getData,
 
   byteToHex : byteToHex,
   binaryToByte : binaryToByte,
