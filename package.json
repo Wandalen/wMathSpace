@@ -36,6 +36,7 @@
     "wmathvector": ""
   },
   "devDependencies": {
+    "pngjs": "^3.3.3",
     "wTesting": "",
     "wmathspace": "."
   },

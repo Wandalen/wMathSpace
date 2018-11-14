@@ -726,7 +726,7 @@ function decodeJPG( data )
   _.assert( _.longIs( data ), 'decodeJPG expects long' );
 
   let dataViewByte = Array.from( data );
-  logger.log( dataViewByte )
+
   let dataViewHex = Array.from( data ).slice();
 
   // SET MARKERS:

@@ -2,13 +2,18 @@ if( typeof module !== 'undefined' )
 require( 'wTools' );
 require( 'wmathspace' );
 require('wFiles');
+var path = require('path');
+
 var _ = wTools;
 
 
 // Include the path of a jpg file
-let jpgPath = 'C:/Users/pabel/Desktop/Trabajo/Kos/JPEGdecoder/Images/lions.jpg'
+let jpgPath =  __dirname + '/../assets/Images/JPG/lions.jpg';
+var correctedPath = path.normalize(jpgPath);
+console.log(correctedPath);
+
 let s = _.Space.make([ 3, 3 ]);
-let jpgValues = s2.getData( jpgPath );
+let jpgValues = s.getData( correctedPath );
 let imValues = s.decodeJPG( jpgValues );
 
 var fs = require('fs'),
@@ -37,4 +42,4 @@ for (var y = 0; y < png.height; y++) {
 }
 
 // Include a name for the new png file
-png.pack().pipe(fs.createWriteStream('Images/lionsDecoded.png'));
+png.pack().pipe(fs.createWriteStream('assets/Images/PNG/lionsDecoded.png'));
