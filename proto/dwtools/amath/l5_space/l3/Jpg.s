@@ -518,7 +518,7 @@ function zigzagOrder( components )
   *    1, 0, 1, 1, 1, 0, 1, 1,
   *    1, 0, 1, 1, 1, 0, 1, 1,
   *    1, 1, 1, 1, 1, 1, 1, 1
-  *  ]);
+  *  ]);  // where the values are rounded to 0 or 1 just in this example
   *
   *  var DCT =  _.Space.make( [ 8, 8 ] ).copy
   *   ([
@@ -587,6 +587,48 @@ function iDCT( values )
 
 //
 
+/**
+  * Combine the matrices in 'components' to create bigger matrices. If dimensions on the final matrix are
+  * bigger than the sum of dimensions of the matrices that compose it, values are duplicated to fill the full matrix.
+  *
+  * @param { Object } components - Map with the source matrices.
+  * @param { Object } frameData - Map with number of components and vertical and horizontal sampling.
+  * @param { Object } finalComps - Map were the final matrices will be stored.
+
+  * @example
+  * // returns finalComps{ 'C1' : _.Space.make([ 4, 4 ]).copy
+  *  ([
+  *    0, 1, 2, 3,
+  *    0, 1, 2, 3,
+  *    4, 5, 6, 7,
+  *    4, 5, 6, 7
+  *  ])};
+  *
+  *  var components = new Map();
+  *  components.set( 'C1-11', _.Space.make([ 2, 2 ]).copy
+  *  ([
+  *    0, 1,
+  *    4, 5
+  *  ]));
+  *  components.set( 'C1-12', _.Space.make([ 2, 2 ]).copy
+  *  ([
+  *    2, 3,
+  *    6, 7
+  *  ]));
+  *  var frameData = new Map();
+  *  frameData.set( 'vMax', 2 );
+  *  frameData.set( 'hMax', 2 );
+  *  frameData.set( 'C1H', 2 );
+  *  frameData.set( 'C1V', 1 );
+  *  var finalComps = new Map();
+  * _.setSameSize( components, frameData, finalComps );
+  *
+  * @returns { Object } Returns the finalComps space with the new created matrices.
+  * @function setSameSize
+  * @throws { Error } An Error if ( arguments.length ) is different than three.
+  * @throws { Error } An Error if ( values ) is not a space.
+  * @memberof wTools.wSpace
+  */
 function setSameSize( components, frameData, finalComps )
 {
   _.assert( arguments.length === 3, 'setSameSize :','Expects exactly three arguments' );
@@ -639,6 +681,55 @@ function setSameSize( components, frameData, finalComps )
 
 //
 
+/**
+  * Transform the color space YCbCr to RGB. Replaces the Y, Cb and Cr component in the src map by their
+  * corresponding R, G and B components.
+  *
+  * @param { Object } finalComps - Map with Y, Cb and Cr components, and were the RGB components will be stored.
+  *
+  * @example
+  * // returns finalComps:
+  * finalComps.get( 'R' ) = _.Space.make([ 4, 4 ]).copy
+  * ([
+  *   255, 255
+  *   255, 255
+  * ]),
+  * finalComps.get( 'G' ) = _.Space.make([ 4, 4 ]).copy
+  * ([
+  *   103, 103,
+  *   103, 103
+  * ]),
+  * finalComps.get( 'B' ) = _.Space.make([ 4, 4 ]).copy
+  * ([
+  *   0, 0,
+  *   0, 0
+  * ]) );
+  * _.ycbcrToRGB( finalComps );
+  *
+  * var finalComps = new Map();
+  * finalComps.set( 'C1' : _.Space.make([ 4, 4 ]).copy
+  * ([
+  *   150, 150
+  *   150, 150
+  * ]),
+  * 'C2' : _.Space.make([ 4, 4 ]).copy
+  * ([
+  *   0, 0,
+  *   0, 0
+  * ]),
+  * 'C3' : _.Space.make([ 4, 4 ]).copy
+  * ([
+  *   0, 1,
+  *   0, 1
+  * ]) );
+  * _.ycbcrToRGB( finalComps );
+  *
+  * @returns { Object } Returns the finalComps object with the RGB components.
+  * @function ycbcrToRGB
+  * @throws { Error } An Error if ( arguments.length ) is different than one.
+  * @throws { Error } An Error if ( finalComps.size ) is different than three or six.
+  * @memberof wTools.wSpace
+  */
 function ycbcrToRGB( finalComps )
 {
   _.assert( arguments.length === 1, 'ycbcrToRGB expects exactly one argument')
@@ -720,6 +811,17 @@ function ycbcrToRGB( finalComps )
 
 //
 
+/**
+  * Decode the array of bytes of a JPG file to its RGB values.
+  *
+  * @param { Array } data - Array of bytes from the jpg file.
+  *
+  * @returns { Uint8Array } Returns an Uint8Array with the RGB values.
+  * @function decodeJPG
+  * @throws { Error } An Error if ( arguments.length ) is different than one.
+  * @throws { Error } An Error if ( data ) is not long
+  * @memberof wTools.wSpace
+  */
 function decodeJPG( data )
 {
   _.assert( arguments.length === 1, 'decodeJPG expects only one argument' );
