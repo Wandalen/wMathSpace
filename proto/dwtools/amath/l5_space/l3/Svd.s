@@ -275,7 +275,8 @@ function qrDecompositionHH( q, r )
 
     debugger;
     let m = _.Space.make( [ rows, cols ] ).fromVectors( u, u );
-    let h = m.addMatrix( identity, m.mulScalar( - 2 ) );
+    let mi = identity.clone();
+    let h = mi.addAtomWise( m.mulScalar( - 2 ) );
     q.mulLeft( h );
 
     matrix = _.Space.mul2Matrices( null, h, matrix );
@@ -320,34 +321,6 @@ function fromVectors( v1, v2 )
     for( let j = 0; j < v2.length; j ++ )
     {
       matrix.atomSet( [ i, j ], v1.eGet( i )*v2.eGet( j ) );
-    }
-  }
-
-  return matrix;
-}
-
-//
-
-function addMatrix( m1, m2 )
-{
-  _.assert( _.spaceIs( m1 ) );
-  _.assert( _.spaceIs( m2 ) );
-
-  let dims1 = _.Space.dimsOf( m1 ) ;
-  let dims2 = _.Space.dimsOf( m2 ) ;
-  _.assert( dims1[ 0 ] === dims2[ 0 ] );
-  _.assert( dims1[ 1 ] === dims2[ 1 ] );
-
-  let rows = dims1[ 0 ];
-  let cols = dims1[ 1 ];
-
-  let matrix = _.Space.make([ rows, cols ]);
-
-  for( let i = 0; i < rows; i ++ )
-  {
-    for( let j = 0; j < cols; j ++ )
-    {
-      matrix.atomSet( [ i, j ], m1.atomGet( [ i, j ] ) + m2.atomGet( [ i, j ] ) );
     }
   }
 
@@ -463,7 +436,6 @@ let Extend =
   qrDecompositionHH : qrDecompositionHH,
 
   fromVectors : fromVectors,
-  addMatrix : addMatrix,
 
   svd : svd,
 
