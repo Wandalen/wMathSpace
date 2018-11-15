@@ -24,6 +24,33 @@ _.assert( _.routineIs( Self ),'wSpace is not defined, please include wSpace.s fi
 
 //
 
+/**
+  * Check if a matrix is diagonal.
+  *
+  * @param { this } - The source matrix.
+  *
+  * @example
+  * // returns true;
+  * var matrix =  _.Space.make( [ 2, 3 ] ).copy
+  * ([
+  *   1,   0,   0,
+  *   0, - 1,   0
+  * ]);
+  * matrix.isDiagonal( );
+  *
+  * // returns false;
+  * var matrix =  _.Space.make( [ 2, 2 ] ).copy
+  * ([
+  *   1,   1,
+  *   0, - 1
+  * ]);
+  * matrix.isDiagonal( );
+  *
+  * @returns { Boolean } Returns true if the matrix is diagonal and false if not.
+  * @function isDiagonal
+  * @throws { Error } An Error if ( this ) is not a space.
+  * @memberof wTools.wSpace
+  */
 function isDiagonal()
 {
   let self = this;
@@ -48,6 +75,33 @@ function isDiagonal()
 
 //
 
+/**
+  * Check if a matrix is upper triangular
+  *
+  * @param { this } - The source matrix.
+  *
+  * @example
+  * // returns true;
+  * var matrix =  _.Space.make( [ 2, 3 ] ).copy
+  * ([
+  *   1,   0,   1,
+  *   0, - 1,   0
+  * ]);
+  * matrix.isUpperTriangle( );
+  *
+  * // returns false;
+  * var matrix =  _.Space.make( [ 2, 2 ] ).copy
+  * ([
+  *   1,   0,
+  *   1, - 1
+  * ]);
+  * matrix.isUpperTriangle( );
+  *
+  * @returns { Boolean } Returns true if the matrix is upper triangular and false if not.
+  * @function isUpperTriangle
+  * @throws { Error } An Error if ( this ) is not a space.
+  * @memberof wTools.wSpace
+  */
 function isUpperTriangle( accuracy )
 {
   let self = this;
@@ -81,6 +135,33 @@ function isUpperTriangle( accuracy )
 
 //
 
+/**
+  * Check if a matrix is symmetric.
+  *
+  * @param { this } - The source matrix.
+  *
+  * @example
+  * // returns true;
+  * var matrix =  _.Space.make( [ 2, 3 ] ).copy
+  * ([
+  *   1,   0,
+  *   0, - 1
+  * ]);
+  * matrix.isSymmetric( );
+  *
+  * // returns false;
+  * var matrix =  _.Space.make( [ 2, 3 ] ).copy
+  * ([
+  *   1,   0,  0,
+  *   1, - 1,  0
+  * ]);
+  * matrix.isSymmetric( );
+  *
+  * @returns { Boolean } Returns true if the matrix is symmetric and false if not.
+  * @function isSymmetric
+  * @throws { Error } An Error if ( this ) is not a space.
+  * @memberof wTools.wSpace
+  */
 function isSymmetric( accuracy )
 {
   let self = this;
@@ -120,6 +201,30 @@ function isSymmetric( accuracy )
 
 //
 
+/**
+  * Split a M matrix into a Q and a R matrices, where M = Q*R, R is upper triangular
+  * and the values of its diagonal are the eigenvalues of M, and Q is orthogonal and its columns are
+  * the eigenvectors of M. Returns the eigenvalues of M. Matrix stays unchanged.
+  *
+  * @param { this } - The source matrix.
+  * @param { q } - The destination Q matrix.
+  * @param { r } - The destination R matrix.
+  *
+  * @example
+  * // returns _.vector.from( [ 4, -2, -2 ] );
+  * var matrix =  _.Space.make( [ 3, 3 ] ).copy
+  * ([
+  *   1,  -3,  3,
+  *   3, - 5,  3,
+  *   6, - 6,  4
+  * ]);
+  * matrix.qrIteration( q, r );
+  *
+  * @returns { Array } Returns a vector with the values of the diagonal of R.
+  * @function qrIteration
+  * @throws { Error } An Error if ( this ) is not a space.
+  * @memberof wTools.wSpace
+  */
 function qrIteration( q, r )
 {
   let self = this;
@@ -191,6 +296,42 @@ function qrIteration( q, r )
 
 //
 
+/**
+  * Perform the QR Gram-Schmidt decomposition of a M matrix into a Q and a R matrices, where M = Q*R, R is
+  * upper triangular, and Q is orthogonal. Matrix stays unchanged.
+  *
+  * @param { this } - The source matrix.
+  * @param { q } - The destination Q matrix.
+  * @param { r } - The destination R matrix.
+  *
+  * @example
+  * // returns Q = _.Space.make( [ 3, 3 ] ).copy
+  * ([
+  *   0.857143, -0.467324, -0.216597,
+  *   0.428571, 0.880322, -0.203369,
+  *   -0.285714, -0.081489, -0.954844
+  * ]);
+  * returns R = _.Space.make( [ 3, 3 ] ).copy
+  * ([
+  *   14, 34.714287, -14,
+  *   0, 172.803116, -58.390148,
+  *   0, 0, 52.111328
+  * ]);
+  *
+  * var matrix =  _.Space.make( [ 3, 3 ] ).copy
+  * ([
+  *   12, -51, 4,
+  *   6, 167, -68,
+  *   -4, -24, -41,
+  * ]);
+  * matrix.qrDecompositionGS( q, r );
+  *
+  * @function qrDecompositionGS
+  * @throws { Error } An Error if ( this ) is not a space.
+  * @throws { Error } An Error if ( q ) is not a space.
+  * @throws { Error } An Error if ( r ) is not a space.
+  * @memberof wTools.wSpace
+  */
 function qrDecompositionGS( q, r )
 {
   let self = this;
@@ -233,6 +374,42 @@ function qrDecompositionGS( q, r )
 
 //
 
+/**
+  * Perform the QR Householder decomposition of a M matrix into a Q and a R matrices, where M = Q*R, R is
+  * upper triangular, and Q is orthogonal. Matrix stays unchanged.
+  *
+  * @param { this } - The source matrix.
+  * @param { q } - The destination Q matrix.
+  * @param { r } - The destination R matrix.
+  *
+  * @example
+  * // returns Q = _.Space.make( [ 3, 3 ] ).copy
+  * ([
+  *   -0.857143, 0.467324, -0.216597,
+  *   -0.428571, -0.880322, -0.203369,
+  *   0.285714, 0.081489, -0.954844
+  * ]);
+  * returns R = _.Space.make( [ 3, 3 ] ).copy
+  * ([
+  *   -14, -34.714287, 14,
+  *   0, -172.803116, 58.390148,
+  *   0, 0, 52.111328
+  * ]);
+  *
+  * var matrix =  _.Space.make( [ 3, 3 ] ).copy
+  * ([
+  *   12, -51, 4,
+  *   6, 167, -68,
+  *   -4, -24, -41,
+  * ]);
+  * matrix.qrDecompositionHH( q, r );
+  *
+  * @function qrDecompositionHH
+  * @throws { Error } An Error if ( this ) is not a space.
+  * @throws { Error } An Error if ( q ) is not a space.
+  * @throws { Error } An Error if ( r ) is not a space.
+  * @memberof wTools.wSpace
+  */
 function qrDecompositionHH( q, r )
 {
   let self = this;
@@ -308,11 +485,36 @@ function qrDecompositionHH( q, r )
 
 //
 
+
+/**
+  * Create a matrix out of a two vectors multiplication. Vectors stay unchanged.
+  *
+  * @param { v1 } - The first source vector.
+  * @param { v2 } - The second source vector.
+  *
+  * @example
+  * // returns M = _.Space.make( [ 3, 3 ] ).copy
+  * ([
+  *   0, 0, 0,
+  *   3, 3, 3,
+  *   6, 6, 6
+  * ]);
+  *
+  * var v1 =  _.vector.from( [ 0, 1, 2 ] );
+  * var v2 =  _.vector.from( [ 3, 3, 3 ] );
+  * matrix.fromVectors( v1, v2 );
+  *
+  * @function fromVectors
+  * @throws { Error } An Error if ( this ) is not a space.
+  * @throws { Error } An Error if ( q ) is not a space.
+  * @throws { Error } An Error if ( r ) is not a space.
+  * @memberof wTools.wSpace
+  */
 function fromVectors( v1, v2 )
 {
   _.assert( _.vectorIs( v1 ) );
   _.assert( _.vectorIs( v2 ) );
-  _.assert( v1.length === v2.length );
+//  _.assert( v1.length === v2.length );
 
   let matrix = _.Space.make( [ v1.length, v2.length ] );
 
@@ -329,6 +531,46 @@ function fromVectors( v1, v2 )
 
 //
 
+/**
+  * Split a M matrix into a U, a S and a V matrices, where M = U*S*Vt, S is diagonal
+  * and the values of its diagonal are the eigenvalues of M, and U and V is orthogonal.
+  * Matrix stays unchanged.
+  *
+  * @param { this } - The source matrix.
+  * @param { u } - The destination U matrix.
+  * @param { s } - The destination S matrix.
+  * @param { v } - The destination V matrix.
+  *
+  * @example
+  * // returns:
+  * var u =  _.Space.make( [ 2, 2 ] ).copy
+  * ([
+  *   -Math.sqrt( 2 ) / 2, -Math.sqrt( 2 ) / 2,
+  *   -Math.sqrt( 2 ) / 2, Math.sqrt( 2 ) / 2
+  * ]);
+  * var s =  _.Space.make( [ 2, 2 ] ).copy
+  * ([
+  *   6.000, 0.000,
+  *   0.000, 2.000,
+  * ]);
+  * var v =  _.Space.make( [ 2, 2 ] ).copy
+  * ([
+  *   -Math.sqrt( 2 ) / 2, Math.sqrt( 2 ) / 2,
+  *   -Math.sqrt( 2 ) / 2, -Math.sqrt( 2 ) / 2
+  * ]);
+  *
+  * var matrix =  _.Space.make( [ 2, 2 ] ).copy
+  * ([
+  *   2, 4,
+  *   4, 2
+  * ]);
+  * matrix.svd( u, s, v );
+  *
+  * @function svd
+  * @throws { Error } An Error if ( this ) is not a space.
+  * @throws { Error } An Error if ( arguments.length ) is not three.
+  * @memberof wTools.wSpace
+  */
 function svd( u, s, v )
 {
   let self = this;

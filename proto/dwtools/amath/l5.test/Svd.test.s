@@ -728,7 +728,7 @@ function qrDecomposition( test )
   ([
     0.857143, -0.467324, -0.216597,
     0.428571, 0.880322, -0.203369,
-    -0.285714, -0.081489, -0.954844,
+    -0.285714, -0.081489, -0.954844
   ]);
   test.equivalent( expectedQ, q );
 
@@ -834,6 +834,176 @@ function qrDecomposition( test )
 
 qrDecomposition.accuracy = 1E-4;
 qrDecomposition.timeOut = 20000;
+
+//
+
+function fromVectors( test )
+{
+
+  var matrix = _.Space.make( [ 2, 2 ] );
+
+  test.description = 'Vectors remains unchanged'; //
+
+  var v1 = _.vector.from( [ 0, 1, 2 ] );
+  var v2 = _.vector.from( [ 3, 3, 3 ] );
+
+  var gotMatrix = matrix.fromVectors( v1, v2 );
+
+  var oldV1 =  _.vector.from( [ 0, 1, 2 ] );
+  test.equivalent( v1, oldV1 );
+  var oldV2 =  _.vector.from( [ 3, 3, 3 ] );
+  test.equivalent( v2, oldV2 );
+
+  test.description = '1x1 matrix'; //
+
+  var v1 = _.vector.from( [ 2 ] );
+  var v2 = _.vector.from( [ 3 ] );
+
+  var gotMatrix = matrix.fromVectors( v1, v2 );
+
+  var expected =  _.Space.make( [ 1, 1 ] ).copy
+  ([
+    6
+  ]);
+
+  test.equivalent( gotMatrix, expected );
+
+  test.description = '2x1 matrix'; //
+
+  var v1 = _.vector.from( [ 2, 2 ] );
+  var v2 = _.vector.from( [ 3 ] );
+
+  var gotMatrix = matrix.fromVectors( v1, v2 );
+
+  var expected =  _.Space.make( [ 2, 1 ] ).copy
+  ([
+    6,
+    6
+  ]);
+
+  test.equivalent( gotMatrix, expected );
+
+  test.description = '1x2 matrix'; //
+
+  var v1 = _.vector.from( [ 2 ] );
+  var v2 = _.vector.from( [ 3, 3 ] );
+
+  var gotMatrix = matrix.fromVectors( v1, v2 );
+
+  var expected =  _.Space.make( [ 1, 2 ] ).copy
+  ([
+    6, 6
+  ]);
+
+  test.equivalent( gotMatrix, expected );
+
+  test.description = '2x2 matrix'; //
+
+  var v1 = _.vector.from( [ 1, 2 ] );
+  var v2 = _.vector.from( [ 3, 4 ] );
+
+  var gotMatrix = matrix.fromVectors( v1, v2 );
+
+  var expected =  _.Space.make( [ 2, 2 ] ).copy
+  ([
+    3, 4,
+    6, 8
+  ]);
+
+  test.equivalent( gotMatrix, expected );
+
+  test.description = '3x2 matrix'; //
+
+  var v1 = _.vector.from( [ 1, 2, 3 ] );
+  var v2 = _.vector.from( [ 3, 4 ] );
+
+  var gotMatrix = matrix.fromVectors( v1, v2 );
+
+  var expected =  _.Space.make( [ 3, 2 ] ).copy
+  ([
+    3, 4,
+    6, 8,
+    9, 12
+  ]);
+
+  test.equivalent( gotMatrix, expected );
+
+  test.description = '2x3 matrix'; //
+
+  var v1 = _.vector.from( [ 1, 2 ] );
+  var v2 = _.vector.from( [ 3, 4, 5 ] );
+
+  var gotMatrix = matrix.fromVectors( v1, v2 );
+
+  var expected =  _.Space.make( [ 2, 3 ] ).copy
+  ([
+    3, 4, 5,
+    6, 8, 10
+  ]);
+
+  test.equivalent( gotMatrix, expected );
+
+  test.description = '3x3 matrix'; //
+
+  var v1 = _.vector.from( [ 1, 2, 3 ] );
+  var v2 = _.vector.from( [ 3, 4, 5 ] );
+
+  var gotMatrix = matrix.fromVectors( v1, v2 );
+  var expected =  _.Space.make( [ 3, 3 ] ).copy
+  ([
+    3, 4, 5,
+    6, 8, 10,
+    9, 12, 15
+  ]);
+
+  test.equivalent( gotMatrix, expected );
+
+  test.description = '4x4 matrix'; //
+
+  var v1 = _.vector.from( [ 1, 2, 3, 4 ] );
+  var v2 = _.vector.from( [ 3, 4, 5, 6 ] );
+
+  var gotMatrix = matrix.fromVectors( v1, v2 );
+  var expected =  _.Space.make( [ 4, 4 ] ).copy
+  ([
+    3, 4, 5, 6,
+    6, 8, 10, 12,
+    9, 12, 15, 18,
+    12, 16, 20, 24
+  ]);
+
+  test.equivalent( gotMatrix, expected );
+
+  /* */
+
+  if( !Config.debug )
+  return;
+
+  var v1 = _.vector.from( [ 1, 2, 3, 4 ] );
+  var v2 = _.vector.from( [ 3, 4, 5, 6 ] );
+
+  var matrix = 'matrix';
+  test.shouldThrowErrorSync( () => matrix.fromVectors( v1, v2 ) );
+  var matrix = NaN;
+  test.shouldThrowErrorSync( () => matrix.fromVectors( v1, v2 ) );
+  var matrix = null;
+  test.shouldThrowErrorSync( () => matrix.fromVectors( v1, v2 ) );
+  var matrix = [ 0, 0, 0 ];
+  test.shouldThrowErrorSync( () => matrix.fromVectors( v1, v2 ) );
+  var matrix = _.vector.from( [ 0, 0, 0 ] );
+  test.shouldThrowErrorSync( () => matrix.fromVectors( v1, v2 ) );
+  var matrix = _.Space.make( [ 2, 2 ] );
+  test.shouldThrowErrorSync( () => matrix.fromVectors( 'v1', v2 ) );
+  test.shouldThrowErrorSync( () => matrix.fromVectors( v1, 'v2' ) );
+  test.shouldThrowErrorSync( () => matrix.fromVectors( null, v2 ) );
+  test.shouldThrowErrorSync( () => matrix.fromVectors( v1, null ) );
+  test.shouldThrowErrorSync( () => matrix.fromVectors( NaN, 2 ) );
+  test.shouldThrowErrorSync( () => matrix.fromVectors( v1, NaN ) );
+  test.shouldThrowErrorSync( () => matrix.fromVectors( undefined, v2 ) );
+  test.shouldThrowErrorSync( () => matrix.fromVectors( v1, undefined ) );
+}
+
+//
 
 function svd( test )
 {
@@ -1284,6 +1454,7 @@ var Self =
     isSymmetric : isSymmetric,
     qrIteration : qrIteration,
     qrDecomposition : qrDecomposition,
+    fromVectors : fromVectors,
     svd : svd,
 
   },
