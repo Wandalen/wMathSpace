@@ -62,37 +62,37 @@ function getData( jpgPath )
 
 //
 
-//Number to HEX
+//Decimal number to hexadecimal
 /**
-  * Convert a byte to Hexadecimal. Returns the hexadecimal value.
+  * Convert a decimal number to Hexadecimal. Returns the hexadecimal value.
   *
-  * @param { String or Number } byte - The source byte.
+  * @param { String or Number } decimal - The source number.
   *
   * @example
   * // returns '0B';
-  * _.byteToHex( '11' );
+  * _.decimalToHex( '11' );
   *
   * // returns '11';
-  * _.byteToHex( 17 );
+  * _.decimalToHex( 17 );
   *
   * @returns { String } Returns the string of the hexadecimal number.
-  * @function byteToHex
+  * @function decimalToHex
   * @throws { Error } An Error if ( arguments.length ) is different than one.
-  * @throws { Error } An Error if ( byte ) is not a string or a number.
+  * @throws { Error } An Error if ( decimal ) is not a string or a number.
   * @memberof wTools.wSpace
   */
-function byteToHex( byte )
+function decimalToHex( decimal )
 {
   _.assert( arguments.length === 1 );
-  _.assert( _.strIs( byte ) || _.numberIs( byte ) );
+  _.assert( _.strIs( decimal ) || _.numberIs( decimal ) );
 
   let hexChar = ["0", "1", "2", "3", "4", "5", "6", "7","8", "9", "A", "B", "C", "D", "E", "F"];
-  return hexChar[ ( byte >> 4 ) & 0x0f ] + hexChar[ byte & 0x0f ];
+  return hexChar[ ( decimal >> 4 ) & 0x0f ] + hexChar[ decimal & 0x0f ];
 }
 
 //
 
-// Binary To Number
+// Binary number to decimal
 /**
   * Convert a binary number ( in a string ) to a decimal number . Returns the decimal number.
   * If the binary number starts by 0, it changes all 0s by 1s and returns the negative number.
@@ -101,42 +101,42 @@ function byteToHex( byte )
   *
   * @example
   * // returns 27;
-  * _.binaryToByte( '11011' );
+  * _.binaryToDecimal( '11011' );
   *
   * // returns - 27;
-  * _.binaryToByte( '00100' );
+  * _.binaryToDecimal( '00100' );
   *
   * @returns { Number } Returns the decimal number from the binary string.
-  * @function binaryToByte
+  * @function binaryToDecimal
   * @throws { Error } An Error if ( arguments.length ) is different than one.
-  * @throws { Error } An Error if ( byte ) is not a string
+  * @throws { Error } An Error if ( decimal ) is not a string
   * @memberof wTools.wSpace
   */
-function binaryToByte( b )
+function binaryToDecimal( b )
 {
-  _.assert( arguments.length === 1,'binaryToByte :','Expects only one argument' );
-  _.assert( _.strIs( b ),'binaryToByte :','Expects string'  );
+  _.assert( arguments.length === 1,'binaryToDecimal :','Expects only one argument' );
+  _.assert( _.strIs( b ),'binaryToDecimal :','Expects string'  );
 
-  let byte = 0;
+  let decimal = 0;
   if( b.charAt( 0 ) ==  1  )
   {
-    byte = parseInt( b, 2);
+    decimal = parseInt( b, 2);
   }
   else if( b.charAt( 0 ) == 0 )
   {
     let c = b.replace( /1/g, '2' );
     let d = c.replace( /0/g, '1' );
     let e = d.replace( /2/g, '0' );
-    byte = parseInt( e, 2)*( - 1 );
+    decimal = parseInt( e, 2)*( - 1 );
   }
-  return byte;
+  return decimal;
 }
 
 //
 
 // Increase binary number
 /**
-  * Increase a binary number by one. Returns the increased number.
+  * Increase a binary number by one ( Not negative numbers ). Returns the increased number.
   *
   * @param { String } b - The source binary number.
   *
@@ -145,12 +145,12 @@ function binaryToByte( b )
   * _.increaseBinary( '11011' );
   *
   * // returns '00010110' ;
-  * _.binaryToByte( '00010101' );
+  * _.increaseBinary( '00010101' );
   *
   * @returns { String } Returns a string with the increased binary number.
   * @function increaseBinary
   * @throws { Error } An Error if ( arguments.length ) is different than one.
-  * @throws { Error } An Error if ( byte ) is not a string
+  * @throws { Error } An Error if ( b ) is not a string
   * @memberof wTools.wSpace
   */
 function increaseBinary( b )
@@ -261,7 +261,7 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
             i = i + 1;
             _.assert( i < numOfBytes + 1, 'decodeHuffman :', 'DC Huffman code not found' );
           }
-          Dc = binaryToByte( diffBinary );
+          Dc = binaryToDecimal( diffBinary );
 
           comp[ 0 ] = Dc;
           _.assert( _.numberIs( comp[ 0 ] ) && !isNaN( comp[ 0 ] ) );
@@ -336,7 +336,7 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
                 _.assert( i < numOfBytes + 1, 'decodeHuffman :', 'AC Huffman code not found' );
               }
 
-              let Ac = binaryToByte( diffBinary );
+              let Ac = binaryToDecimal( diffBinary );
               comp[ j ] = Ac;
               _.assert( _.numberIs( comp[ j ] ) && !isNaN( comp[ j ] ) );
               //  logger.log('Get', diffBinary, ' for', comp[ j ])
@@ -373,7 +373,7 @@ function decodeHuffman( components, frameData, hfTables, imageS, index )
                 i = i + 1;
                 _.assert( i < numOfBytes + 1, 'decodeHuffman :', 'AC Huffman code not found' );
               }
-              let Ac = binaryToByte( diffBinary );
+              let Ac = binaryToDecimal( diffBinary );
 
               if( diffBinary === '' )
               Ac = 0;
@@ -495,7 +495,6 @@ function zigzagOrder( components )
 
         components.set( key, space );
       }
-
     }
   }
 }
@@ -577,7 +576,6 @@ function iDCT( values )
 
       val = val / 4;
       val = 128 + val; // levelshift
-      // val = Math.round( val );
 
       space.atomSet( [ i, j ], val );
     }
@@ -828,8 +826,7 @@ function decodeJPG( data )
   _.assert( _.longIs( data ), 'decodeJPG expects long' );
 
   let dataViewByte = Array.from( data );
-
-  let dataViewHex = Array.from( data ).slice();
+  let dataViewHex = _.array.makeArrayOfLengthZeroed( dataViewByte.length );
 
   // SET MARKERS:
   logger.log( 'IMAGE MARKERS')
@@ -843,7 +840,7 @@ function decodeJPG( data )
 
   for( let i = 0; i < dataViewByte.length; i++ )
   {
-    dataViewHex[ i ] = byteToHex( dataViewHex[ i ] );
+    dataViewHex[ i ] = decimalToHex( dataViewByte[ i ] );
     //logger.log( dataView[ i ]);
     if( i > 0 && dataViewHex[ i - 1 ] === 'FF' )
     {
@@ -854,17 +851,19 @@ function decodeJPG( data )
       else if( dataViewHex[ i ] === 'DB' )
       {
         logger.log('Quantization Table', i );
-        let length = dataViewByte[ i + 1 ]*256 + dataViewByte[ i + 2 ];
+
+        let qLength = dataViewByte[ i + 1 ]*256 + dataViewByte[ i + 2 ];
         qTables.set( 'Table' + String( qt ) + 'start', i + 3 );
-        qTables.set( 'Table' + String( qt ) + 'length', length );
+        qTables.set( 'Table' + String( qt ) + 'length', qLength );
         qt = qt + 1;
       }
       else if( dataViewHex[ i ] === 'C4' )
       {
         logger.log('Huffman Table', i );
+
         hfTables.set( 'Table' + String( hf + 1 ) + 'start', i + 2 );
-        let length = dataViewByte[ i + 1 ]*256 + dataViewByte[ i + 2 ];
-        hfTables.set( 'Table' + String( hf + 1 ) + 'end', i + length );
+        let hfLength = dataViewByte[ i + 1 ]*256 + dataViewByte[ i + 2 ];
+        hfTables.set( 'Table' + String( hf + 1 ) + 'end', i + hfLength );
         hf = hf + 1;
       }
       else if( dataViewHex[ i ] === 'DC' )
@@ -900,15 +899,13 @@ function decodeJPG( data )
       }
       else if( dataViewHex[ i ] === '00' )
       {
-        logger.log('Stuff byte - remove 00 ', i );
-        //dataViewHex[ i ] = '';º11ss
+        // logger.log('Stuff byte - remove 00 ', i );
         dataViewHex.splice( i, 1 );
         dataViewByte.splice( i, 1 );
       }
       else
       {
-        logger.log( 'Marker without meaning - remove FF: FF ',dataViewHex[ i ] )
-        // dataViewHex[ i - 1 ] = '';
+        // logger.log( 'Marker without meaning - remove FF: FF ', dataViewHex[ i ] );
         dataViewHex.splice( i - 1, 1 );
         dataViewByte.splice( i - 1, 1 );
       }
@@ -918,9 +915,9 @@ function decodeJPG( data )
   _.assert( hf === 4 || hf === 2, 'JPG doesn´t have 2 or 4 DHT markers')
 
   // GET IMAGE ( Scan ) DATA:
-  let image = _.array.makeArrayOfLengthZeroed( endImage - startScan + 1 );
-  let imageH = _.array.makeArrayOfLengthZeroed( endImage - startScan + 1 );
-  let imageB = _.array.makeArrayOfLengthZeroed( endImage - startScan + 1 );
+  let image = _.array.makeArrayOfLengthZeroed( endImage - startScan + 1 );  // decimal
+  let imageH = _.array.makeArrayOfLengthZeroed( endImage - startScan + 1 ); // hexadecimal
+  let imageB = _.array.makeArrayOfLengthZeroed( endImage - startScan + 1 ); // binary
 
   for( let i = 0; i < image.length; i++ )
   {
@@ -1334,28 +1331,11 @@ function decodeJPG( data )
           }
         }
       }
-
-
-      /*
-      logger.log('RESULT')
-      for ( let [ key, value ] of finalComps )
-      {
-        logger.log( key, value )
-        logger.log( '')
-        if( typeof( value ) === 'object')
-        {
-
-        }
-      }
-      */
-
     }
   }
 
-
   logger.log('END OF SCAN')
   return imageValues;
-
 }
 
 // --
@@ -1367,8 +1347,8 @@ let Extend =
 {
   getData : getData,
 
-  byteToHex : byteToHex,
-  binaryToByte : binaryToByte,
+  decimalToHex : decimalToHex,
+  binaryToDecimal : binaryToDecimal,
   increaseBinary : increaseBinary,
 
   decodeHuffman : decodeHuffman,

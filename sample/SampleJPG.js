@@ -5,29 +5,23 @@ require('wFiles');
 var _ = wTools;
 
  // Decode Jpg
-debugger;
-
-let jpgPath = 'C:/Users/pabel/Desktop/Trabajo/Kos/JPEGdecoder/Images/lions.jpg'
+let jpgPath = __dirname + '/../assets/Images/JPG/mini8.jpg';
 let s = _.Space.make([ 3, 3 ]);
+let data = s.getData( jpgPath );
 debugger;
-let data = s.getData( jpgPath );  // Get image data
-// s.decodeJPG( data );  // Decode data
+let result = s.decodeJPG( data );
 
-logger.log('')
-logger.log('Next Image')
-logger.log('')
-let jpgPath1 = 'C:/Users/pabel/Desktop/Trabajo/Kos/JPEGdecoder/Images/fuego.jpg'
-let s1 = _.Space.make([ 3, 3 ]);
-let data1 = s1.getData( jpgPath1 );
-// s1.decodeJPG( data1 );
+logger.log( 'Decoded from', data.length, 'jpg values to', 0.75 * result.length, 'rgb values.')
+logger.log( result );
 
+logger.log( '' );
+logger.log( 'Next Image :' );
+logger.log( '' );
 
-logger.log('')
-logger.log('Next Image')
-logger.log('')
-let jpgPath2 = 'C:/Users/pabel/Desktop/Trabajo/Kos/JPEGdecoder/Images/mini32.jpg'
+let jpgPath2 = __dirname + '/../assets/Images/JPG/mini96.jpg';
 let s2 = _.Space.make([ 3, 3 ]);
-// let data2 = s2.getData( jpgPath2 );
-// let result = s2.decodeJPG( data2 );
+let data2 = s2.getData( jpgPath2 );
+debugger;
+let result2 = s2.decodeJPG( data2 );
 
-//logger.log( result );
+logger.log( 'Decoded from', data2.length, 'jpg values to', 0.75 * result2.length, 'rgb values.')

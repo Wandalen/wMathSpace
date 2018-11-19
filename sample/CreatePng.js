@@ -12,16 +12,20 @@ let jpgPath =  __dirname + '/../assets/Images/JPG/lions.jpg';
 var correctedPath = path.normalize(jpgPath);
 console.log(correctedPath);
 
+// Decode Image
 let s = _.Space.make([ 3, 3 ]);
 let jpgValues = s.getData( correctedPath );
+debugger;
 let imValues = s.decodeJPG( jpgValues );
 
+logger.log( 'Decoded from', jpgValues.length, 'jpg values to', 0.75 * imValues.length, 'rgb values.')
+
+// Create PNG
 var fs = require('fs'),
     PNG = require('pngjs').PNG;
 
-/* Include the expanded dimensions of the image ( must be divisible by 16 )
+/* Include the dimensions of the image
 * Example: lion.jpg dims = 269, 187
-* new dims = 272, 192  where 272 / 16 = 17 & 192 / 16 = 12
 */
 var png = new PNG({
     width: 269,
