@@ -9,6 +9,7 @@ debugger;
 
 let jpgPath = 'C:/Users/pabel/Desktop/Trabajo/Kos/JPEGdecoder/Images/lions.jpg'
 let s = _.Space.make([ 3, 3 ]);
+debugger;
 let data = s.getData( jpgPath );  // Get image data
 // s.decodeJPG( data );  // Decode data
 
@@ -24,9 +25,9 @@ let data1 = s1.getData( jpgPath1 );
 logger.log('')
 logger.log('Next Image')
 logger.log('')
-let jpgPath2 = 'C:/Users/pabel/Desktop/Trabajo/Kos/JPEGdecoder/Images/mini8.jpg'
+let jpgPath2 = 'C:/Users/pabel/Desktop/Trabajo/Kos/JPEGdecoder/Images/mini32.jpg'
 let s2 = _.Space.make([ 3, 3 ]);
-let data2 = s2.getData( jpgPath2 );
-let result = s2.decodeJPG( data2 );
+// let data2 = s2.getData( jpgPath2 );
+// let result = s2.decodeJPG( data2 );
 
-logger.log( result );
+//logger.log( result );

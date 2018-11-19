@@ -832,7 +832,6 @@ function decodeJPG( data )
   let dataViewHex = Array.from( data ).slice();
 
   // SET MARKERS:
-
   logger.log( 'IMAGE MARKERS')
   let hfTables = new Map();
   let hf = 0;
@@ -919,7 +918,6 @@ function decodeJPG( data )
   _.assert( hf === 4 || hf === 2, 'JPG doesn´t have 2 or 4 DHT markers')
 
   // GET IMAGE ( Scan ) DATA:
-
   let image = _.array.makeArrayOfLengthZeroed( endImage - startScan + 1 );
   let imageH = _.array.makeArrayOfLengthZeroed( endImage - startScan + 1 );
   let imageB = _.array.makeArrayOfLengthZeroed( endImage - startScan + 1 );
@@ -969,7 +967,6 @@ function decodeJPG( data )
   }
 
   // GET FRAME INFORMATION:
-
   let frameData = new Map();
   let lengthFrame = 8 + numOfComponents * 3;
   let frameB = _.array.makeArrayOfLength( lengthFrame );
@@ -1044,8 +1041,9 @@ function decodeJPG( data )
     frameData.set( 'C' + String( component ) + 'V', v );
     frameData.set( 'C' + String( component ) + 'QT', qT );
   }
-  // GET QUANTIZATION TABLES:
 
+
+  // GET QUANTIZATION TABLES:
   for( let q = 0; q < qt; q++ )
   {
     let length = qTables.get( 'Table' + String( q ) + 'length' );
@@ -1064,7 +1062,6 @@ function decodeJPG( data )
   }
 
   // GET HUFFMAN TABLES:
-
   function getHuffmanTables( dataViewByte, hfTables )
   {
     let numOfTables = hfTables.size / 2;
@@ -1205,12 +1202,8 @@ function decodeJPG( data )
   getHuffmanTables( dataViewByte, hfTables );
 
   //GET SCAN DATA :
-
   logger.log('')
   logger.log('START OF SCAN')
-
-  // Number of blocks
-  let numOfBlocks = Math.ceil( imageHeight / (8 * hMax ) ) * Math.ceil( imageWidth / ( 8 * vMax ) );
 
   // Get Scan data bytes
   let length = 2 + image[ 2 ]*256 + image[ 3 ];
@@ -1227,50 +1220,36 @@ function decodeJPG( data )
     imageString = imageString + imageB[ i ].toString();
   }
 
-  // MAKE IMAGE DIVISIBLE BY 8:
-
+  // MAKE IMAGE DIVISIBLE BY MCU:
   let oneBlock = false;
   if( imageHeight === 8 && imageWidth === 8 )
   oneBlock = true;
 
-  let rH = imageHeight % ( 8 * vMax );
-  let rW = imageWidth % ( 8 * hMax );
-
-  while( rH !== 0 )
-  {
-    imageHeight = imageHeight + 1;
-    rH = imageHeight % ( 8 * vMax );
-  }
-
-  while( rW !== 0 )
-  {
-    imageWidth = imageWidth + 1;
-    rW = imageWidth % ( 8 * hMax );
-  }
-
+  let pixelData = numOfComponents + 1 ;
+  let newImageHeight = ( 8 * vMax ) * Math.ceil( imageHeight / ( 8 * vMax ) );
+  let newImageWidth = ( 8 * hMax ) * Math.ceil( imageWidth / ( 8 * hMax ) );
+  let restWidth = imageWidth % ( 8 * hMax );
   if( oneBlock === true )
   {
-    var imageValues = new Uint8Array( 4 * 8 * 8 );
+    var imageValues = new Uint8Array( pixelData * 8 * 8 );
   }
   else
   {
-    var imageValues = new Uint8Array( 4 * imageHeight * imageWidth );
+    var imageValues = new Uint8Array( pixelData * imageHeight * imageWidth );
   }
 
   // LOOP OVER ALL THE IMAGE
-
   let index = 0;
   let oldDValues = new Map();
   let finalComps = new Map();
-  let hNumOfBlocks = imageWidth / ( 8 * hMax );
-  let vNumOfBlocks = imageHeight / ( 8 * vMax );
+  let hNumOfBlocks = newImageWidth / ( 8 * hMax );
+  let vNumOfBlocks = newImageHeight / ( 8 * vMax );
 
   for ( let c = 0; c < numOfComponents; c++ )
   {
     oldDValues.set( ( 'C' + _.str( c + 1 ) ).substring( 0, 2 ), 0 );
   }
 
-//  for( let b = 0; b < 1; b++ )  // one blocks
   for( let bv = 0; bv < vNumOfBlocks; bv++ )  // loop through vertical blocks
   {
     for( let bh = 0; bh < hNumOfBlocks; bh++ )  // loop through horizontal blocks
@@ -1312,22 +1291,28 @@ function decodeJPG( data )
       // FILL IMAGE DATA ARRAY
       if( oneBlock  === false )
       {
-        let imageIndex = bv * xMax * yMax * hNumOfBlocks * 4 + bh * xMax * 4;
+        let imageIndex = ( imageWidth * bv + bh ) * xMax * pixelData ;
         for( let x = 0; x < xMax; x++ )
         {
+          let oldY = 0;
           for( let y = 0; y < yMax; y++ )
           {
-            imageValues[ imageIndex ] = finalComps.get( 'R' ).atomGet( [ x, y ] );
-            imageIndex = imageIndex + 1;
-            imageValues[ imageIndex ] = finalComps.get( 'G' ).atomGet( [ x, y ] );
-            imageIndex = imageIndex + 1;
-            imageValues[ imageIndex ] = finalComps.get( 'B' ).atomGet( [ x, y ] );
-            imageIndex = imageIndex + 1;
-            imageValues[ imageIndex ] = 255;
-            imageIndex = imageIndex + 1;
-            _.assert( imageIndex <= imageValues.length, imageIndex );
+            let xImage = 8 * vMax * ( bv ) + x;
+            let yImage = 8 * hMax * ( bh ) + y;
+
+            if( xImage < imageHeight && yImage < imageWidth )
+            {
+              imageValues[ imageIndex ] = finalComps.get( 'R' ).atomGet( [ x, y ] );
+              imageValues[ imageIndex + 1 ] = finalComps.get( 'G' ).atomGet( [ x, y ] );
+              imageValues[ imageIndex + 2 ] = finalComps.get( 'B' ).atomGet( [ x, y ] );
+              imageValues[ imageIndex + 3 ] = 255;
+              imageIndex = imageIndex + 4;
+
+              _.assert( imageIndex <= imageValues.length + 1);
+              oldY = y + 1;
+            }
           }
-          imageIndex = imageIndex + 4 * yMax * ( hNumOfBlocks - 1 );
+          imageIndex = imageIndex + pixelData * ( imageWidth - oldY);
         }
       }
       else
@@ -1366,6 +1351,9 @@ function decodeJPG( data )
 
     }
   }
+
+
+  logger.log('END OF SCAN')
   return imageValues;
 
 }

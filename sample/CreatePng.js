@@ -24,8 +24,8 @@ var fs = require('fs'),
 * new dims = 272, 192  where 272 / 16 = 17 & 192 / 16 = 12
 */
 var png = new PNG({
-    width: 272,
-    height: 192,
+    width: 269,
+    height: 187,
     filterType: -1
 });
 
