@@ -13,7 +13,7 @@ about:
     get LU, QR decomposition, for SVD or PCA. Also, Space is a convenient and
     efficient data container, you may use it to continuously store huge an array
     of arrays or for matrix computation.
-  version: 0.3.64
+  version: 0.3.65
   enabled: 1
   interpreters:
     - nodejs >= 6.0.0
@@ -286,7 +286,7 @@ build:
       - 'step::export.proto'
 exported:
   proto.export:
-    version: 0.3.64
+    version: 0.3.65
     criterion:
       default: 1
       debug: 1
