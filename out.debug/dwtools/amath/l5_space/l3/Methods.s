@@ -256,7 +256,7 @@ function makeSimilar( m , dims )
   {
 
     let atomsPerSpace = Self.atomsPerSpaceForDimensions( dims );
-    let buffer = _.longMakeSimilarZeroed( m.buffer,atomsPerSpace );
+    let buffer = _.longMakeZeroed( m.buffer,atomsPerSpace );
     /* could possibly be not zeroed */
 
     result = new m.constructor
@@ -271,7 +271,7 @@ function makeSimilar( m , dims )
   {
 
     _.assert( dims[ 1 ] === 1 );
-    result = _.longMakeSimilar( m, dims[ 0 ] );
+    result = _.longMake( m, dims[ 0 ] );
 
   }
   else if( _.vectorIs( m ) )
@@ -281,7 +281,7 @@ function makeSimilar( m , dims )
     result = m.makeSimilar( dims[ 0 ] );
 
   }
-  else _.assert( 0,'unexpected type of container',_.strTypeOf( m ) );
+  else _.assert( 0,'unexpected type of container',_.strType( m ) );
 
   return result;
 }
@@ -554,7 +554,7 @@ function fromVectorImage( src )
       inputTransposing : 0,
     });
   }
-  else _.assert( 0,'cant convert',_.strTypeOf( src ),'to Space' );
+  else _.assert( 0,'cant convert',_.strType( src ),'to Space' );
 
   return result;
 }

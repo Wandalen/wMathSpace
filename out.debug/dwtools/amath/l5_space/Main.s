@@ -239,14 +239,14 @@ function _traverseAct( it )
     }
     else if( src.buffer && !dst.buffer )
     {
-      dst.buffer = _.longMakeSimilar( src.buffer , src.atomsPerSpace );
+      dst.buffer = _.longMake( src.buffer , src.atomsPerSpace );
       dst.offset = 0;
       dst.strides = null;
       dst[ stridesEffectiveSymbol ] = dst.stridesForDimensions( src.dims,!!dst.inputTransposing );
     }
     else if( src.buffer && dst.atomsPerSpace !== src.atomsPerSpace )
     {
-      dst.buffer = _.longMakeSimilar( src.buffer , src.atomsPerSpace );
+      dst.buffer = _.longMake( src.buffer , src.atomsPerSpace );
       dst.offset = 0;
       dst.strides = null;
       dst[ stridesEffectiveSymbol ] = dst.stridesForDimensions( src.dims,!!dst.inputTransposing );
@@ -409,7 +409,7 @@ function copyTo( dst,src )
     else if( _.spaceIs( dst ) )
     for( let s = 0 ; s < src.length ; s += 1 )
     dst.atomSet( [ s,0 ],src.eGet( s ) )
-    else _.assert( 0,'unknown type of (-dst-)',_.strTypeOf( dst ) );
+    else _.assert( 0,'unknown type of (-dst-)',_.strType( dst ) );
 
     return odst;
   }
@@ -434,7 +434,7 @@ function copyTo( dst,src )
     {
       dst[ it.indexFlat ] = it.atom;
     });
-    else _.assert( 0,'unknown type of (-dst-)',_.strTypeOf( dst ) );
+    else _.assert( 0,'unknown type of (-dst-)',_.strType( dst ) );
 
   }
 
@@ -450,7 +450,7 @@ function extractNormalized()
 
   _.assert( arguments.length === 0 );
 
-  result.buffer = _.longMakeSimilar( self.buffer , self.atomsPerSpace );
+  result.buffer = _.longMake( self.buffer , self.atomsPerSpace );
   result.offset = 0;
   result.strides = self.stridesForDimensions( self.dims,self.inputTransposing );
 
@@ -865,7 +865,7 @@ function bufferCopyTo( dst )
   let atomsPerSpace = self.atomsPerSpace;
 
   if( !dst )
-  dst = _.longMakeSimilar( self.buffer, atomsPerSpace );
+  dst = _.longMake( self.buffer, atomsPerSpace );
 
   _.assert( arguments.length === 0 || arguments.length === 1 );
   _.assert( _.longIs( dst ) );
@@ -1214,7 +1214,7 @@ function _breadthSet( breadth )
   breadth = _.arrayFrom( breadth );
 
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( breadth === null || _.arrayIs( breadth ),'Expects array (-breadth-) but got',_.strTypeOf( breadth ) );
+  _.assert( breadth === null || _.arrayIs( breadth ),'Expects array (-breadth-) but got',_.strType( breadth ) );
 
   if( breadth === self.breadth )
   return;
@@ -1336,7 +1336,7 @@ function expand( expand )
 
   let atomsPerSpace = self.atomsPerSpaceForDimensions( dims );
   let strides = self.stridesForDimensions( dims,0 );
-  let buffer = _.longMakeSimilarZeroed( self.buffer,atomsPerSpace );
+  let buffer = _.longMakeZeroed( self.buffer,atomsPerSpace );
 
   /* move data */
 
@@ -1754,7 +1754,7 @@ function bufferNormalize()
 
   _.assert( arguments.length === 0 );
 
-  let buffer = _.longMakeSimilar( self.buffer,self.atomsPerSpace );
+  let buffer = _.longMake( self.buffer,self.atomsPerSpace );
 
   let i = 0;
   self.atomEach( function( it )

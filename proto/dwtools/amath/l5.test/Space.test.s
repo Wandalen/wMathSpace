@@ -2878,17 +2878,17 @@ function makeSimilar( test )
 
   var o = Object.create( null );
   o.name = 'Array';
-  o.arrayMake = function( a ){ return _.longMakeSimilar( Array,a ) };
+  o.arrayMake = function( a ){ return _.longMake( Array,a ) };
   this._makeSimilar( test,o );
 
   var o = Object.create( null );
   o.name = 'Float32Array';
-  o.arrayMake = function( a ){ return _.longMakeSimilar( Float32Array,a ) };
+  o.arrayMake = function( a ){ return _.longMake( Float32Array,a ) };
   this._makeSimilar( test,o );
 
   var o = Object.create( null );
   o.name = 'Uint32Array';
-  o.arrayMake = function( a ){ return _.longMakeSimilar( Uint32Array,a ) };
+  o.arrayMake = function( a ){ return _.longMake( Uint32Array,a ) };
   this._makeSimilar( test,o );
 
 }
@@ -3412,17 +3412,17 @@ function convertToClass( test )
 
   var o = Object.create( null );
   o.name = 'Array';
-  o.arrayMake = function( a ){ return _.longMakeSimilar( Array,a ) };
+  o.arrayMake = function( a ){ return _.longMake( Array,a ) };
   this._convertToClass( test,o );
 
   var o = Object.create( null );
   o.name = 'Float32Array';
-  o.arrayMake = function( a ){ return _.longMakeSimilar( Float32Array,a ) };
+  o.arrayMake = function( a ){ return _.longMake( Float32Array,a ) };
   this._convertToClass( test,o );
 
   var o = Object.create( null );
   o.name = 'Uint32Array';
-  o.arrayMake = function( a ){ return _.longMakeSimilar( Uint32Array,a ) };
+  o.arrayMake = function( a ){ return _.longMake( Uint32Array,a ) };
   this._convertToClass( test,o );
 
 }
@@ -3579,17 +3579,17 @@ function copyTo( test )
 
   var o = Object.create( null );
   o.name = 'Array';
-  o.arrayMake = function( a ){ return _.longMakeSimilar( Array,a ) };
+  o.arrayMake = function( a ){ return _.longMake( Array,a ) };
   this._copyTo( test,o );
 
   var o = Object.create( null );
   o.name = 'Float32Array';
-  o.arrayMake = function( a ){ return _.longMakeSimilar( Float32Array,a ) };
+  o.arrayMake = function( a ){ return _.longMake( Float32Array,a ) };
   this._copyTo( test,o );
 
   var o = Object.create( null );
   o.name = 'Uint32Array';
-  o.arrayMake = function( a ){ return _.longMakeSimilar( Uint32Array,a ) };
+  o.arrayMake = function( a ){ return _.longMake( Uint32Array,a ) };
   this._copyTo( test,o );
 
 }
