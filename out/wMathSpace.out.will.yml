@@ -179,8 +179,8 @@ reflector:
       ./dwtools/amath/l5_space/l3/FromVector.s: true
       ./dwtools/amath/l5_space/l3/Methods.s: true
     srcFilter:
-      basePath: ./proto
-      prefixPath: .
+      basePath: .
+      prefixPath: proto
     dstFilter:
       basePath: .
       prefixPath: .
