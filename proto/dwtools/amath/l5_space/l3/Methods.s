@@ -671,7 +671,7 @@ function fromTransformations( position, quaternion, scale )
 {
   let self = this;
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
 
   self.fromQuat( quaternion );
   self.scaleApply( scale );
@@ -916,7 +916,7 @@ function _tempBorrow( src,dims,index )
 {
   let cls;
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( src instanceof Self || src === null );
   _.assert( _.arrayIs( dims ) || dims instanceof Self || dims === null );
 
@@ -1141,7 +1141,7 @@ function mul2Matrices_static( dst,src1,src2 )
     dst = this.make([ src1.dims[ 0 ],src2.dims[ 1 ] ]);
   }
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( src1.dims.length === 2 );
   _.assert( src2.dims.length === 2 );
   _.assert( dst instanceof Self );
@@ -2076,7 +2076,7 @@ function _pivotRook( i,o )
 
 function solve( x,m,y )
 {
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   return this.solveWithTrianglesPivoting( x,m,y )
 }
 
@@ -2821,7 +2821,7 @@ function formPerspective( fov, size, depth )
   // debugger;
   // _.assert( 0,'not tested' );
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( size.length === 2 );
   _.assert( depth.length === 2 );
   _.assert( self.hasShape([ 4,4 ]) );
@@ -2864,7 +2864,7 @@ function formFrustum( horizontal, vertical, depth )
   // debugger;
   // _.assert( 0,'not tested' );
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( horizontal.length === 2 );
   _.assert( vertical.length === 2 );
   _.assert( depth.length === 2 );
@@ -2913,7 +2913,7 @@ function formOrthographic( horizontal, vertical, depth )
   // debugger;
   // _.assert( 0,'not tested' );
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( horizontal.length === 2 );
   _.assert( vertical.length === 2 );
   _.assert( depth.length === 2 );

@@ -1177,7 +1177,7 @@ function _adjustValidate()
 // function _dimsFromDimsWithoutLength( breadth, buffer, offset )
 // {
 //
-//   _.assert( arguments.length === 3, 'Expects exactly three argument' );
+//   _.assert( arguments.length === 3, 'Expects exactly three arguments' );
 //   _.assert( _.arrayIs( breadth ) );
 //   _.assert( _.longIs( buffer ) );
 //   _.assert( offset >= 0 );
@@ -1516,7 +1516,7 @@ function transpose()
 function _equalAre( it )
 {
 
-  _.assert( arguments.length === 1, 'Expects exactly three argument' );
+  _.assert( arguments.length === 1, 'Expects exactly three arguments' );
   _.assert( _.routineIs( it.context.onNumbersAreEqual ) );
   _.assert( _.prototypeOf( it.looker, it ) );
 
@@ -1933,7 +1933,7 @@ function atomWiseReduceWithAtomHandler( onBegin,onAtom,onEnd )
   let self = this;
   let result;
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( self.dims.length === 2, 'not implemented' );
 
   let op = onBegin
@@ -2299,7 +2299,7 @@ function atomWiseZip( onAtom,dst,srcs )
   let self = this;
   let result;
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( self.dims.length === 2, 'not implemented' );
 
   let op = Object.create( null );
@@ -2449,7 +2449,7 @@ function colEachCollecting( onEach , args , returningNumber )
 {
   let self = this;
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
 
   let result = self._lineEachCollecting
   ({
@@ -2469,7 +2469,7 @@ function rowEachCollecting( onEach , args , returningNumber )
 {
   let self = this;
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
 
   let result = self._lineEachCollecting
   ({
@@ -2780,7 +2780,7 @@ function lineSet( d,index,src )
 {
   let self = this;
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( self.dims.length === 2 );
 
   if( d === 0 )
@@ -2802,7 +2802,7 @@ function linesSwap( d,i1,i2 )
   if( ad > 1 )
   ad = 0;
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( self.dims.length === 2 );
   _.assert( 0 <= i1 && i1 < self.dims[ d ] );
   _.assert( 0 <= i2 && i2 < self.dims[ d ] );
