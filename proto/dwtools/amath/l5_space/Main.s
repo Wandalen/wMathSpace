@@ -13,25 +13,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  if( typeof _global_ === 'undefined' || !_global_.wBase )
-  {
-    let toolsPath = '../../../dwtools/Base.s';
-    let toolsExternal = 0;
-    try
-    {
-      toolsPath = require.resolve( toolsPath );
-    }
-    catch( err )
-    {
-      toolsExternal = 1;
-      require( 'wTools' );
-    }
-    if( !toolsExternal )
-    require( toolsPath );
-  }
-
-
-  let _ = _global_.wTools;
+  let _ = require( '../../Tools.s' );
 
   _.include( 'wMathScalar' );
   _.include( 'wMathVector' );
@@ -155,9 +137,6 @@ function _traverseAct( it )
   if( it.resetting === undefined )
   it.resetting = 1;
 
-  // if( !it.dst )
-  // debugger;
-
   _.Copyable.prototype._traverseActPre.call( this,it );
 
   if( !it.dst )
@@ -180,9 +159,6 @@ function _traverseAct( it )
 
   if( src === dst )
   return dst;
-
-  // if( src.buffer && src.buffer.length === 0 && src.offset === 0 && src.inputTransposing === 0 )
-  // debugger;
 
   /* */
 
@@ -208,12 +184,6 @@ function _traverseAct( it )
   if( dstIsInstance )
   if( dst._stridesEffective )
   dst[ stridesEffectiveSymbol ] = null;
-
-  // if( src.buffer && src.buffer.length === 0 && src.offset === 0 && src.dims[ 0 ] === 1 && src.dims[ 1 ] === 0 )
-  // debugger;
-
-  // if( src.buffer && src.buffer.length === 0 && src.offset === 0 && src.inputTransposing === 0 )
-  // debugger;
 
   /* */
 
@@ -772,7 +742,7 @@ function stridesForDimensions( dims,transposing )
 function stridesRoll( strides )
 {
 
-  _.assert( arguments.length === 1, 'Expects single argument' ); debugger;
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   for( let s = strides.length-2 ; s >= 0 ; s-- )
   strides[ s ] = strides[ s+1 ]*strides[ s ];
@@ -936,12 +906,6 @@ function _adjustAct()
   let self = this;
   let changed = false;
 
-  // if( self.name === 'aColor' && self.buffer && !self.isInvariant )
-  // debugger;
-
-  // if( _.entityIdentical( self._stridesEffective,[ 1,0 ] ) )
-  // debugger;
-
   self._changing[ 0 ] += 1;
 
   /* adjust breadth */
@@ -999,10 +963,6 @@ function _adjustAct()
       dims[ self.growingDimension ] = l;
       self[ dimsSymbol ] = dims;
 
-      // let dims = self.breadth.slice();
-      // dims.push( l );
-
-      // _.assert( self.breadth.length === 1,'not tested' );
       _.assert( l >= 0 );
       _.assert( _.numberIsInt( l ) );
 
@@ -1010,13 +970,6 @@ function _adjustAct()
     else if( self.strides )
     {
       _.assert( 0,'Cant deduce dims from strides' );
-      // debugger;
-      // // _.assert( 0,'not tested' );
-      // _.assert( _.longIs( self.strides ) );
-      // _.assert( self.strides[ 0 ] > 1,'not tested' );
-      // let dims = self[ dimsSymbol ] = self.strides.slice();
-      // dims.splice( 0,1 );
-      // changed = true;
     }
     else
     {
@@ -1520,8 +1473,6 @@ function _equalAre( it )
   _.assert( _.routineIs( it.context.onNumbersAreEqual ) );
   _.assert( _.prototypeOf( it.looker, it ) );
 
-  debugger;
-
   it.looking = false;
 
   if( !( it.src2 instanceof Self ) )
@@ -1558,7 +1509,6 @@ function _equalAre( it )
     return it.context.onNumbersAreEqual( atom,atom2 );
   });
 
-  debugger;
   _.assert( _.boolIs( it.result ) );
   return it.result;
 }

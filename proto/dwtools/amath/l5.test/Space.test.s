@@ -3,32 +3,12 @@
 'use strict';
 
 /*
-cd C:\pro\web\Dave\git\trunk
-cls && debugnode builder\include\dwtools\amath\space.test\Space.test.s v:5 r:identical
-cls && node builder/Test.s builder\include\dwtools\amath v:2 n:1
 */
 
 if( typeof module !== 'undefined' )
 {
 
-  if( typeof _global_ === 'undefined' || !_global_.wBase )
-  {
-    let toolsPath = '../../../dwtools/Base.s';
-    let toolsExternal = 0;
-    try
-    {
-      toolsPath = require.resolve( toolsPath );
-    }
-    catch( err )
-    {
-      toolsExternal = 1;
-      require( 'wTools' );
-    }
-    if( !toolsExternal )
-    require( toolsPath );
-  }
-
-  var _ = _global_.wTools;
+  let _ = require( '../../Tools.s' );
 
   _.include( 'wTesting' );
 
@@ -219,7 +199,6 @@ function clone( test )
   test.identical( a.strideInRow,3 );
 
   logger.log( a );
-  debugger;
 }
 
 //
@@ -293,9 +272,7 @@ function construct( test )
 
   var b = new _.Space({ buffer : new Float32Array(), inputTransposing : true });
   b.copyDeserializing( cloned );
-  debugger;
   test.identical( b,a );
-  debugger;
   test.is( a.buffer !== b.buffer );
 
   test.identical( a.buffer.length,8 );
@@ -401,8 +378,6 @@ function construct( test )
   test.identical( b,a );
   test.is( a.buffer !== b.buffer );
 
-  debugger;
-
   test.identical( a.buffer.length,8 );
   test.identical( a.size,12 );
   test.identical( a.sizeOfElement,12 );
@@ -436,9 +411,6 @@ function construct( test )
   test.identical( b.strideInCol,1 );
   test.identical( b.strideOfRow,1 );
   test.identical( b.strideInRow,1 );
-
-  // var s = _.toJs( c );
-  // debugger;
 
 }
 
@@ -517,9 +489,7 @@ function _make( test,o )
   var a1 = m.atomFlatGet( 5 );
   var a2 = m.atomGet([ 1,1 ]);
 
-  // debugger;
   test.identical( r1,o.vec([ 4,5,6 ]) );
-  // debugger;
   test.identical( r1,r2 );
   test.identical( c1,o.vec([ 3,6 ]) );
   test.identical( c1,c2 );
@@ -1697,7 +1667,6 @@ function _make( test,o )
   var m = space.makeSquare([ 1,2,3,4 ]);
   var expected = space.makeSquare([ 13,13,13,13 ]);
 
-  debugger;
   m.copy( 13 );
   test.identical( m,expected );
 
@@ -2136,7 +2105,6 @@ function makeHelper( test )
 
     test.identical( m.reduceToSumAtomWise(), 0 );
     test.identical( m.reduceToProductAtomWise(), 1 );
-    debugger;
     test.identical( m.determinant(),0 );
     test.is( m.buffer instanceof Float32Array );
 
@@ -3300,7 +3268,6 @@ function copyClone( test )
 
   var expected = space.makeIdentity([ 0,0 ]);
   var m1 = space.makeIdentity([ 0,0 ]);
-  debugger;
   m1.copy( m1 );
 
   test.identical( m1,expected );
@@ -3326,7 +3293,6 @@ function _convertToClass( test,o )
   src.buffer = o.arrayMake([ 1,2,3 ]);
   var got = space.convertToClass( vector.fromArray( o.arrayMake([]) ).constructor,src );
   var expected = vector.fromArray( o.arrayMake([ 1,2,3 ]) );
-  debugger;
   test.identical( got,expected );
 
   test.case = o.name + ' . ' + 'space to array with class'; //
@@ -3348,7 +3314,6 @@ function _convertToClass( test,o )
 
   var src = o.arrayMake([ 1,2,3 ]);
   var expected = vec( o.arrayMake([ 1,2,3 ]) );
-  debugger;
   var got = space.convertToClass( vec([]).constructor,src );
   test.identical( got,expected );
 
@@ -3356,9 +3321,7 @@ function _convertToClass( test,o )
 
   var src = o.arrayMake([ 1,2,3 ]);
   var expected = o.arrayMake([ 1,2,3 ]);
-  debugger;
   var got = space.convertToClass( o.arrayMake([]).constructor,src );
-  debugger;
   test.identical( got,expected );
   test.is( got === src );
 
@@ -3374,7 +3337,6 @@ function _convertToClass( test,o )
 
   var src = vec( o.arrayMake([ 1,2,3 ]) );
   var expected = vec( o.arrayMake([ 1,2,3 ]) );
-  debugger;
   var got = space.convertToClass( vec([]).constructor,src );
   test.identical( got,expected );
   test.is( got === src );
@@ -3383,9 +3345,7 @@ function _convertToClass( test,o )
 
   var src = vec( o.arrayMake([ 1,2,3 ]) );
   var expected = o.arrayMake([ 1,2,3 ]);
-  debugger;
   var got = space.convertToClass( o.arrayMake([]).constructor,src );
-  debugger;
   test.identical( got,expected );
 
   test.case = o.name + ' . ' + 'bad arguments'; //
@@ -3633,14 +3593,10 @@ function copy( test )
 
   test.case = 'copy buffer without copying strides and offset'; /* */
 
-  debugger;
   dst.copy( src );
 
   test.identical( dst,src );
   test.is( dst.buffer !== src.buffer );
-
-  debugger;
-
   test.is( src.buffer === b1 );
 
   test.identical( src.offset,1 );
@@ -3660,8 +3616,6 @@ function copy( test )
   test.identical( src.strideOfRow,2 );
   test.identical( src.strideInRow,4 );
 
-  debugger;
-
   test.is( dst.buffer === b2 );
 
   test.identical( dst.offset,2 );
@@ -3680,16 +3634,6 @@ function copy( test )
   test.identical( dst.strideInCol,3 );
   test.identical( dst.strideOfRow,3 );
   test.identical( dst.strideInRow,1 );
-
-  debugger;
-
-  // test.identical( src1._stridesEffective,[ 1,3 ] );
-  // test.identical( src2._stridesEffective,[ 1,3 ] );
-  // test.identical( dst._stridesEffective,[ 1,2 ] );
-  //
-  // test.identical( src1.dims,[ 3,2 ] );
-  // test.identical( src2.dims,[ 2,1 ] );
-  // test.identical( dst.dims,[ 2,1 ] );
 
   test.case = 'no buffer move'; /* */
 
@@ -4612,7 +4556,6 @@ function _subspace( o )
   sub.mulScalar( 10 );
   test.identical( m,expected );
 
-  debugger;
 }
 
 //
@@ -5977,7 +5920,6 @@ function partialAccessors( test )
     shouldThrowError( 'triangleUpperSet' );
   }
 
-  debugger;
 }
 
 //
@@ -7617,7 +7559,6 @@ function colRowWiseOperations( test )
   ]));
 */
 
-  debugger;
 }
 
 //
@@ -7752,8 +7693,6 @@ function mul( test )
 
   var mul = space.mul( null,[ m3,cb ] );
   var expected = space.makeCol([ 0,4,4 ]);
-  // expected.buffer = new Int32Array([ 0,4,4 ]);
-  // debugger;
   test.equivalent( mul,expected );
   test.identical( mul.reduceToSumAtomWise(), 8 );
   test.identical( mul.reduceToProductAtomWise(), 0 );
@@ -8025,9 +7964,7 @@ function mul( test )
   var m = m3a.clone();
   var v = [ 1,2,3 ];
   var expected = [ 22 , 28 , 39 ];
-  debugger;
   var mul = space.mul( v,[ m,v ] );
-  debugger;
   logger.log( mul );
   test.equivalent( mul,expected );
   test.is( v === mul );
@@ -8037,9 +7974,7 @@ function mul( test )
   var m = m3a.clone();
   var v = vec([ 1,2,3 ]);
   var expected = vec([ 22 , 28 , 39 ]);
-  debugger;
   var mul = space.mul( v,[ m,v ] );
-  debugger;
   logger.log( mul );
   test.equivalent( mul,expected );
   test.is( v === mul );
@@ -8138,7 +8073,6 @@ function furthestClosest( test )
   if( !Config.debug )
   return;
 
-  debugger;
 }
 
 //
@@ -8193,7 +8127,6 @@ function determinant( test )
   });
 
   var d = m.determinant();
-  debugger;
   test.identical( d,-2 );
   test.identical( m.dims,[ 2,2 ] );
   test.identical( m._stridesEffective,[ 2,1 ] );
@@ -8310,7 +8243,6 @@ function determinant( test )
   var d = m.determinant();
   test.identical( d,-48468 );
 
-  debugger;
 }
 
 //
@@ -8367,7 +8299,6 @@ function triangulate( test )
     -2,-11,-11,1,
   ]);
 
-  debugger;
   var expected = space.make([ 3,4 ]).copy
   ([
     +1,-2,+2,+1.0,
@@ -8376,9 +8307,7 @@ function triangulate( test )
   ]);
 
   m.triangulateGausianNormal();
-  debugger;
   test.equivalent( m,expected );
-  debugger;
 
   test.case = 'triangulateGausian simple2'; /* */
 
@@ -9782,9 +9711,7 @@ function solveGeneral( test )
   var mo = m.clone();
 
   var y = space.makeCol([ 1,2,3 ]);
-  debugger;
   var r = space.solveGeneral({ m : m, y : y });
-  debugger;
   test.equivalent( r,expected );
 
   logger.log( 'r.base',r.base );
@@ -9900,7 +9827,7 @@ function invert( test )
   var determinant = m.determinant();
   var inverted = m.invertingClone();
 
-  test.equivalent( inverted,expected ); debugger;
+  test.equivalent( inverted,expected );
   test.equivalent( m.determinant(),determinant );
 
   test.case = 'invert'; /* */
@@ -9922,7 +9849,6 @@ function invert( test )
   var determinant = m.determinant();
   m.invert();
 
-  debugger;
   test.equivalent( m,expected );
   test.equivalent( m.determinant(),1/determinant );
 
