@@ -478,7 +478,6 @@ function convertToClass( cls,src )
     }
     else if( _.constructorIsVector( cls ) )
     {
-      debugger;
       array = new src.buffer.constructor( atomsPerSpace );
       result = vector.fromArray( array );
     }
@@ -2549,7 +2548,6 @@ function solveGeneral( o )
 
   if( o.pivoting )
   {
-    debugger;
     Self.vectorPivotBackward( result.base,optionsForMethod.pivots[ 1 ] );
     result.kernel.pivotBackward([ optionsForMethod.pivots[ 1 ], optionsForMethod.pivots[ 0 ] ]);
     o.m.pivotBackward( optionsForMethod.pivots );

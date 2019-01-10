@@ -215,7 +215,6 @@ function declareAtomWiseHomogeneousWithScalarRoutines( routine,rname )
   {
     let self = this;
 
-    debugger;
     op.srcElement = op.args[ 0 ];
     let val = onAtom( op );
     _.assert( val === undefined );

@@ -2094,7 +2094,7 @@ function atomWiseHomogeneous( o )
       }
       else for( let s = 1 ; s < op.srcContainers.length ; s++ )
       {
-        debugger;
+        // debugger;
         // op.srcContainerIndex = s;
         // op.srcContainer = op.srcContainers[ s ];
         op.srcElement = op.srcContainers[ s ].atomGet( op.key );
