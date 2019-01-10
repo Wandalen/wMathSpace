@@ -1,0 +1,323 @@
+format: willfile-1.0.0
+about:
+  name: wMathSpace
+  description: >-
+    Collection of functions for matrix math. MathSpace introduces class Space
+    which is a multidimensional structure which in the most trivial case is
+    Matrix of scalars. A matrix of specific form could also be classified as a
+    vector. MathSpace heavily relly on MathVector, which introduces VectorImage.
+    VectorImage is a reference, it does not contain data but only refer on
+    actual ( aka Long ) container of lined data.  Use MathSpace for arithmetic
+    operations with matrices, to triangulate, permutate or transform matrix, to
+    get a specific or the general solution of a system of linear equations, to
+    get LU, QR decomposition, for SVD or PCA. Also, Space is a convenient and
+    efficient data container, you may use it to continuously store huge an array
+    of arrays or for matrix computation.
+  version: 0.3.69
+  enabled: 1
+  interpreters:
+    - nodejs >= 6.0.0
+    - chrome >= 60.0.0
+    - firefox >= 60.0.0
+  keywords:
+    - wTools
+execution:
+  scripts:
+    test: wtest staging
+    docgen: wdocgen staging
+path:
+  proto:
+    path: ./proto
+  in:
+    path: .
+  out:
+    path: out
+  out.debug:
+    path: ./out.debug
+    criterion:
+      debug: 1
+  out.release:
+    path: ./out.release
+    criterion:
+      debug: 0
+  repository:
+    path: 'git+https://github.com/Wandalen/wMathSpace.git'
+  bugs:
+    path: 'https://github.com/Wandalen/wMathSpace/issues'
+  exportedDir.0:
+    path: ./proto
+    criterion:
+      default: 1
+      debug: 1
+      raw: 1
+      proto: 1
+      export: 1
+      tar: 1
+      public: 1
+  baseDir:
+    path: ..
+  exportedFiles.0:
+    path:
+      - .
+      - ./dwtools
+      - ./dwtools/Tools.s
+      - ./dwtools/abase
+      - ./dwtools/amath
+      - ./dwtools/amath/l5.test
+      - ./dwtools/amath/l5.test/Space.test.s
+      - ./dwtools/amath/l5_space
+      - ./dwtools/amath/l5_space/Main.s
+      - ./dwtools/amath/l5_space/l3
+      - ./dwtools/amath/l5_space/l3/FromVector.s
+      - ./dwtools/amath/l5_space/l3/Methods.s
+      - ./dwtools/amid
+      - ./dwtools/atop
+    criterion:
+      default: 1
+      debug: 1
+      raw: 1
+      proto: 1
+      export: 1
+      tar: 1
+      public: 1
+  exportedTerminals.0:
+    path:
+      - ./dwtools/Tools.s
+      - ./dwtools/amath/l5.test/Space.test.s
+      - ./dwtools/amath/l5_space/Main.s
+      - ./dwtools/amath/l5_space/l3/FromVector.s
+      - ./dwtools/amath/l5_space/l3/Methods.s
+    criterion:
+      default: 1
+      debug: 1
+      raw: 1
+      proto: 1
+      export: 1
+      tar: 1
+      public: 1
+submodule: {}
+reflector:
+  reflect.proto.0:
+    filePath:
+      ./proto: ./out.release
+    srcFilter:
+      filePath:
+        ./proto: ./out.release
+      maskAll:
+        excludeAny:
+          - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
+          - !<tag:yaml.org,2002:js/regexp> /\.unique$/
+          - !<tag:yaml.org,2002:js/regexp> /\.git$/
+          - !<tag:yaml.org,2002:js/regexp> /\.svn$/
+          - !<tag:yaml.org,2002:js/regexp> /\.hg$/
+          - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
+          - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
+          - !<tag:yaml.org,2002:js/regexp> /\.debug($|\.|\/)/i
+          - !<tag:yaml.org,2002:js/regexp> /\.test($|\.|\/)/i
+          - !<tag:yaml.org,2002:js/regexp> /\.experiment($|\.|\/)/i
+      prefixPath: .
+    dstFilter:
+      prefixPath: .
+    criterion:
+      debug: 0
+    inherit:
+      - predefined.*
+  reflect.proto.1:
+    filePath:
+      ./proto: ./out.debug
+    srcFilter:
+      filePath:
+        ./proto: ./out.debug
+      maskAll:
+        excludeAny:
+          - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
+          - !<tag:yaml.org,2002:js/regexp> /\.unique$/
+          - !<tag:yaml.org,2002:js/regexp> /\.git$/
+          - !<tag:yaml.org,2002:js/regexp> /\.svn$/
+          - !<tag:yaml.org,2002:js/regexp> /\.hg$/
+          - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
+          - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
+          - !<tag:yaml.org,2002:js/regexp> /\.release($|\.|\/)/i
+      prefixPath: .
+    dstFilter:
+      prefixPath: .
+    criterion:
+      debug: 1
+    inherit:
+      - predefined.*
+  reflect.submodules:
+    srcFilter:
+      maskAll:
+        excludeAny:
+          - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
+          - !<tag:yaml.org,2002:js/regexp> /\.unique$/
+          - !<tag:yaml.org,2002:js/regexp> /\.git$/
+          - !<tag:yaml.org,2002:js/regexp> /\.svn$/
+          - !<tag:yaml.org,2002:js/regexp> /\.hg$/
+          - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
+          - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
+          - !<tag:yaml.org,2002:js/regexp> /\.release($|\.|\/)/i
+      prefixPath: .
+    dstFilter:
+      prefixPath: .
+    criterion:
+      debug: 1
+    inherit:
+      - predefined.*
+  exported.0:
+    filePath: ./proto
+    srcFilter:
+      filePath: ./proto
+      prefixPath: .
+    dstFilter:
+      prefixPath: .
+  exportedFiles.0:
+    recursive: 0
+    filePath:
+      ./dwtools/Tools.s: true
+      ./dwtools/amath/l5.test/Space.test.s: true
+      ./dwtools/amath/l5_space/Main.s: true
+      ./dwtools/amath/l5_space/l3/FromVector.s: true
+      ./dwtools/amath/l5_space/l3/Methods.s: true
+    srcFilter:
+      filePath:
+        ./dwtools/Tools.s: true
+        ./dwtools/amath/l5.test/Space.test.s: true
+        ./dwtools/amath/l5_space/Main.s: true
+        ./dwtools/amath/l5_space/l3/FromVector.s: true
+        ./dwtools/amath/l5_space/l3/Methods.s: true
+      basePath: .
+      prefixPath: proto
+    dstFilter:
+      basePath: .
+      prefixPath: .
+step:
+  reflect.proto.0:
+    criterion:
+      debug: 0
+      raw: 0
+    opts:
+      reflector: 'reflector::reflect.proto.*=1'
+    inherit:
+      - predefined.reflect
+  reflect.proto.1:
+    criterion:
+      debug: 1
+      raw: 0
+    opts:
+      reflector: 'reflector::reflect.proto.*=1'
+    inherit:
+      - predefined.reflect
+  reflect.proto.2:
+    criterion:
+      debug: 0
+      raw: 1
+    opts:
+      reflector: 'reflector::reflect.proto.*=1'
+    inherit:
+      - predefined.reflect
+  reflect.proto.3:
+    criterion:
+      debug: 1
+      raw: 1
+    opts:
+      reflector: 'reflector::reflect.proto.*=1'
+    inherit:
+      - predefined.reflect
+  reflect.submodules.0:
+    criterion:
+      debug: 1
+      raw: 0
+    opts:
+      reflector: 'reflector::reflect.submodules*=1'
+    inherit:
+      - predefined.reflect
+  reflect.submodules.1:
+    criterion:
+      debug: 1
+      raw: 1
+    opts:
+      reflector: 'reflector::reflect.submodules*=1'
+    inherit:
+      - predefined.reflect
+  export.proto:
+    criterion:
+      debug: 1
+      proto: 1
+    opts:
+      export: 'path::proto'
+      tar: 0
+    inherit:
+      - export
+build:
+  debug.raw:
+    criterion:
+      default: 1
+      debug: 1
+      raw: 1
+    steps:
+      - 'step::reflect.proto.*=1'
+  debug.compiled:
+    criterion:
+      debug: 1
+      raw: 0
+    steps:
+      - 'step::reflect.proto.*=1'
+  release.raw:
+    criterion:
+      debug: 0
+      raw: 1
+    steps:
+      - 'step::reflect.proto.*=1'
+  release.compiled:
+    criterion:
+      debug: 0
+      raw: 0
+    steps:
+      - 'step::reflect.proto.*=1'
+  all:
+    steps:
+      - 'build::debug.raw'
+      - 'build::release.compiled'
+  proto.export:
+    criterion:
+      default: 1
+      debug: 1
+      raw: 1
+      proto: 1
+      export: 1
+      tar: 1
+      public: 1
+    steps:
+      - 'build::debug.raw'
+      - 'step::export.proto'
+exported:
+  proto.export:
+    version: 0.3.69
+    criterion:
+      default: 1
+      debug: 1
+      raw: 1
+      proto: 1
+      export: 1
+      tar: 1
+      public: 1
+    exportedReflector: 'reflector::exported.0'
+    exportedFilesReflector: 'reflector::exportedFiles.0'
+    exportedDirPath: 'path::exportedDir.0'
+    exportedFilesPath: 'path::exportedFiles.0'
+    exportedTerminalsPath:
+      path:
+        - ./dwtools/Tools.s
+        - ./dwtools/amath/l5.test/Space.test.s
+        - ./dwtools/amath/l5_space/Main.s
+        - ./dwtools/amath/l5_space/l3/FromVector.s
+        - ./dwtools/amath/l5_space/l3/Methods.s
+      criterion:
+        default: 1
+        debug: 1
+        raw: 1
+        proto: 1
+        export: 1
+        tar: 1
+        public: 1
