@@ -3500,7 +3500,6 @@ if( typeof module !== 'undefined' )
   require( './l3/FromVector.s' );
   require( './l3/Methods.s' );
   require( './l3/Svd.s' );
-  require( './l3/Jpg.s' );
 }
 
 })();

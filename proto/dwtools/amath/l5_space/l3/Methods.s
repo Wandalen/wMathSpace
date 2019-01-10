@@ -2519,10 +2519,6 @@ function solveGeneral( o )
   }
 
   /* analyse */
-
-  logger.log( 'm',o.m );
-  logger.log( 'x',o.x );
-
   for( let r = 0 ; r < nrow ; r++ )
   {
     let row = o.m.rowVectorGet( r );
