@@ -1474,7 +1474,7 @@ function _equalAre( it )
   _.assert( _.routineIs( it.context.onNumbersAreEqual ) );
   _.assert( _.prototypeOf( it.looker, it ) );
 
-  it.looking = false;
+  it.continue = false;
 
   if( !( it.src2 instanceof Self ) )
   {
