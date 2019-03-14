@@ -86,6 +86,7 @@ reflector:
     src:
       filePath:
         .: .
+      prefixPath: proto
       maskAll:
         excludeAny:
           - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
@@ -98,7 +99,6 @@ reflector:
           - !<tag:yaml.org,2002:js/regexp> /\.debug($|\.|\/)/i
           - !<tag:yaml.org,2002:js/regexp> /\.test($|\.|\/)/i
           - !<tag:yaml.org,2002:js/regexp> /\.experiment($|\.|\/)/i
-      prefixPath: proto
     dst:
       prefixPath: out/release
     criterion:
@@ -109,6 +109,7 @@ reflector:
     src:
       filePath:
         .: .
+      prefixPath: proto
       maskAll:
         excludeAny:
           - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
@@ -119,7 +120,6 @@ reflector:
           - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
           - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
           - !<tag:yaml.org,2002:js/regexp> /\.release($|\.|\/)/i
-      prefixPath: proto
     dst:
       prefixPath: out/debug
     criterion:
@@ -145,7 +145,7 @@ reflector:
   exported.proto.export:
     src:
       filePath:
-        .: true
+        .: null
       prefixPath: proto
     criterion:
       default: 1
@@ -159,20 +159,20 @@ reflector:
     recursive: 0
     src:
       filePath:
-        .: true
-        dwtools: true
-        dwtools/Tools.s: true
-        dwtools/abase: true
-        dwtools/amath: true
-        dwtools/amath/l5.test: true
-        dwtools/amath/l5.test/Space.test.s: true
-        dwtools/amath/l5_space: true
-        dwtools/amath/l5_space/Main.s: true
-        dwtools/amath/l5_space/l3: true
-        dwtools/amath/l5_space/l3/FromVector.s: true
-        dwtools/amath/l5_space/l3/Methods.s: true
-        dwtools/amid: true
-        dwtools/atop: true
+        .: null
+        dwtools: null
+        dwtools/Tools.s: null
+        dwtools/abase: null
+        dwtools/amath: null
+        dwtools/amath/l5.test: null
+        dwtools/amath/l5.test/Space.test.s: null
+        dwtools/amath/l5_space: null
+        dwtools/amath/l5_space/Main.s: null
+        dwtools/amath/l5_space/l3: null
+        dwtools/amath/l5_space/l3/FromVector.s: null
+        dwtools/amath/l5_space/l3/Methods.s: null
+        dwtools/amid: null
+        dwtools/atop: null
       basePath: .
       prefixPath: proto
     criterion:
