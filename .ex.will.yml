@@ -21,8 +21,8 @@ execution :
 
 path :
 
-  repository : git+https://github.com/Wandalen/wMathSpace.git
-  bugs : https://github.com/Wandalen/wMathSpace/issues
+  repository : git+https:///github.com/Wandalen/wMathSpace.git
+  bugs : https:///github.com/Wandalen/wMathSpace/issues
 
 step :
 
