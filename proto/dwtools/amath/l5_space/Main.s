@@ -50,6 +50,12 @@ let accuracySqr = _.accuracySqr;
 _.assert( _.objectIs( vector ), 'wSpace requires vector module' );
 _.assert( !!_.all );
 
+/**
+ * @classdesc Multidimensional structure which in the most trivial case is Matrix of scalars. A matrix of specific form could also be classified as a vector. MathSpace heavily relly on MathVector, which introduces VectorImage. VectorImage is a reference, it does not contain data but only refer on actual ( aka Long ) container of lined data.  Use MathSpace for arithmetic operations with matrices, to triangulate, permutate or transform matrix, to get a specific or the general solution of a system of linear equations, to get LU, QR decomposition, for SVD or PCA. Also, Space is a convenient and efficient data container, you may use it to continuously store huge an array of arrays or for matrix computation.
+ * @class wSpace
+ * @memberof module:Tools/math/Space
+ */
+
 let Parent = null;
 let Self = function wSpace( o )
 {
@@ -291,6 +297,14 @@ function _copy( src,resetting )
 
 //
 
+/**
+ * @summary Copy scalars from array `src` into inner matrix.
+ * @description Also accepts `src` as scalar, in this case it fills matrix with value of scalar.
+ * @param {Array|Number} src Array of scalars or single scalar.
+ * @function copy
+ * @memberof module:Tools/math/Space.wSpace#
+ */
+
 function copy( src )
 {
   let self = this;
@@ -313,6 +327,13 @@ function copyResetting( src )
 
 //
 
+/**
+ * @summary Fills inner matrix with value of scalar `src`.
+ * @param {Number} src Scalar.
+ * @function copyFromScalar
+ * @memberof module:Tools/math/Space.wSpace#
+ */
+
 function copyFromScalar( src )
 {
   let self = this;
@@ -326,6 +347,13 @@ function copyFromScalar( src )
 }
 
 //
+
+/**
+ * @summary Copy scalars from array `src` into inner matrix.
+ * @param {Array} src Array with scarals.
+ * @function copyFromScalar
+ * @memberof module:Tools/math/Space.wSpace#
+ */
 
 function copyFromBuffer( src )
 {
@@ -572,6 +600,13 @@ function _atomsPerSpaceGet()
 
 //
 
+/**
+ * @summary Returns number of atoms per space for provided dimensions array `dims`.
+ * @param {Array} dims Dimensions array.
+ * @function atomsPerSpaceForDimensions
+ * @memberof module:Tools/math/Space.wSpace#
+ */
+
 function atomsPerSpaceForDimensions( dims )
 {
   let result = 1;
@@ -590,6 +625,13 @@ function atomsPerSpaceForDimensions( dims )
 
 //
 
+/**
+ * @summary Returns number of rows in provided space `src`.
+ * @param {Object} src Instance of wSpace.
+ * @function nrowOf
+ * @memberof module:Tools/math/Space.wSpace#
+ */
+
 function nrowOf( src )
 {
   if( src instanceof Self )
@@ -600,6 +642,13 @@ function nrowOf( src )
 
 //
 
+/**
+ * @summary Returns number of columns in provided space `src`.
+ * @param {Object} src Instance of wSpace.
+ * @function ncolOf
+ * @memberof module:Tools/math/Space.wSpace#
+ */
+
 function ncolOf( src )
 {
   if( src instanceof Self )
@@ -609,6 +658,13 @@ function ncolOf( src )
 }
 
 //
+
+/**
+ * @summary Returns dimensions array for provided space `src`.
+ * @param {Object} src Instance of wSpace.
+ * @function dimsOf
+ * @memberof module:Tools/math/Space.wSpace#
+ */
 
 function dimsOf( src )
 {
@@ -1244,6 +1300,13 @@ function _dimsSet( src )
 
 //
 
+/**
+ * @summary Expands current space to size.
+ * @param {Array} expand New dimensions of the space.
+ * @function expand
+ * @memberof module:Tools/math/Space.wSpace#
+ */
+
 // function expand( left,right )
 function expand( expand )
 {
@@ -1544,6 +1607,13 @@ _.routineExtend( _equalAre, _._entityEqual );
 //
 //
 
+/**
+ * @summary Checks if provided argument is a instance of wSpace.
+ * @param {} src Entity to check.
+ * @function is
+ * @memberof module:Tools/math/Space.wSpace#
+ */
+
 function is( src )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
@@ -1551,6 +1621,17 @@ function is( src )
 }
 
 //
+
+/**
+ * @summary Converts current space to string. 
+ * @description Returns formatted string that represents maxtrix of scalars.
+ * @param {Object} o Options map.
+ * @param {String} o.tab='' String inserted before each new line
+ * @param {Number} o.precision=3 Precision of scalar values
+ * @param {Boolean} o.usingSign=1 Prepend sign to scalar values
+ * @function toStr
+ * @memberof module:Tools/math/Space.wSpace#
+ */
 
 function toStr( o )
 {
