@@ -141,7 +141,7 @@ function declareAtomWiseReducingRoutine( routine , rname )
   if( op.generator.name !== '__operationReduceToScalar_functor' )
   return;
 
-  if( _.arrayIdentical( op.takingArguments,[ 1,1 ] ) )
+  if( _.arraysAreIdentical( op.takingArguments,[ 1,1 ] ) )
   return;
 
   // debugger;
@@ -260,7 +260,7 @@ function declareAtomWiseHomogeneousRoutine( routine,name )
   if( dop.kind === 'reducing' )
   return;
 
-  if( _.arrayIdentical( dop.input,[ 'vw|s', 's' ] ) )
+  if( _.arraysAreIdentical( dop.input,[ 'vw|s', 's' ] ) )
   return;
 
   let routineName = name + 'AtomWise';
