@@ -459,7 +459,7 @@ function convertToClass( cls,src )
   if( _.spaceIs( src ) )
   {
 
-    if( _.subclassOf( cls, src.Self ) )
+    if( _.isSubClassOf( cls, src.Self ) )
     {
       _.assert( src.Self === cls,'not tested' );
       return src;
