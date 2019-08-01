@@ -1,18 +1,24 @@
-
 {
   "name": "wmathspace",
-  "version": "0.3.0",
-  "description": "___",
+  "version": "0.3.99",
+  "engine": "node >= 6.0.0",
+  "description": "Collection of functions for matrix math. MathSpace introduces class Space which is a multidimensional structure which in the most trivial case is Matrix of scalars. A matrix of specific form could also be classified as a vector. MathSpace heavily relly on MathVector, which introduces VectorImage. VectorImage is a reference, it does not contain data but only refer on actual ( aka Long ) container of lined data.  Use MathSpace for arithmetic operations with matrices, to triangulate, permutate or transform matrix, to get a specific or the general solution of a system of linear equations, to get LU, QR decomposition, for SVD or PCA. Also, Space is a convenient and efficient data container, you may use it to continuously store huge an array of arrays or for matrix computation.",
   "author": "Kostiantyn Wandalen <wanalen@willbe.so>",
+  "contributors": [
+    {
+      "name": "Kostiantyn Wandalen",
+      "email": "wanalen@willbe.so"
+    }
+  ],
   "license": "MIT",
-  "main": "proto/dwtools/amid/___",
+  "main": "proto/dwtools/amath/l5_space/Main.s",
   "files": [
-    "proto/dwtools/amid",
+    "proto/dwtools/amath/l5_space",
     "proto/dwtools/Tools.s",
     "production"
   ],
   "scripts": {
-    "test": "wtest proto",
+    "test": "wtest .run proto/**",
     "docgen": "wdocgen proto"
   },
   "repository": {
@@ -23,12 +29,19 @@
     "url": "https://github.com/Wandalen/wMathSpace/issues"
   },
   "dependencies": {
-    "wTools": ""
+    "wTools": "",
+    "wCopyable": "",
+    "wmathscalar": "",
+    "wmathvector": ""
   },
   "devDependencies": {
     "wTesting": ""
   },
   "keywords": [
-    "wTools"
+    "wTools",
+    "math",
+    "matrix",
+    "matrix math",
+    "convolution"
   ]
 }

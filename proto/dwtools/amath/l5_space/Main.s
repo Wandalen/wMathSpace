@@ -59,7 +59,7 @@ _.assert( !!_.all );
 let Parent = null;
 let Self = function wSpace( o )
 {
-  return _.instanceConstructor( Self, this, arguments );
+  return _.workpiece.construct( Self, this, arguments );
 }
 
 // --
@@ -81,7 +81,7 @@ function init( o )
   self[ stridesSymbol ] = null;
   self[ offsetSymbol ] = null;
 
-  _.instanceInit( self );
+  _.workpiece.initFields( self );
   _.assert( arguments.length <= 1 );
 
   Object.preventExtensions( self );
@@ -144,7 +144,9 @@ function _traverseAct( it )
   if( it.resetting === undefined )
   it.resetting = 1;
 
-  _.Copyable.prototype._traverseActPre.call( this,it );
+  debugger;
+  _.Copyable.prototype._traverseAct.pre.call( this, it );
+  // _.Copyable.prototype._traverseActPre.call( this, it );
 
   if( !it.dst )
   {
@@ -185,7 +187,7 @@ function _traverseAct( it )
 
   if( src.dims )
   {
-    _.assert( it.resetting || !dst.dims || _.arrayIdentical( dst.dims , src.dims ) );
+    _.assert( it.resetting || !dst.dims || _.arraysAreIdentical( dst.dims , src.dims ) );
   }
 
   if( dstIsInstance )
@@ -241,7 +243,7 @@ function _traverseAct( it )
   dst = _.Copyable.prototype._traverseAct( it );
 
   if( srcIsInstance )
-  _.assert( _.arrayIdentical( dst.dims , src.dims ) );
+  _.assert( _.arraysAreIdentical( dst.dims , src.dims ) );
 
   if( dstIsInstance )
   {
@@ -392,7 +394,7 @@ function copyTo( dst,src )
   let dstDims = Self.dimsOf( dst );
   let srcDims = Self.dimsOf( src );
 
-  _.assert( _.arrayIdentical( srcDims,dstDims ),'(-src-) and (-dst-) should have same dimensions' );
+  _.assert( _.arraysAreIdentical( srcDims,dstDims ),'(-src-) and (-dst-) should have same dimensions' );
   _.assert( !_.instanceIs( this ) )
 
   if( !_.spaceIs( src ) )
@@ -1230,7 +1232,7 @@ function _breadthSet( breadth )
   return;
 
   if( breadth !== null && self.breadth !== null )
-  if( _.arrayIdentical( self.breadth,breadth ) )
+  if( _.arraysAreIdentical( self.breadth,breadth ) )
   return;
 
   self._changeBegin();
@@ -1394,7 +1396,7 @@ function shapesAreSame( ins1,ins2 )
   let dims1 = this.dimsOf( ins1 );
   let dims2 = this.dimsOf( ins2 );
 
-  return _.arrayIdentical( dims1,dims2 );
+  return _.arraysAreIdentical( dims1,dims2 );
 }
 
 //
@@ -1411,7 +1413,7 @@ function hasShape( src )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.arrayIs( src ) );
 
-  return _.arrayIdentical( self.dims,src );
+  return _.arraysAreIdentical( self.dims,src );
 }
 
 //
@@ -1535,7 +1537,7 @@ function _equalAre( it )
 
   _.assert( arguments.length === 1, 'Expects exactly three arguments' );
   _.assert( _.routineIs( it.context.onNumbersAreEqual ) );
-  _.assert( _.prototypeOf( it.looker, it ) );
+  _.assert( _.isPrototypeOf( it.looker, it ) );
 
   it.continue = false;
 
@@ -1560,7 +1562,7 @@ function _equalAre( it )
     return it.result;
   }
 
-  if( !_.arrayIdentical( it.src.breadth,it.src2.breadth )  )
+  if( !_.arraysAreIdentical( it.src.breadth,it.src2.breadth )  )
   {
     it.result = false;
     debugger;
@@ -1598,11 +1600,11 @@ _.routineExtend( _equalAre, _._entityEqual );
 //
 //   debugger;
 //
-//   if( !_.arrayIdentical( self.breadth,src.breadth )  )
+//   if( !_.arraysAreIdentical( self.breadth,src.breadth )  )
 //   return false;
 //
 //   debugger;
-//   return _.arrayIdentical( self.buffer,self.buffer );
+//   return _.arraysAreIdentical( self.buffer,self.buffer );
 // }
 //
 //
@@ -1623,7 +1625,7 @@ function is( src )
 //
 
 /**
- * @summary Converts current space to string. 
+ * @summary Converts current space to string.
  * @description Returns formatted string that represents maxtrix of scalars.
  * @param {Object} o Options map.
  * @param {String} o.tab='' String inserted before each new line
@@ -2044,7 +2046,7 @@ function atomWiseHomogeneous( o )
     let src = o.args[ s ];
     if( src instanceof Self )
     if( dims )
-    _.assert( _.arrayIdentical( src.dims,dims ) )
+    _.assert( _.arraysAreIdentical( src.dims,dims ) )
     else
     dims = src.dims;
   }
@@ -2123,10 +2125,10 @@ function atomWiseHomogeneous( o )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( o.dst instanceof Self || o.reducing );
   _.assert( !o.dst || o.dst.dims.length === 2, 'not implemented' );
-  _.assert( !o.dst || _.arrayIdentical( o.dst.dims,dims ) )
+  _.assert( !o.dst || _.arraysAreIdentical( o.dst.dims,dims ) )
   _.assert( fsrc instanceof Self );
   _.assert( fsrc.dims.length === 2, 'not implemented' );
-  _.assert( _.arrayIdentical( fsrc.dims,dims ) )
+  _.assert( _.arraysAreIdentical( fsrc.dims,dims ) )
 
   /* */
 
@@ -2240,7 +2242,7 @@ atomWiseHomogeneous.defaults =
 //     let src = o.srcs[ s ];
 //     if( src instanceof Self )
 //     if( dims )
-//     _.assert( _.arrayIdentical( src.dims,dims ) )
+//     _.assert( _.arraysAreIdentical( src.dims,dims ) )
 //     else
 //     dims = src.dims;
 //   }
@@ -2266,7 +2268,7 @@ atomWiseHomogeneous.defaults =
 //   _.assert( !proto.instanceIs() );
 //   _.assert( arguments.length === 1, 'Expects single argument' );
 //   _.assert( o.dst.dims.length === 2, 'not implemented' );
-//   _.assert( _.arrayIdentical( o.dst.dims,dims ) )
+//   _.assert( _.arraysAreIdentical( o.dst.dims,dims ) )
 //
 //   /* */
 //
@@ -2987,7 +2989,7 @@ function _pivotDimension( d,current,expected )
   }
 
   _.assert( expected.length === self.dims[ d ] );
-  _.assert( _.arrayIdentical( current,expected ) );
+  _.assert( _.arraysAreIdentical( current,expected ) );
 
 }
 
@@ -3050,7 +3052,7 @@ function _vectorPivotDimension( v,current,expected )
   }
 
   _.assert( expected.length === v.length );
-  _.assert( _.arrayIdentical( current,expected ) );
+  _.assert( _.arraysAreIdentical( current,expected ) );
 
 }
 
