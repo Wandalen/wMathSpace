@@ -19,6 +19,7 @@ if( typeof module !== 'undefined' )
   _.include( 'wMathScalar' );
   _.include( 'wMathVector' );
   _.include( 'wCopyable' );
+  _.include( 'wEntityBasic' );
 
   // require( '../l1/Scalar.s' );
   // require( '../l3_vector/Base.s' );
@@ -145,7 +146,7 @@ function _traverseAct( it )
   it.resetting = 1;
 
   debugger;
-  _.Copyable.prototype._traverseAct.pre.call( this, it );
+  _.Copyable.prototype._traverseAct.pre.call( this, _traverseAct, [ it ] );
   // _.Copyable.prototype._traverseActPre.call( this, it );
 
   if( !it.dst )
@@ -360,7 +361,7 @@ function copyFromScalar( src )
 function copyFromBuffer( src )
 {
   let self = this;
-  self._bufferCopy( src );
+  self._bufferAssign( src );
   return self;
 }
 
@@ -850,7 +851,7 @@ function _offsetSet( src )
 
 //
 
-function _bufferCopy( src )
+function _bufferAssign( src )
 {
   let self = this;
   self._changeBegin();
@@ -1528,7 +1529,7 @@ function transpose()
 //   // return self._equalAre( self,ins,o );
 // }
 //
-// _.routineExtend( equalWith, _._entityEqual );
+// _.routineExtend( equalWith, _._equal );
 
 //
 
@@ -1536,8 +1537,9 @@ function _equalAre( it )
 {
 
   _.assert( arguments.length === 1, 'Expects exactly three arguments' );
-  _.assert( _.routineIs( it.context.onNumbersAreEqual ) );
-  _.assert( _.isPrototypeOf( it.looker, it ) );
+  _.assert( _.routineIs( it.onNumbersAreEqual ) );
+  _.assert( _.lookIterationIs( it ) );
+  // _.assert( _.isPrototypeOf( it.looker, it ) );
 
   it.continue = false;
 
@@ -1572,14 +1574,14 @@ function _equalAre( it )
   it.result = it.src.atomWhile( function( atom,indexNd,indexFlat )
   {
     let atom2 = it.src2.atomGet( indexNd );
-    return it.context.onNumbersAreEqual( atom,atom2 );
+    return it.onNumbersAreEqual( atom,atom2 );
   });
 
   _.assert( _.boolIs( it.result ) );
   return it.result;
 }
 
-_.routineExtend( _equalAre, _._entityEqual );
+_.routineExtend( _equalAre, _._equal );
 
 //
 //
@@ -3370,7 +3372,7 @@ let Proto =
   '_bufferSet' : _bufferSet, /* cached */
   '_offsetSet' : _offsetSet, /* cached */
 
-  _bufferCopy : _bufferCopy,
+  _bufferAssign : _bufferAssign,
   bufferCopyTo : bufferCopyTo,
 
 
