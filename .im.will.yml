@@ -3,24 +3,24 @@ submodule :
 
   wTools :
     path : npm:///wTools
-    enabled : 0
+    enabled : 0 # submodule
   wCopyable :
     path : npm:///wCopyable
-    enabled : 0
-  wmathscalar :
+    enabled : 0 # submodule
+  wMathScalar :
     path : npm:///wmathscalar
-    enabled : 0
-  wmathvector :
+    enabled : 0 # submodule
+  wMathVector :
     path : npm:///wmathvector
-    enabled : 0
+    enabled : 0 # submodule
   wmathspace :
     path : hd://.
-    enabled : 0
+    enabled : 0 # submodule
     criterion :
       development : 1
   wTesting :
     path : npm:///wTesting
-    enabled : 0
+    enabled : 0 # submodule
     criterion :
       development : 1
 
