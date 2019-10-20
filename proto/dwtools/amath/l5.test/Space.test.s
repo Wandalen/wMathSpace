@@ -22,8 +22,8 @@ var _ = _global_.wTools.withArray.Float32;
 var space = _.Space;
 var vector = _.vector;
 var vec = _.vector.fromArray;
-var fvec = function( src ){ return _.vector.fromArray( new Float32Array( src ) ) }
-var ivec = function( src ){ return _.vector.fromArray( new Int32Array( src ) ) }
+var fvec = function( src ){ return _.vector.fromArray( new F32x( src ) ) }
+var ivec = function( src ){ return _.vector.fromArray( new I32x( src ) ) }
 var avector = _.avector;
 
 var sqr = _.sqr;
@@ -84,7 +84,7 @@ function clone( test )
 
   test.case = 'make'; /* */
 
-  var buffer = new Float32Array([ 1,2,3,4,5,6 ]);
+  var buffer = new F32x([ 1,2,3,4,5,6 ]);
   var a = new _.Space
   ({
     buffer : buffer,
@@ -116,7 +116,7 @@ function clone( test )
 
   test.case = 'set buffer'; /* */
 
-  a.buffer = new Float32Array([ 11,12,13 ]);
+  a.buffer = new F32x([ 11,12,13 ]);
 
   test.identical( a.size,12 );
   test.identical( a.sizeOfElementStride,12 );
@@ -159,7 +159,7 @@ function clone( test )
   test.case = 'copy buffer and dims'; /* */
 
   a.dims = [ 1,3 ];
-  a.copyResetting({ buffer : new Float32Array([ 3,4,5 ]), dims : [ 3,1 ] });
+  a.copyResetting({ buffer : new F32x([ 3,4,5 ]), dims : [ 3,1 ] });
 
   test.identical( a.size,12 );
   test.identical( a.sizeOfElementStride,12 );
@@ -181,7 +181,7 @@ function clone( test )
   test.case = 'copy dims and buffer'; /* */
 
   a.dims = [ 1,3 ];
-  a.copyResetting({ dims : [ 3,1 ], buffer : new Float32Array([ 3,4,5 ]) });
+  a.copyResetting({ dims : [ 3,1 ], buffer : new F32x([ 3,4,5 ]) });
 
   test.identical( a.size,12 );
   test.identical( a.sizeOfElementStride,12 );
@@ -210,7 +210,7 @@ function construct( test )
 
   var a = new _.Space
   ({
-    buffer : new Float32Array([ 0, 1,2, 3,4, 5,6, 7 ]),
+    buffer : new F32x([ 0, 1,2, 3,4, 5,6, 7 ]),
     offset : 1,
     atomsPerElement : 3,
     inputTransposing : 0,
@@ -256,21 +256,21 @@ function construct( test )
     {
       "--buffer-->0<--buffer--" :
       {
-        "bufferConstructorName" : `Float32Array`,
+        "bufferConstructorName" : `F32x`,
         "sizeOfAtom" : 4,
         "offset" : 0,
         "size" : 12,
         "index" : 0
       }
     },
-    "buffer" : ( new Uint8Array([ 0x0,0x0,0x80,0x3f,0x0,0x0,0x40,0x40,0x0,0x0,0xa0,0x40 ]) ).buffer
+    "buffer" : ( new U8x([ 0x0,0x0,0x80,0x3f,0x0,0x0,0x40,0x40,0x0,0x0,0xa0,0x40 ]) ).buffer
   }
 
   test.identical( cloned,expected );
 
     test.case = 'deserializing clone'; /* */
 
-  var b = new _.Space({ buffer : new Float32Array(), inputTransposing : true });
+  var b = new _.Space({ buffer : new F32x(), inputTransposing : true });
   b.copyDeserializing( cloned );
   test.identical( b,a );
   test.is( a.buffer !== b.buffer );
@@ -313,7 +313,7 @@ function construct( test )
 
   var a = new _.Space
   ({
-    buffer : new Float32Array([ 0, 1,2, 3,4, 5,6, 7 ]),
+    buffer : new F32x([ 0, 1,2, 3,4, 5,6, 7 ]),
     offset : 1,
     atomsPerElement : 3,
     inputTransposing : 1,
@@ -359,21 +359,21 @@ function construct( test )
     {
       "--buffer-->0<--buffer--" :
       {
-        "bufferConstructorName" : `Float32Array`,
+        "bufferConstructorName" : `F32x`,
         "sizeOfAtom" : 4,
         "offset" : 0,
         "size" : 12,
         "index" : 0
       }
     },
-    "buffer" : ( new Uint8Array([ 0x0,0x0,0x80,0x3f,0x0,0x0,0x40,0x40,0x0,0x0,0xa0,0x40 ]) ).buffer
+    "buffer" : ( new U8x([ 0x0,0x0,0x80,0x3f,0x0,0x0,0x40,0x40,0x0,0x0,0xa0,0x40 ]) ).buffer
   }
 
   test.identical( cloned,expected );
 
   test.case = 'deserializing clone'; /* */
 
-  var b = new _.Space({ buffer : new Float32Array(), inputTransposing : true });
+  var b = new _.Space({ buffer : new F32x(), inputTransposing : true });
   b.copyDeserializing( cloned );
   test.identical( b,a );
   test.is( a.buffer !== b.buffer );
@@ -426,7 +426,7 @@ function make( test )
     src = [];
     for( var i = 0 ; i < this.offset ; i++ )
     src.unshift( i );
-    return new Int32Array( src );
+    return new I32x( src );
   }
   o.vec = function vec( src )
   {
@@ -885,7 +885,7 @@ function _make( test,o )
 
   test.case = 'change by empty buffer of empty matrix with long column, non transposing'; /* */
 
-  m.buffer = new Int32Array();
+  m.buffer = new I32x();
   logger.log( 'm\n' + _.toStr( m ) );
   checkEmptySpaceWithLongColNonTransposing( m );
 
@@ -1031,11 +1031,11 @@ function _make( test,o )
 
   var m = new space
   ({
-    buffer : new Int32Array(),
+    buffer : new I32x(),
     inputTransposing : 1,
     dims : [ 3,0 ],
   });
-  m.buffer = new Int32Array();
+  m.buffer = new I32x();
   logger.log( 'm\n' + _.toStr( m ) );
   checkEmptySpaceWithLongColTransposing( m );
 
@@ -1177,7 +1177,7 @@ function _make( test,o )
   });
   logger.log( 'm\n' + _.toStr( m ) );
   checkEmptySpaceWithLongRowTransposing( m );
-  test.shouldThrowErrorSync( () => m.buffer = new Int32Array() );
+  test.shouldThrowErrorSync( () => m.buffer = new I32x() );
 
   test.case = 'change by empty buffer of empty matrix with long row, transposing'; /* */
 
@@ -1189,7 +1189,7 @@ function _make( test,o )
     dims : [ 0,3 ],
   });
 
-  m.buffer = new Int32Array();
+  m.buffer = new I32x();
   logger.log( 'm\n' + _.toStr( m ) );
   checkEmptySpaceWithLongRowTransposing( m );
 
@@ -1336,13 +1336,13 @@ function _make( test,o )
   test.identical( m.strides, null );
 
   var m = space.make([ 0,3 ]);
-  test.shouldThrowErrorSync( () => m.buffer = new Int32Array() );
+  test.shouldThrowErrorSync( () => m.buffer = new I32x() );
 
   test.case = 'change by empty buffer of empty matrix with long row, non transposing'; /* */
 
   var m = space.make([ 0,3 ]);
   m.growingDimension = 0;
-  m.buffer = new Int32Array();
+  m.buffer = new I32x();
   logger.log( 'm\n' + _.toStr( m ) );
   checkEmptySpaceWithLongRowNonTransposing( m );
 
@@ -1485,7 +1485,7 @@ function _make( test,o )
   if( Config.debug )
   {
 
-    var buffer = new Int32Array
+    var buffer = new I32x
     ([
       1, 2, 3,
       4, 5, 6,
@@ -1649,18 +1649,18 @@ function _make( test,o )
   var a1 = m.atomFlatGet( 3 );
   var a2 = m.atomGet([ 1,1 ]);
 
-  test.identical( r1,vec( new Float32Array([ 4,5,6 ]) ) );
+  test.identical( r1,vec( new F32x([ 4,5,6 ]) ) );
   test.identical( r1,r2 );
-  test.identical( c1,vec( new Float32Array([ 2,5 ]) ) );
+  test.identical( c1,vec( new F32x([ 2,5 ]) ) );
   test.identical( c1,c2 );
-  test.identical( e,vec( new Float32Array([ 2,5 ]) ) );
+  test.identical( e,vec( new F32x([ 2,5 ]) ) );
   test.identical( a1, 5 );
   test.identical( a2, 5 );
   test.identical( m.reduceToSumAtomWise(), 21 );
   test.identical( m.reduceToProductAtomWise(), 720 );
 
   test.identical( m.strides, null );
-  test.is( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof F32x );
 
   test.case = 'copy buffer from scalar'; /* */
 
@@ -1678,7 +1678,7 @@ function _make( test,o )
 
   test.case = 'copy buffer of different type'; /* */
 
-  var b = new Float32Array
+  var b = new F32x
   ([
     1,2,3,
     4,5,6,
@@ -1694,7 +1694,7 @@ function _make( test,o )
   });
 
   test.is( m.buffer.length-( o.offset||0 ) === 9 );
-  test.is( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof F32x );
 
   var expected = space.make([ 3,3 ]).copy
   ([
@@ -1712,10 +1712,10 @@ function _make( test,o )
 
   test.identical( m,expected );
   test.is( m.buffer.length === 9+( o.offset||0 ) );
-  test.is( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof F32x );
 
   m.copy
-  ( new Uint32Array([
+  ( new U32x([
     1,2,3,
     4,5,6,
     7,8,9,
@@ -1724,12 +1724,12 @@ function _make( test,o )
   test.identical( m,expected );
   test.is( m.buffer.length === 9+( o.offset||0 ) );
   test.is( m.offset === ( o.offset||0 ) );
-  test.is( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof F32x );
 
   m.copy
   ({
     offset : 0,
-    buffer : new Uint32Array
+    buffer : new U32x
     ([
       1,2,3,
       4,5,6,
@@ -1740,7 +1740,7 @@ function _make( test,o )
   test.notIdentical( m,expected );
   test.is( m.buffer.length === 9 );
   test.is( m.offset === 0 );
-  test.is( m.buffer instanceof Uint32Array );
+  test.is( m.buffer instanceof U32x );
 
   test.case = 'bad buffer'; /* */
 
@@ -1791,7 +1791,7 @@ function makeHelper( test )
   test.identical( m.strideInRow,3 );
 
   test.identical( m.strides,null );
-  test.is( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof F32x );
 
   test.case = 'square with buffer'; /* */
 
@@ -1838,10 +1838,10 @@ function makeHelper( test )
   test.identical( m.reduceToProductAtomWise(), 362880 );
   test.identical( m.determinant(),0 );
 
-  test.is( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof F32x );
   test.identical( m.strides,null );
 
-  var buffer = new Uint32Array
+  var buffer = new U32x
   ([
     1, 2, 3,
     4, 5, 6,
@@ -1849,7 +1849,7 @@ function makeHelper( test )
   ]);
   var m = space.makeSquare( buffer );
   test.identical( m.determinant(),0 );
-  test.is( m.buffer instanceof Uint32Array );
+  test.is( m.buffer instanceof U32x );
 
   test.case = 'square with length'; /* */
 
@@ -1871,7 +1871,7 @@ function makeHelper( test )
   test.identical( m.strideOfRow,1 );
   test.identical( m.strideInRow,3 );
 
-  test.is( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof F32x );
   test.identical( m.strides,null );
 
   test.case = 'diagonal'; /* */
@@ -1913,7 +1913,7 @@ function makeHelper( test )
   test.identical( m.reduceToProductAtomWise(), 0 );
   test.identical( m.determinant(),6 );
 
-  test.is( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof F32x );
   test.identical( m.strides,null );
 
   test.case = 'identity'; /* */
@@ -1955,7 +1955,7 @@ function makeHelper( test )
   test.identical( m.reduceToProductAtomWise(), 0 );
   test.identical( m.determinant(),1 );
 
-  test.is( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof F32x );
   test.identical( m.strides,null );
 
   test.case = 'identity, not square, 2x3'; /* */
@@ -1996,7 +1996,7 @@ function makeHelper( test )
   test.identical( m.reduceToSumAtomWise(), 2 );
   test.identical( m.reduceToProductAtomWise(), 0 );
 
-  test.is( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof F32x );
   test.identical( m.strides,null );
 
   test.case = 'identity, not square, 3x2'; /* */
@@ -2037,7 +2037,7 @@ function makeHelper( test )
   test.identical( m.reduceToSumAtomWise(), 2 );
   test.identical( m.reduceToProductAtomWise(), 0 );
 
-  test.is( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof F32x );
   test.identical( m.strides,null );
 
   test.case = 'zeroed'; /* */
@@ -2079,7 +2079,7 @@ function makeHelper( test )
   test.identical( m.reduceToProductAtomWise(), 0 );
   test.identical( m.determinant(),0 );
 
-  test.is( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof F32x );
   test.identical( m.strides,null );
 
   //
@@ -2106,7 +2106,7 @@ function makeHelper( test )
     test.identical( m.reduceToSumAtomWise(), 0 );
     test.identical( m.reduceToProductAtomWise(), 1 );
     test.identical( m.determinant(),0 );
-    test.is( m.buffer instanceof Float32Array );
+    test.is( m.buffer instanceof F32x );
 
     if( Config.debug )
     {
@@ -2176,7 +2176,7 @@ function makeLine( test )
     test.identical( m.strideInRow,3 );
 
     test.identical( m.strides,null );
-    test.is( m.buffer instanceof Float32Array );
+    test.is( m.buffer instanceof F32x );
 
   }
 
@@ -2200,7 +2200,7 @@ function makeLine( test )
     test.identical( m.strideInRow,1 );
 
     test.identical( m.strides,null );
-    test.is( m.buffer instanceof Float32Array );
+    test.is( m.buffer instanceof F32x );
 
   }
 
@@ -2221,7 +2221,7 @@ function makeLine( test )
   var m = space.makeLine
   ({
     dimension : 0,
-    buffer : new Float32Array([ 1,2,3 ]),
+    buffer : new F32x([ 1,2,3 ]),
   });
 
   checkCol( m );
@@ -2277,9 +2277,9 @@ function makeLine( test )
 
   test.is( v._vectorBuffer !== m.buffer );
 
-  test.case = 'make col from vector with Float32Array'; /* */
+  test.case = 'make col from vector with F32x'; /* */
 
-  var v = vector.fromSubArrayWithStride( new Float32Array([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
+  var v = vector.fromSubArrayWithStride( new F32x([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
   var m = space.makeCol( v );
 
   logger.log( 'm\n' + _.toStr( m ) );
@@ -2299,7 +2299,7 @@ function makeLine( test )
   test.identical( m.strideInRow,2 );
 
   test.identical( m.strides,[ 2,2 ] );
-  test.is( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof F32x );
 
   var r1 = m.rowVectorGet( 1 );
   var r2 = m.lineVectorGet( 1,1 );
@@ -2371,7 +2371,7 @@ function makeLine( test )
 
   test.case = 'make col zeroed from vector'; /* */
 
-  var v = vector.fromSubArrayWithStride( new Float32Array([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
+  var v = vector.fromSubArrayWithStride( new F32x([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
   var m = space.makeColZeroed( v );
 
   checkCol( m );
@@ -2464,7 +2464,7 @@ function makeLine( test )
   var m = space.makeLine
   ({
     dimension : 1,
-    buffer : new Float32Array([ 1,2,3 ]),
+    buffer : new F32x([ 1,2,3 ]),
   });
 
   checkRow( m );
@@ -2520,9 +2520,9 @@ function makeLine( test )
 
   test.is( v._vectorBuffer !== m.buffer );
 
-  test.case = 'make row from vector with Float32Array'; /* */
+  test.case = 'make row from vector with F32x'; /* */
 
-  var v = vector.fromSubArrayWithStride( new Float32Array([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
+  var v = vector.fromSubArrayWithStride( new F32x([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
   var m = space.makeRow( v );
 
   logger.log( 'm\n' + _.toStr( m ) );
@@ -2542,7 +2542,7 @@ function makeLine( test )
   test.identical( m.strideInRow,2 );
 
   test.identical( m.strides,[ 2,2 ] );
-  test.is( m.buffer instanceof Float32Array );
+  test.is( m.buffer instanceof F32x );
 
   var r1 = m.rowVectorGet( 0 );
   var r2 = m.lineVectorGet( 1,0 );
@@ -2612,7 +2612,7 @@ function makeLine( test )
 
   test.case = 'make row zeroed from vector'; /* */
 
-  var v = vector.fromSubArrayWithStride( new Float32Array([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
+  var v = vector.fromSubArrayWithStride( new F32x([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
   var m = space.makeRowZeroed( v );
 
   checkRow( m );
@@ -2793,24 +2793,24 @@ function _makeSimilar( test,o )
 
   var src = vector.from( o.arrayMake([ 1,2,3 ]) );
   var got = space.makeSimilar( src );
-  test.is( _.vectorIs( src ) );
+  test.is( _.vectorAdapterIs( src ) );
   test.identical( got.length , src.length );
 
   var src = vector.fromSubArrayWithStride( o.arrayMake([ -1,1,-1,2,-1,3,-1 ]),1,3,1 );
   var got = space.makeSimilar( src );
-  test.is( _.vectorIs( src ) );
+  test.is( _.vectorAdapterIs( src ) );
   test.identical( got.length , src.length );
 
   test.case = o.name + ' . from vector with dims'; //
 
   var src = vector.from( o.arrayMake([ 1,2,3 ]) );
   var got = space.makeSimilar( src,[ 5,1 ] );
-  test.is( _.vectorIs( src ) );
+  test.is( _.vectorAdapterIs( src ) );
   test.identical( got.length , 5 );
 
   var src = vector.fromSubArrayWithStride( o.arrayMake([ -1,1,-1,2,-1,3,-1 ]),1,3,1 );
   var got = space.makeSimilar( src,[ 5,1 ] );
-  test.is( _.vectorIs( src ) );
+  test.is( _.vectorAdapterIs( src ) );
   test.identical( got.length , 5 );
 
   test.case = o.name + ' . bad arguments'; //
@@ -2846,17 +2846,17 @@ function makeSimilar( test )
 
   var o = Object.create( null );
   o.name = 'Array';
-  o.arrayMake = function( a ){ return _.longMake( Array,a ) };
+  o.arrayMake = function( a ){ return _.longMakeUndefined( Array,a ) };
   this._makeSimilar( test,o );
 
   var o = Object.create( null );
-  o.name = 'Float32Array';
-  o.arrayMake = function( a ){ return _.longMake( Float32Array,a ) };
+  o.name = 'F32x';
+  o.arrayMake = function( a ){ return _.longMakeUndefined( F32x,a ) };
   this._makeSimilar( test,o );
 
   var o = Object.create( null );
-  o.name = 'Uint32Array';
-  o.arrayMake = function( a ){ return _.longMake( Uint32Array,a ) };
+  o.name = 'U32x';
+  o.arrayMake = function( a ){ return _.longMakeUndefined( U32x,a ) };
   this._makeSimilar( test,o );
 
 }
@@ -2868,20 +2868,20 @@ function from( test )
 
   test.case = '_bufferFrom from array'; /* */
 
-  var expected = new Float32Array([ 1,2,3 ]);
+  var expected = new F32x([ 1,2,3 ]);
   var got = space._bufferFrom([ 1,2,3 ]);
   test.identical( got,expected );
 
   test.case = '_bufferFrom from vector with Array'; /* */
 
   var v = vector.fromSubArrayWithStride( [ -1,1,-1,2,-1,3,-1 ],1,3,2 );
-  var expected = new Float32Array([ 1,2,3 ]);
+  var expected = new F32x([ 1,2,3 ]);
   var got = space._bufferFrom( v );
   test.identical( got,expected );
 
-  test.case = '_bufferFrom from vector with Float32Array'; /* */
+  test.case = '_bufferFrom from vector with F32x'; /* */
 
-  var v = vector.fromSubArrayWithStride( new Float32Array([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
+  var v = vector.fromSubArrayWithStride( new F32x([ -1,1,-1,2,-1,3,-1 ]),1,3,2 );
   var got = space._bufferFrom( v );
   test.is( got === v );
 
@@ -3097,14 +3097,14 @@ function tempBorrow( test )
   test.is( t1 === t2 );
   test.is( t1 === t3 );
 
-  test.is( t1.buffer.constructor === Float32Array );
-  test.is( t2.buffer.constructor === Float32Array );
-  test.is( t3.buffer.constructor === Float32Array );
+  test.is( t1.buffer.constructor === F32x );
+  test.is( t2.buffer.constructor === F32x );
+  test.is( t3.buffer.constructor === F32x );
 
   test.case = 'should give another temp'; /* */
 
   var m = space.make([ 3,2 ]);
-  m.buffer = new Int32Array( 6 );
+  m.buffer = new I32x( 6 );
   var t2 = m.tempBorrow();
 
   test.identical( t2.dims,[ 3,2 ] )
@@ -3119,49 +3119,49 @@ function tempBorrow( test )
   test.is( t2 === t4 );
   test.is( t1 === t5 );
 
-  test.is( t2.buffer.constructor === Int32Array );
-  test.is( t3.buffer.constructor === Int32Array );
-  test.is( t4.buffer.constructor === Int32Array );
-  test.is( t5.buffer.constructor === Float32Array );
+  test.is( t2.buffer.constructor === I32x );
+  test.is( t3.buffer.constructor === I32x );
+  test.is( t4.buffer.constructor === I32x );
+  test.is( t5.buffer.constructor === F32x );
 
   test.case = 'with dims'; /* */
 
   var m = space.make([ 3,2 ]);
-  m.buffer = new Int32Array( 6 );
+  m.buffer = new I32x( 6 );
   var t1 = space._tempBorrow( m,[ 4,4 ],0 );
   var t2 = space._tempBorrow( m,[ 4,4 ],1 );
 
   test.identical( t1.dims,[ 4,4 ] );
   test.identical( t2.dims,[ 4,4 ] );
-  test.is( t1.buffer.constructor === Int32Array );
-  test.is( t2.buffer.constructor === Int32Array );
+  test.is( t1.buffer.constructor === I32x );
+  test.is( t2.buffer.constructor === I32x );
   test.is( t1 !== t2 );
 
   test.case = 'with dims from space'; /* */
 
   var m = space.make([ 3,2 ]);
-  m.buffer = new Int32Array( 6 );
+  m.buffer = new I32x( 6 );
   var m2 = space.make([ 4,4 ]);
   var t1 = space._tempBorrow( m,m2,0 );
   var t2 = space._tempBorrow( m,m2,1 );
 
   test.identical( t1.dims,[ 4,4 ] );
   test.identical( t2.dims,[ 4,4 ] );
-  test.is( t1.buffer.constructor === Int32Array );
-  test.is( t2.buffer.constructor === Int32Array );
+  test.is( t1.buffer.constructor === I32x );
+  test.is( t2.buffer.constructor === I32x );
   test.is( t1 !== t2 );
 
   test.case = 'without dims'; /* */
 
   var m = space.make([ 3,2 ]);
-  m.buffer = new Int32Array( 6 );
+  m.buffer = new I32x( 6 );
   var t1 = space._tempBorrow( m,null,0 );
   var t2 = space._tempBorrow( m,null,1 );
 
   test.identical( t1.dims,[ 3,2 ] );
   test.identical( t2.dims,[ 3,2 ] );
-  test.is( t1.buffer.constructor === Int32Array );
-  test.is( t2.buffer.constructor === Int32Array );
+  test.is( t1.buffer.constructor === I32x );
+  test.is( t2.buffer.constructor === I32x );
   test.is( t1 !== t2 );
 
   test.case = 'without space'; /* */
@@ -3171,8 +3171,8 @@ function tempBorrow( test )
 
   test.identical( t1.dims,[ 4,4 ] );
   test.identical( t2.dims,[ 4,4 ] );
-  test.is( t1.buffer.constructor === Float32Array );
-  test.is( t2.buffer.constructor === Float32Array );
+  test.is( t1.buffer.constructor === F32x );
+  test.is( t2.buffer.constructor === F32x );
   test.is( t1 !== t2 );
 
 }
@@ -3372,17 +3372,17 @@ function convertToClass( test )
 
   var o = Object.create( null );
   o.name = 'Array';
-  o.arrayMake = function( a ){ return _.longMake( Array,a ) };
+  o.arrayMake = function( a ){ return _.longMakeUndefined( Array,a ) };
   this._convertToClass( test,o );
 
   var o = Object.create( null );
-  o.name = 'Float32Array';
-  o.arrayMake = function( a ){ return _.longMake( Float32Array,a ) };
+  o.name = 'F32x';
+  o.arrayMake = function( a ){ return _.longMakeUndefined( F32x,a ) };
   this._convertToClass( test,o );
 
   var o = Object.create( null );
-  o.name = 'Uint32Array';
-  o.arrayMake = function( a ){ return _.longMake( Uint32Array,a ) };
+  o.name = 'U32x';
+  o.arrayMake = function( a ){ return _.longMakeUndefined( U32x,a ) };
   this._convertToClass( test,o );
 
 }
@@ -3539,17 +3539,17 @@ function copyTo( test )
 
   var o = Object.create( null );
   o.name = 'Array';
-  o.arrayMake = function( a ){ return _.longMake( Array,a ) };
+  o.arrayMake = function( a ){ return _.longMakeUndefined( Array,a ) };
   this._copyTo( test,o );
 
   var o = Object.create( null );
-  o.name = 'Float32Array';
-  o.arrayMake = function( a ){ return _.longMake( Float32Array,a ) };
+  o.name = 'F32x';
+  o.arrayMake = function( a ){ return _.longMakeUndefined( F32x,a ) };
   this._copyTo( test,o );
 
   var o = Object.create( null );
-  o.name = 'Uint32Array';
-  o.arrayMake = function( a ){ return _.longMake( Uint32Array,a ) };
+  o.name = 'U32x';
+  o.arrayMake = function( a ){ return _.longMakeUndefined( U32x,a ) };
   this._copyTo( test,o );
 
 }
@@ -3559,7 +3559,7 @@ function copyTo( test )
 function copy( test )
 {
 
-  var b1 = new Float32Array([
+  var b1 = new F32x([
     0,
     1,7,
     2,8,
@@ -3569,7 +3569,7 @@ function copy( test )
     6,12,
     13,
   ]);
-  var b2 = new Float32Array([ 0,0,10,20,30,40,50,60,0,0 ])
+  var b2 = new F32x([ 0,0,10,20,30,40,50,60,0,0 ])
 
   var src = new _.Space
   ({
@@ -3744,7 +3744,7 @@ function copy( test )
 
   test.case = 'copy via constructor with map'; /* */
 
-  var buffer = new Float32Array
+  var buffer = new F32x
   ([
     1,4,
     2,5,
@@ -3959,7 +3959,7 @@ function stride( test )
 
   test.case = '2x2 same strides'; /* */
 
-  var buffer = new Float32Array
+  var buffer = new F32x
   ([
     -1,
     1,-1,2,-1,
@@ -3990,7 +3990,7 @@ function stride( test )
 
   test.case = '2x3 same strides'; /* */
 
-  var buffer = new Float32Array
+  var buffer = new F32x
   ([
     -1,
     1,-1,2,-1,3,-1,
@@ -4028,7 +4028,7 @@ function _bufferNormalize( o )
 
   test.case = 'trivial'; /* */
 
-  var buffer = new Float64Array
+  var buffer = new F64x
   ([
     1,2,3,
     4,5,6,
@@ -4066,11 +4066,11 @@ function _bufferNormalize( o )
   var a1 = m.atomFlatGet( 5 );
   var a2 = m.atomGet([ 1,1 ]);
 
-  test.identical( r1,vec( new Float64Array([ 4,5,6 ]) ) );
+  test.identical( r1,vec( new F64x([ 4,5,6 ]) ) );
   test.identical( r1,r2 );
-  test.identical( c1,vec( new Float64Array([ 3,6 ]) ) );
+  test.identical( c1,vec( new F64x([ 3,6 ]) ) );
   test.identical( c1,c2 );
-  test.identical( e,vec( new Float64Array([ 3,6 ]) ) );
+  test.identical( e,vec( new F64x([ 3,6 ]) ) );
   test.identical( a1, 6 );
   test.identical( a2, 5 );
   test.identical( m.reduceToSumAtomWise(), 21 );
@@ -4078,7 +4078,7 @@ function _bufferNormalize( o )
 
   test.case = 'not transposed'; /* */
 
-  var buffer = new Float64Array
+  var buffer = new F64x
   ([
     1,4,
     2,5,
@@ -4117,11 +4117,11 @@ function _bufferNormalize( o )
   var a1 = m.atomFlatGet( 5 );
   var a2 = m.atomGet([ 1,1 ]);
 
-  test.identical( r1,vec( new Float64Array([ 4,5,6 ]) ) );
+  test.identical( r1,vec( new F64x([ 4,5,6 ]) ) );
   test.identical( r1,r2 );
-  test.identical( c1,vec( new Float64Array([ 3,6 ]) ) );
+  test.identical( c1,vec( new F64x([ 3,6 ]) ) );
   test.identical( c1,c2 );
-  test.identical( e,vec( new Float64Array([ 3,6 ]) ) );
+  test.identical( e,vec( new F64x([ 3,6 ]) ) );
   test.identical( a1, 6 );
   test.identical( a2, 5 );
   test.identical( m.reduceToSumAtomWise(), 21 );
@@ -4337,14 +4337,14 @@ function _subspace( o )
   function make()
   {
 
-    var b = new Float32Array
+    var b = new F32x
     ([
       +1, +2, +3, +4,
       +5, +6, +7, +8,
       +9, +10, +11, +12,
     ]);
     if( !o.transposing )
-    b = new Float32Array
+    b = new F32x
     ([
       +1, +5, +9,
       +2, +6, +10,
@@ -4593,7 +4593,7 @@ function accessors( test )
   function remake()
   {
 
-    var buffer = new Float32Array
+    var buffer = new F32x
     ([
       -1,
       1,2,
@@ -4610,7 +4610,7 @@ function accessors( test )
       buffer : buffer,
     });
 
-    var buffer = new Float32Array
+    var buffer = new F32x
     ([
       -1,
       1,2,3,
@@ -5335,7 +5335,7 @@ function partialAccessors( test )
     -1,-1,+30,
   ]);
 
-  m2.buffer = new Int32Array
+  m2.buffer = new I32x
   ([
     +10,-1,-1,
     -1,+20,-1,
@@ -5465,7 +5465,7 @@ function partialAccessors( test )
     0,0,11,12,
   ]);
 
-  var buffer = new Float32Array
+  var buffer = new F32x
   ([
     -1,
     1,2,3,4,
@@ -5512,7 +5512,7 @@ function partialAccessors( test )
     0,0,0,
   ]);
 
-  var buffer = new Float32Array
+  var buffer = new F32x
   ([
     -1,
     1,5,9,
@@ -5554,7 +5554,7 @@ function partialAccessors( test )
 
   test.case = 'triangleLowerSet 4x1'; /* */
 
-  var buffer = new Float32Array
+  var buffer = new F32x
   ([
     -1,
     1,
@@ -5593,7 +5593,7 @@ function partialAccessors( test )
 
   test.case = 'triangleLowerSet 1x4'; /* */
 
-  var buffer = new Float32Array
+  var buffer = new F32x
   ([
     -1,
     1,2,3,4,
@@ -5648,7 +5648,7 @@ function partialAccessors( test )
     4,8,12,
   ]);
 
-  var buffer = new Float32Array
+  var buffer = new F32x
   ([
     -1,
     1,5,9,
@@ -5695,7 +5695,7 @@ function partialAccessors( test )
     9,10,11,0,
   ]);
 
-  var buffer = new Float32Array
+  var buffer = new F32x
   ([
     -1,
     1,2,3,4,
@@ -5734,7 +5734,7 @@ function partialAccessors( test )
 
   test.case = 'triangleUpperSet 1x4'; /* */
 
-  var buffer = new Float32Array
+  var buffer = new F32x
   ([
     -1,
     1,2,3,4,
@@ -5764,7 +5764,7 @@ function partialAccessors( test )
 
   test.case = 'triangleUpperSet 4x1'; /* */
 
-  var buffer = new Float32Array
+  var buffer = new F32x
   ([
     -1,
     1,
@@ -5900,7 +5900,7 @@ function partialAccessors( test )
 
   test.case = 'bad arguments'; /* */
 
-  function shouldThrowError( name )
+  function shouldThrowErrorOfAnyKind( name )
   {
 
     test.shouldThrowErrorSync( () => space.makeIdentity( 3 )[ name ]( 1,1 ) );
@@ -5913,11 +5913,11 @@ function partialAccessors( test )
 
   if( Config.debug )
   {
-    shouldThrowError( 'zero' );
-    shouldThrowError( 'identify' );
-    shouldThrowError( 'diagonalSet' );
-    shouldThrowError( 'triangleLowerSet' );
-    shouldThrowError( 'triangleUpperSet' );
+    shouldThrowErrorOfAnyKind( 'zero' );
+    shouldThrowErrorOfAnyKind( 'identify' );
+    shouldThrowErrorOfAnyKind( 'diagonalSet' );
+    shouldThrowErrorOfAnyKind( 'triangleLowerSet' );
+    shouldThrowErrorOfAnyKind( 'triangleUpperSet' );
   }
 
 }
@@ -6056,7 +6056,7 @@ function lineSwap( test )
   if( !Config.debug )
   return;
 
-  function shouldThrowError( rname, dims )
+  function shouldThrowErrorOfAnyKind( rname, dims )
   {
     space.make( dims )[ rname ]( 0,0 );
     test.shouldThrowErrorSync( () => space.make( dims )[ rname ]( -1,-1 ) );
@@ -6068,9 +6068,9 @@ function lineSwap( test )
     test.shouldThrowErrorSync( () => space.make( dims )[ rname ]( 1,2,3 ) );
   }
 
-  shouldThrowError( 'rowsSwap',[ 4,3 ] );
-  shouldThrowError( 'colsSwap',[ 3,4 ] );
-  shouldThrowError( 'elementsSwap',[ 3,4 ] );
+  shouldThrowErrorOfAnyKind( 'rowsSwap',[ 4,3 ] );
+  shouldThrowErrorOfAnyKind( 'colsSwap',[ 3,4 ] );
+  shouldThrowErrorOfAnyKind( 'elementsSwap',[ 3,4 ] );
 
 }
 
@@ -7175,7 +7175,7 @@ function homogeneousWithScalarRoutines( test )
 
   test.case = 'bad arguments'; /* */
 
-  function shouldThrowError( name )
+  function shouldThrowErrorOfAnyKind( name )
   {
 
     test.shouldThrowErrorSync( () => make()[ name ]() );
@@ -7192,11 +7192,11 @@ function homogeneousWithScalarRoutines( test )
 
   if( Config.debug )
   {
-    shouldThrowError( 'assignScalar' );
-    shouldThrowError( 'addScalar' );
-    shouldThrowError( 'subScalar' );
-    shouldThrowError( 'mulScalar' );
-    shouldThrowError( 'divScalar' );
+    shouldThrowErrorOfAnyKind( 'assignScalar' );
+    shouldThrowErrorOfAnyKind( 'addScalar' );
+    shouldThrowErrorOfAnyKind( 'subScalar' );
+    shouldThrowErrorOfAnyKind( 'mulScalar' );
+    shouldThrowErrorOfAnyKind( 'divScalar' );
   }
 
 }
@@ -7208,7 +7208,7 @@ function colRowWiseOperations( test )
 
   test.case = 'data'; /* */
 
-  var buffer = new Int32Array
+  var buffer = new I32x
   ([
     1, 2, 3, 4, 5, 6
   ]);
@@ -7221,7 +7221,7 @@ function colRowWiseOperations( test )
   });
 
   var empty1 = space.make([ 2,0 ]);
-  empty1.buffer = new Float64Array();
+  empty1.buffer = new F64x();
   test.identical( empty1.dims,[ 2,0 ] );
   test.identical( empty1._stridesEffective,[ 1,2 ] );
 
@@ -7229,7 +7229,7 @@ function colRowWiseOperations( test )
   test.identical( empty2.dims,[ 0,2 ] );
   test.identical( empty2._stridesEffective,[ 1,0 ] );
   empty2.growingDimension = 0;
-  empty2.buffer = new Float64Array();
+  empty2.buffer = new F64x();
   test.identical( empty2.dims,[ 0,2 ] );
   test.identical( empty2._stridesEffective,[ 1,0 ] );
 
@@ -7237,7 +7237,7 @@ function colRowWiseOperations( test )
   ({
     dims : [ 4,3 ],
     inputTransposing : 1,
-    buffer : new Float64Array
+    buffer : new F64x
     ([
       0,0,0,
       1,2,3,
@@ -7250,7 +7250,7 @@ function colRowWiseOperations( test )
   ({
     dims : [ 4,3 ],
     inputTransposing : 1,
-    buffer : new Float64Array
+    buffer : new F64x
     ([
       10,0,3,
       1,20,0,
@@ -7361,16 +7361,16 @@ function colRowWiseOperations( test )
 
   var expected =
   {
-    min : new Float64Array([ 0,0,0 ]),
-    max : new Float64Array([ 10,111,30 ]),
+    min : new F64x([ 0,0,0 ]),
+    max : new F64x([ 10,111,30 ]),
   }
   var r = space1.minmaxColWise();
   test.identical( r,expected );
 
   var expected =
   {
-    min : new Float64Array([]),
-    max : new Float64Array([]),
+    min : new F64x([]),
+    max : new F64x([]),
   }
 
   var r = empty1.minmaxColWise();
@@ -7378,8 +7378,8 @@ function colRowWiseOperations( test )
 
   var expected =
   {
-    min : new Float64Array([ NaN,NaN ]),
-    max : new Float64Array([ NaN,NaN ]),
+    min : new F64x([ NaN,NaN ]),
+    max : new F64x([ NaN,NaN ]),
   }
 
   var r = empty2.minmaxColWise();
@@ -7439,16 +7439,16 @@ function colRowWiseOperations( test )
 
   var expected =
   {
-    min : new Float64Array([ 0,1,10,1 ]),
-    max : new Float64Array([ 0,3,30,111 ]),
+    min : new F64x([ 0,1,10,1 ]),
+    max : new F64x([ 0,3,30,111 ]),
   }
   var r = space1.minmaxRowWise();
   test.identical( r,expected );
 
   var expected =
   {
-    min : new Float64Array([ NaN,NaN ]),
-    max : new Float64Array([ NaN,NaN ]),
+    min : new F64x([ NaN,NaN ]),
+    max : new F64x([ NaN,NaN ]),
   }
 
   var r = empty1.minmaxRowWise();
@@ -7456,8 +7456,8 @@ function colRowWiseOperations( test )
 
   var expected =
   {
-    min : new Float64Array([]),
-    max : new Float64Array([]),
+    min : new F64x([]),
+    max : new F64x([]),
   }
 
   var r = empty2.minmaxRowWise();
@@ -7542,7 +7542,7 @@ function colRowWiseOperations( test )
 /*
   var space1 = space.make([ 4,3 ])
   .copy
-  ( new Float64Array([
+  ( new F64x([
     0,0,0,
     1,2,3,
     10,20,30,
@@ -7551,7 +7551,7 @@ function colRowWiseOperations( test )
 
   var space2 = space.make([ 4,3 ])
   .copy
-  ( new Float64Array([
+  ( new F64x([
     10,0,3,
     1,20,0,
     0,2,30,
@@ -7568,7 +7568,7 @@ function mul( test )
 
   test.case = 'data'; /* */
 
-  var buffer = new Int32Array
+  var buffer = new I32x
   ([
     +2, +2, -2,
     -2, -3, +4,
@@ -7614,7 +7614,7 @@ function mul( test )
   logger.log( 'mul\n' + _.toStr( mul ) );
 
   var expected = space.makeSquare( 3 );
-  expected.buffer = new Int32Array
+  expected.buffer = new I32x
   ([
     -8, +18, -6,
     -8, +17, -7,
@@ -7703,7 +7703,7 @@ function mul( test )
 
   var mul = space.mul( null,[ ra,m3 ] );
   var expected = space.makeRow([ 10,5,0 ]);
-  expected.buffer = new Int32Array([ 10,5,0 ]);
+  expected.buffer = new I32x([ 10,5,0 ]);
   test.equivalent( mul,expected );
   test.identical( mul.reduceToSumAtomWise(), 15 );
   test.identical( mul.reduceToProductAtomWise(), 0 );
@@ -7714,7 +7714,7 @@ function mul( test )
 
   var mul = space.mul( null,[ rb,m3 ] );
   var expected = space.makeRow([ 10,5,0 ]);
-  expected.buffer = new Int32Array([ 10,5,0 ]);
+  expected.buffer = new I32x([ 10,5,0 ]);
   test.equivalent( mul,expected );
   test.identical( mul.reduceToSumAtomWise(), 15 );
   test.identical( mul.reduceToProductAtomWise(), 0 );
@@ -8121,7 +8121,7 @@ function determinant( test )
 
   var m = new space
   ({
-    buffer : new Int32Array([ 1,2,3,4 ]),
+    buffer : new I32x([ 1,2,3,4 ]),
     dims : [ 2,2 ],
     inputTransposing : 1,
   });
@@ -8133,7 +8133,7 @@ function determinant( test )
 
   test.case = 'matrix with zero determinant'; /* */
 
-  var buffer = new Int32Array
+  var buffer = new I32x
   ([
     +2, +2, -2,
     -2, -3, +4,
@@ -8158,7 +8158,7 @@ function determinant( test )
 
   var m = new space
   ({
-    buffer : new Int32Array
+    buffer : new I32x
     ([
       +2, -2, +4,
       +2, -3, +3,
@@ -8173,7 +8173,7 @@ function determinant( test )
 
   test.case = '3x3 matrix with -30 determinant' //
 
-  var buffer = new Int32Array
+  var buffer = new I32x
   ([
     11, 2, 3,
      4, 5, 6,
@@ -8216,7 +8216,7 @@ function determinant( test )
 
   test.case = '3x3 matrix' //
 
-  var buffer = new Int32Array
+  var buffer = new I32x
   ([
     15,-42,-61,
     43,57,19,
@@ -9988,14 +9988,14 @@ function identical( test )
 
   var m1 = new _.Space
   ({
-    buffer : new Float32Array([ 1, 3, 5 ]),
+    buffer : new F32x([ 1, 3, 5 ]),
     dims : [ 3,1 ],
     inputTransposing : 0,
   });
 
   var m2 = new _.Space
   ({
-    buffer : new Float32Array([ 0, 1,2, 3,4, 5,6, 7 ]),
+    buffer : new F32x([ 0, 1,2, 3,4, 5,6, 7 ]),
     offset : 1,
     inputTransposing : 0,
     strides : [ 2,6 ],
@@ -10011,14 +10011,14 @@ function identical( test )
 
   var m1 = new _.Space
   ({
-    buffer : new Float32Array([ 1, 3, 5 ]),
+    buffer : new F32x([ 1, 3, 5 ]),
     dims : [ 3, Infinity ],
     inputTransposing : 0,
   });
 
   var m2 = new _.Space
   ({
-    buffer : new Float32Array([ 1, 3, 5 ]),
+    buffer : new F32x([ 1, 3, 5 ]),
     dims : [ 3, Infinity ],
     inputTransposing : 0,
   });
@@ -10035,7 +10035,7 @@ function identical( test )
 var Self =
 {
 
-  name : 'Tools/Math/Space',
+  name : 'Tools.Math.Space',
   silencing : 1,
   enabled : 1,
   // routine : 'construct',
