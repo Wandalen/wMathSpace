@@ -24,11 +24,11 @@
   }, 
   "dependencies" : 
   {
-    "wTools" : "", 
-    "wCopyable" : "", 
-    "wmathscalar" : "", 
-    "wmathvector" : ""
+    "wTools" : "beta", 
+    "wCopyable" : "beta", 
+    "wmathscalar" : "beta", 
+    "wmathvector" : "beta"
   }, 
-  "devDependencies" : { "wTesting" : "" }, 
+  "devDependencies" : { "wTesting" : "beta" }, 
   "keywords" : [ "wTools", "math", "matrix", "matrix math", "convolution" ]
 }
