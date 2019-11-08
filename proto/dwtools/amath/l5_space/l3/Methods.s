@@ -47,7 +47,7 @@ function make( dims )
     /*strides : strides,*/
   });
 
-  _.assert( _.arraysAreIdentical( strides,result._stridesEffective ) );
+  _.assert( _.longIdentical( strides,result._stridesEffective ) );
 
   return result;
 }
@@ -116,7 +116,7 @@ function makeZero( dims )
     /*strides : strides,*/
   });
 
-  _.assert( _.arraysAreIdentical( strides,result._stridesEffective ) );
+  _.assert( _.longIdentical( strides,result._stridesEffective ) );
 
   return result;
 }
@@ -147,7 +147,7 @@ function makeIdentity( dims )
 
   result.diagonalSet( 1 );
 
-  _.assert( _.arraysAreIdentical( strides,result._stridesEffective ) );
+  _.assert( _.longIdentical( strides,result._stridesEffective ) );
 
   return result;
 }

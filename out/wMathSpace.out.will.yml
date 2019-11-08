@@ -2,16 +2,20 @@ format: outwillfile-2.0
 root:
   - wMathSpace.out
 consistency:
-  ../.ex.will.yml: &ref_0
+  wMathSpace.out.will.yml: &ref_0
+    hash: 33d793cb5ecd4d4d3041945c616540ad
+    size: 40516
+  ../.ex.will.yml: &ref_1
     hash: 950925402d0bb906551fc04019b363d9
     size: 2548
-  ../.im.will.yml: &ref_1
-    hash: 2c8678b0b37787335e69f7994424aeb1
-    size: 5085
+  ../.im.will.yml: &ref_2
+    hash: 6335a70bb0f9f8e87aa63be8b047559d
+    size: 5159
 module:
   wMathSpace.out:
     about:
       name: wMathSpace
+      org: noorg
       description: >-
         Collection of functions for matrix math. MathSpace introduces class
         Space which is a multidimensional structure which in the most trivial
@@ -27,11 +31,11 @@ module:
         computation.
       enabled: 1
       version: 0.4.0
-      interpreters: &ref_2
+      interpreters:
         - njs >= 8.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords: &ref_3
+      keywords:
         - wTools
         - math
         - matrix
@@ -39,11 +43,11 @@ module:
         - convolution
       license: MIT
       author: Kostiantyn Wandalen <wanalen@willbe.so>
-      contributors: &ref_4
+      contributors:
         - Kostiantyn Wandalen <wanalen@willbe.so>
         - Pablo Garcimartin <pablogarcimartinruiz@gmail.com>
       npm.name: wmathspace
-      npm.scripts: &ref_5
+      npm.scripts:
         test: wtest .run proto/**
         docgen: wdocgen .build proto
     path:
@@ -74,9 +78,6 @@ module:
       download:
         criterion:
           predefined: 1
-      remote:
-        criterion:
-          predefined: 1
       repository:
         path: 'git+https:///github.com/Wandalen/wMathSpace.git'
       origins:
@@ -86,15 +87,15 @@ module:
       bugtracker:
         path: 'https:///github.com/Wandalen/wMathSpace/issues'
       in:
-        criterion:
-          predefined: 0
         path: .
       out:
-        criterion:
-          predefined: 0
         path: .
       temp:
-        path: 'path::out'
+        path:
+          - 'path::out'
+          - ../package-lock.json
+          - ../package.json
+          - ../node_modules
       proto:
         path: ../proto
       export:
@@ -159,11 +160,13 @@ module:
         path: '{path::out.*=}/source/Index.s'
       exported.dir.proto.export:
         criterion:
+          generated: 1
           content: proto
           export: 1
         path: ../proto
       exported.files.proto.export:
         criterion:
+          generated: 1
           content: proto
           export: 1
         path:
@@ -358,6 +361,7 @@ module:
           prefixPath: ../proto
         mandatory: 1
         criterion:
+          generated: 1
           content: proto
           export: 1
       exported.files.proto.export:
@@ -370,6 +374,7 @@ module:
         recursive: 0
         mandatory: 1
         criterion:
+          generated: 1
           content: proto
           export: 1
     step:
@@ -723,6 +728,24 @@ module:
           content: prime
         inherit:
           - files.transpile
+      exported.proto.export:
+        opts:
+          reflector: 'reflector::exported.proto.export*'
+        criterion:
+          generated: 1
+          content: proto
+          export: 1
+        inherit:
+          - files.reflect
+      exported.files.proto.export:
+        opts:
+          reflector: 'reflector::exported.files.proto.export*'
+        criterion:
+          generated: 1
+          content: proto
+          export: 1
+        inherit:
+          - files.reflect
     build:
       proto.export:
         steps:
@@ -811,11 +834,13 @@ module:
           content: proto
           export: 1
     consistency:
-      ../.ex.will.yml: *ref_0
-      ../.im.will.yml: *ref_1
+      wMathSpace.out.will.yml: *ref_0
+      ../.ex.will.yml: *ref_1
+      ../.im.will.yml: *ref_2
   ../:
     about:
       name: wMathSpace
+      org: noorg
       description: >-
         Collection of functions for matrix math. MathSpace introduces class
         Space which is a multidimensional structure which in the most trivial
@@ -831,13 +856,25 @@ module:
         computation.
       enabled: 1
       version: 0.4.0
-      interpreters: *ref_2
-      keywords: *ref_3
+      interpreters:
+        - njs >= 8.0.0
+        - chrome >= 60.0.0
+        - firefox >= 60.0.0
+      keywords:
+        - wTools
+        - math
+        - matrix
+        - matrix math
+        - convolution
       license: MIT
       author: Kostiantyn Wandalen <wanalen@willbe.so>
-      contributors: *ref_4
+      contributors:
+        - Kostiantyn Wandalen <wanalen@willbe.so>
+        - Pablo Garcimartin <pablogarcimartinruiz@gmail.com>
       npm.name: wmathspace
-      npm.scripts: *ref_5
+      npm.scripts:
+        test: wtest .run proto/**
+        docgen: wdocgen .build proto
     path:
       module.willfiles:
         criterion:
@@ -866,9 +903,6 @@ module:
       download:
         criterion:
           predefined: 1
-      remote:
-        criterion:
-          predefined: 1
       repository:
         path: 'git+https:///github.com/Wandalen/wMathSpace.git'
       origins:
@@ -878,21 +912,21 @@ module:
       bugtracker:
         path: 'https:///github.com/Wandalen/wMathSpace/issues'
       in:
-        criterion:
-          predefined: 0
         path: .
       out:
-        criterion:
-          predefined: 0
         path: out
       temp:
-        path: 'path::out'
+        path:
+          - 'path::out'
+          - package-lock.json
+          - package.json
+          - node_modules
       proto:
-        path: ./proto
+        path: proto
       export:
         path: '{path::proto}/**'
       doc:
-        path: ./doc
+        path: doc
       out.raw.debug:
         criterion:
           debug: debug
@@ -1522,5 +1556,8 @@ module:
         hash: 950925402d0bb906551fc04019b363d9
         size: 2548
       ../.im.will.yml:
-        hash: 2c8678b0b37787335e69f7994424aeb1
-        size: 5085
+        hash: 6335a70bb0f9f8e87aa63be8b047559d
+        size: 5159
+      wMathSpace.out.will.yml:
+        hash: 33d793cb5ecd4d4d3041945c616540ad
+        size: 40516
