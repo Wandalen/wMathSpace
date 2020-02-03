@@ -371,7 +371,7 @@ function clone()
 {
   let self = this;
 
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
 
   let dst = _.Copyable.prototype.clone.call( self );
 
@@ -450,7 +450,7 @@ function extractNormalized()
   let self = this;
   let result = Object.create( null );
 
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
 
   result.buffer = _.longMakeUndefined( self.buffer , self.atomsPerSpace );
   result.offset = 0;
@@ -1422,7 +1422,7 @@ function hasShape( src )
 function isSquare()
 {
   let self = this;
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
   return self.dims[ 0 ] === self.dims[ 1 ];
 }
 
@@ -1495,7 +1495,7 @@ function transpose()
   let dims = self.dims.slice();
   let strides = self._stridesEffective.slice();
 
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
   _.assert( dims.length >= 2 );
   _.assert( strides.length >= 2 );
   _.assert( strides.length === dims.length );
@@ -1788,7 +1788,7 @@ function bufferNormalize()
 {
   let self = this;
 
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
 
   let buffer = _.longMakeUndefined( self.buffer,self.atomsPerSpace );
 
@@ -2648,7 +2648,7 @@ function asVector()
   let self = this
   let result = null;
 
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
   _.assert( self.strideOfElement === self.atomsPerElement );
   _.assert( self.strideOfElement === self.atomsPerElement,'elementsInRangeGet :','cant make single row for elements with extra stride' );
 

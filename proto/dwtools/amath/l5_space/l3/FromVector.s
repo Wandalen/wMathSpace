@@ -177,7 +177,7 @@ function declareAtomWiseReducingRoutine( routine , rname )
   Proto[ name ] = function atomWise()
   {
     let self = this;
-    _.assert( arguments.length === 0 );
+    _.assert( arguments.length === 0, 'Expects no arguments' );
     let result = self.atomWiseReduceWithAtomHandler( onBegin,handleAtom,onEnd );
     return result;
   }

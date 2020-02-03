@@ -1274,7 +1274,7 @@ function zero()
 {
   let self = this;
 
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
 
   self.atomEach( ( it ) => self.atomSet( it.indexNd,0 ) );
 
@@ -1287,7 +1287,7 @@ function identify()
 {
   let self = this;
 
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
 
   self.atomEach( ( it ) => it.indexNd[ 0 ] === it.indexNd[ 1 ] ? self.atomSet( it.indexNd,1 ) : self.atomSet( it.indexNd,0 ) );
 
@@ -1326,7 +1326,7 @@ function diagonalVectorGet()
   let length = Math.min( self.atomsPerCol,self.atomsPerRow );
   let strides = self._stridesEffective;
 
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
   _.assert( self.dims.length === 2 );
 
   let result = vector.fromSubArrayWithStride( self.buffer, self.offset, length, strides[ 0 ] + strides[ 1 ] );
@@ -1548,7 +1548,7 @@ function positionGet()
   let loe = self.atomsPerElement;
   let result = self.colVectorGet( l-1 );
 
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
 
   // debugger;
   result = vector.fromSubArray( result,0,loe-1 );
@@ -1924,7 +1924,7 @@ function triangulateLu()
   let nrow = self.nrow;
   let ncol = Math.min( self.ncol,nrow );
 
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
 
   logger.log( 'self',self );
 
@@ -1956,7 +1956,7 @@ function triangulateLuNormal()
   let nrow = self.nrow;
   let ncol = Math.min( self.ncol,nrow );
 
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
 
   for( let r1 = 0 ; r1 < ncol ; r1++ )
   {
@@ -2240,7 +2240,7 @@ function invertWithGaussJordan()
 {
   let m = this;
 
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
   _.assert( m.dims[ 0 ] === m.dims[ 1 ] );
 
   let nrow = m.nrow;
@@ -2573,7 +2573,7 @@ function invert()
 
   _.assert( self.dims.length === 2 );
   _.assert( self.isSquare() );
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
 
   return self.invertWithGaussJordan();
 }
@@ -2586,7 +2586,7 @@ function invertingClone()
 
   _.assert( self.dims.length === 2 );
   _.assert( self.isSquare() );
-  _.assert( arguments.length === 0 );
+  _.assert( arguments.length === 0, 'Expects no arguments' );
 
   return Self.solveWithGaussJordan( null,self.clone(),self.Self.makeIdentity( self.dims[ 0 ] ) );
 }
