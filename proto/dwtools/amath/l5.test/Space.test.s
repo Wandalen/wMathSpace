@@ -52,6 +52,25 @@ function makeWithOffset( o )
 
 //
 
+function spaceIs( test )
+{
+  test.case = 'instance of _.Space';
+  var buffer = new U8x( [ 1, 2, 3, 4, 5 ] );
+  var src = new _.Space
+ ({
+    buffer : new F32x( [ 0, 1, 2, 3, 4, 5, 6, 7 ] ),
+    offset : 1,
+    atomsPerElement : 3,
+    inputTransposing : 0,
+    strides : [ 2, 6 ],
+    dims : [ 3, 1 ],
+  }); 
+  var got = _.spaceIs( src );
+  test.identical( got, true );
+}
+
+//
+
 function experiment( test )
 {
   test.case = 'experiment';
@@ -10059,6 +10078,10 @@ var Self =
 
   tests :
   {
+
+    //
+
+    spaceIs, // Dmytro : the second part of test routine spaceIs in wTools
 
     // experiment : experiment,
 
