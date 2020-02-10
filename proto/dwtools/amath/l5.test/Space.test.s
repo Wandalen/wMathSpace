@@ -55,9 +55,8 @@ function makeWithOffset( o )
 function spaceIs( test )
 {
   test.case = 'instance of _.Space';
-  var buffer = new U8x( [ 1, 2, 3, 4, 5 ] );
   var src = new _.Space
- ({
+  ({
     buffer : new F32x( [ 0, 1, 2, 3, 4, 5, 6, 7 ] ),
     offset : 1,
     atomsPerElement : 3,
@@ -66,6 +65,28 @@ function spaceIs( test )
     dims : [ 3, 1 ],
   }); 
   var got = _.spaceIs( src );
+  test.identical( got, true );
+}
+
+//
+
+function constructorIsSpace( test )
+{
+  test.case = 'instance of _.Space';
+  var src = new _.Space
+  ({
+    buffer : new F32x( [ 0, 1, 2, 3, 4, 5, 6, 7 ] ),
+    offset : 1,
+    atomsPerElement : 3,
+    inputTransposing : 0,
+    strides : [ 2, 6 ],
+    dims : [ 3, 1 ],
+  }); 
+  var got = _.constructorIsSpace( src );
+  test.identical( got, false );
+
+  test.case = '_.Space';
+  var got = _.constructorIsSpace( space );
   test.identical( got, true );
 }
 
@@ -10082,6 +10103,7 @@ var Self =
     //
 
     spaceIs, // Dmytro : the second part of test routine spaceIs in wTools
+    constructorIsSpace, // Dmytro : the second part of test routine constructorIsSpace in wTools
 
     // experiment : experiment,
 
