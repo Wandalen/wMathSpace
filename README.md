@@ -6,7 +6,7 @@ Collection of functions for matrix math. MathSpace introduces class Space which 
 ### Try out
 ```
 npm install
-node sample/Sample.s
+node sample/Sample.js
 ```
 
 
