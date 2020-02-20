@@ -224,7 +224,7 @@ function declareAtomWiseHomogeneousWithScalarRoutines( routine,rname )
 
   }
 
-  handleAtom2.have = { onAtom : onAtom };
+  handleAtom2.have = { onAtom };
 
   /* */
 
@@ -322,10 +322,10 @@ function declareAtomWiseHomogeneousRoutine( routine,name )
     let result = self.Self.atomWiseHomogeneous
     ({
       onContinue : onContinue0,
-      onVectorsBegin : onVectorsBegin,
-      onVectorsEnd : onVectorsEnd,
+      onVectorsBegin,
+      onVectorsEnd,
       onAtom : handleAtom,
-      args : args,
+      args,
       reducing : dop.reducing,
       usingDstAsSrc : dop.usingDstAsSrc,
       usingExtraSrcs : dop.usingExtraSrcs,
@@ -353,10 +353,10 @@ function declareAtomWiseHomogeneousRoutine( routine,name )
 
     let result = self.Self.atomWiseHomogeneous
     ({
-      onVectorsBegin : onVectorsBegin,
-      onVectorsEnd : onVectorsEnd,
+      onVectorsBegin,
+      onVectorsEnd,
       onAtom : handleAtom,
-      args : args,
+      args,
       reducing : dop.reducing,
       usingDstAsSrc : dop.usingDstAsSrc,
       usingExtraSrcs : dop.usingExtraSrcs,
@@ -369,8 +369,8 @@ function declareAtomWiseHomogeneousRoutine( routine,name )
     //   onAtomsBegin : onVectorsBegin,
     //   onAtomsEnd : onVectorsEnd,
     //   onAtom : handleAtom,
-    //   dst : dst,
-    //   srcs : srcs,
+    //   dst,
+    //   srcs,
     // });
 
     return result;

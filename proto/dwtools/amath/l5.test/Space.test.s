@@ -18,7 +18,7 @@ if( typeof module !== 'undefined' )
 
 //
 
-var _ = _global_.wTools.withArray.Float32;
+var _ = _global_.wTools.withDefaultLong.Fx;
 var space = _.Space;
 var vector = _.vector;
 var vec = _.vector.fromArray;
@@ -42,7 +42,7 @@ function makeWithOffset( o )
   var m = new space
   ({
     dims : o.dims,
-    buffer : buffer,
+    buffer,
     offset : o.offset,
     inputTransposing : o.inputTransposing,
   });
@@ -87,7 +87,7 @@ function clone( test )
   var buffer = new F32x([ 1,2,3,4,5,6 ]);
   var a = new _.Space
   ({
-    buffer : buffer,
+    buffer,
     dims : [ 3,2 ],
     inputTransposing : 0,
   });
@@ -1490,7 +1490,7 @@ function _make( test,o )
       1, 2, 3,
       4, 5, 6,
     ]);
-    test.shouldThrowErrorSync( () => new space({ buffer : buffer, strides : [ 1,3 ] }) );
+    test.shouldThrowErrorSync( () => new space({ buffer, strides : [ 1,3 ] }) );
 
   }
 
@@ -1748,7 +1748,7 @@ function _make( test,o )
   {
     new space
     ({
-      buffer : _.arrayFromRange([ 1,5 ]),
+      buffer : _.longFromRange([ 1,5 ]),
       dims : [ 3,3 ],
     });
   });
@@ -2728,7 +2728,7 @@ function _makeSimilar( test,o )
     dims : [ 2,2 ],
     inputTransposing : 1,
     offset : 1,
-    buffer : buffer,
+    buffer,
     strides : [ 2,2 ],
   });
 
@@ -2759,7 +2759,7 @@ function _makeSimilar( test,o )
     dims : [ 2,2 ],
     inputTransposing : 1,
     offset : 1,
-    buffer : buffer,
+    buffer,
     strides : [ 2,2 ],
   });
 
@@ -3750,7 +3750,7 @@ function copy( test )
     2,5,
     3,6,
   ]);
-  var dst = space({ buffer : buffer, dims : [ 3,2 ], inputTransposing : 1 });
+  var dst = space({ buffer, dims : [ 3,2 ], inputTransposing : 1 });
   var dstBuffer = dst.buffer;
 
   var expected = space.make([ 3,2 ]).copy
@@ -3890,7 +3890,7 @@ function offset( test )
 
   m.copy
   ({
-    buffer : buffer,
+    buffer,
     offset : 2,
     strides : [ 1,3 ],
     dims : [ 3,2 ],
@@ -3972,7 +3972,7 @@ function stride( test )
     dims : [ 2,2 ],
     inputTransposing : 1,
     offset : 1,
-    buffer : buffer,
+    buffer,
     strides : [ 2,2 ],
   });
 
@@ -4003,7 +4003,7 @@ function stride( test )
     dims : [ 2,3 ],
     inputTransposing : 1,
     offset : 1,
-    buffer : buffer,
+    buffer,
     strides : [ 2,2 ],
   });
 
@@ -4035,7 +4035,7 @@ function _bufferNormalize( o )
   ]);
   var m = makeWithOffset
   ({
-    buffer : buffer,
+    buffer,
     dims : [ 2,3 ],
     offset : o.offset,
     inputTransposing : 1,
@@ -4086,7 +4086,7 @@ function _bufferNormalize( o )
   ]);
   var m = makeWithOffset
   ({
-    buffer : buffer,
+    buffer,
     dims : [ 2,3 ],
     offset : o.offset,
     inputTransposing : 0,
@@ -4607,7 +4607,7 @@ function accessors( test )
       dims : [ 3,2 ],
       inputTransposing : 1,
       offset : 1,
-      buffer : buffer,
+      buffer,
     });
 
     var buffer = new F32x
@@ -4623,7 +4623,7 @@ function accessors( test )
       dims : [ 2,3 ],
       inputTransposing : 1,
       offset : 1,
-      buffer : buffer,
+      buffer,
     });
 
   }
@@ -5146,7 +5146,7 @@ function partialAccessors( test )
     dims : [ 3,4 ],
     inputTransposing : 1,
     offset : 1,
-    buffer : buffer,
+    buffer,
   });
 
   var expected = vec([ 1,6,11 ]);
@@ -5170,7 +5170,7 @@ function partialAccessors( test )
     dims : [ 3,4 ],
     inputTransposing : 0,
     offset : 1,
-    buffer : buffer,
+    buffer,
   });
 
   var expected = vec([ 1,6,11 ]);
@@ -5201,7 +5201,7 @@ function partialAccessors( test )
     dims : [ 4,3 ],
     inputTransposing : 1,
     offset : 1,
-    buffer : buffer,
+    buffer,
   });
 
   var expected = vec([ 1,6,11 ]);
@@ -5224,7 +5224,7 @@ function partialAccessors( test )
     dims : [ 4,3 ],
     inputTransposing : 0,
     offset : 1,
-    buffer : buffer,
+    buffer,
   });
 
   var expected = vec([ 1,6,11 ]);
@@ -5479,7 +5479,7 @@ function partialAccessors( test )
     dims : [ 3,4 ],
     inputTransposing : 1,
     offset : 1,
-    buffer : buffer,
+    buffer,
   });
 
   m.triangleLowerSet( 0 );
@@ -5527,7 +5527,7 @@ function partialAccessors( test )
     dims : [ 4,3 ],
     inputTransposing : 1,
     offset : 1,
-    buffer : buffer,
+    buffer,
   });
 
   m.triangleLowerSet( 0 );
@@ -5569,7 +5569,7 @@ function partialAccessors( test )
     dims : [ 4,1 ],
     inputTransposing : 1,
     offset : 1,
-    buffer : buffer,
+    buffer,
   });
 
   var expected = space.make([ 4,1 ]).copy
@@ -5605,7 +5605,7 @@ function partialAccessors( test )
     dims : [ 1,4 ],
     inputTransposing : 1,
     offset : 1,
-    buffer : buffer,
+    buffer,
   });
 
   var expected = space.make([ 1,4 ]).copy
@@ -5663,7 +5663,7 @@ function partialAccessors( test )
     dims : [ 4,3 ],
     inputTransposing : 1,
     offset : 1,
-    buffer : buffer,
+    buffer,
   });
 
   m.triangleUpperSet( 0 );
@@ -5709,7 +5709,7 @@ function partialAccessors( test )
     dims : [ 3,4 ],
     inputTransposing : 1,
     offset : 1,
-    buffer : buffer,
+    buffer,
   });
 
   m.triangleUpperSet( 0 );
@@ -5746,7 +5746,7 @@ function partialAccessors( test )
     dims : [ 1,4 ],
     inputTransposing : 1,
     offset : 1,
-    buffer : buffer,
+    buffer,
   });
 
   var m2 = space.make([ 1,4 ]).copy
@@ -5779,7 +5779,7 @@ function partialAccessors( test )
     dims : [ 4,1 ],
     inputTransposing : 1,
     offset : 1,
-    buffer : buffer,
+    buffer,
   });
 
   var m2 = space.make([ 1,1 ]).copy
@@ -7215,7 +7215,7 @@ function colRowWiseOperations( test )
 
   var m32 = new space
   ({
-    buffer : buffer,
+    buffer,
     dims : [ 3,2 ],
     inputTransposing : 0,
   });
@@ -7577,7 +7577,7 @@ function mul( test )
 
   var m3 = new space
   ({
-    buffer : buffer,
+    buffer,
     dims : [ 3,3 ],
     inputTransposing : 1,
   });
@@ -8141,7 +8141,7 @@ function determinant( test )
   ]);
   var m = new space
   ({
-    buffer : buffer,
+    buffer,
     dims : [ 3,3 ],
     inputTransposing : 1,
   });
@@ -8181,7 +8181,7 @@ function determinant( test )
   ]);
   var m = new space
   ({
-    buffer : buffer,
+    buffer,
     dims : [ 3,3 ],
     inputTransposing : 1,
   });
@@ -8194,7 +8194,7 @@ function determinant( test )
 
   var m = new space
   ({
-    buffer : _.arrayFromRange([ 1,5 ]),
+    buffer : _.longFromRange([ 1,5 ]),
     dims : [ 2,2 ],
     inputTransposing : 0,
   });
@@ -8206,7 +8206,7 @@ function determinant( test )
 
   var m = new space
   ({
-    buffer : _.arrayFromRange([ 1,5 ]),
+    buffer : _.longFromRange([ 1,5 ]),
     dims : [ 2,2 ],
     inputTransposing : 0,
   });
@@ -8225,7 +8225,7 @@ function determinant( test )
 
   var m = new space
   ({
-    buffer : buffer,
+    buffer,
     dims : [ 3,3 ],
     inputTransposing : 1,
   });
@@ -8235,7 +8235,7 @@ function determinant( test )
 
   var m = new space
   ({
-    buffer : buffer,
+    buffer,
     dims : [ 3,3 ],
     inputTransposing : 0,
   });
@@ -9508,7 +9508,7 @@ function solveGeneral( test )
   var mo = m.clone();
   var y = space.makeCol([ 0,3,3 ]);
   var yo = y.clone();
-  var r = space.solveGeneral({ m : m, y : y, pivoting : 0 });
+  var r = space.solveGeneral({ m, y, pivoting : 0 });
 
   test.equivalent( r,re );
   test.equivalent( m,me );
@@ -9572,7 +9572,7 @@ function solveGeneral( test )
   var mo = m.clone();
   var y = space.makeCol([ 0,3,3 ]);
   var yo = y.clone();
-  var r = space.solveGeneral({ m : m, y : y, pivoting : 1 });
+  var r = space.solveGeneral({ m, y, pivoting : 1 });
 
   test.equivalent( r,re );
   test.equivalent( m,me );
@@ -9609,7 +9609,7 @@ function solveGeneral( test )
   var mo = m.clone();
 
   var y = space.makeCol([ +4,-3,+2 ]);
-  var r = space.solveGeneral({ m : m, y : y });
+  var r = space.solveGeneral({ m, y });
   /*test.equivalent( r,expected );*/
 
   logger.log( 'r.base',r.base );
@@ -9643,7 +9643,7 @@ function solveGeneral( test )
   var mo = m.clone();
 
   var y = space.makeCol([ +4,-3,+2 ]);
-  var r = space.solveGeneral({ m : m , y : y });
+  var r = space.solveGeneral({ m , y });
   /*test.equivalent( r,expected );*/
 
   logger.log( 'r.base',r.base );
@@ -9676,7 +9676,7 @@ function solveGeneral( test )
   var mo = m.clone();
 
   var y = space.makeCol([ +1,-2 ]);
-  var r = space.solveGeneral({ m : m , y : y });
+  var r = space.solveGeneral({ m , y });
   test.equivalent( r,expected );
   /*test.equivalent( r,expected );*/
 
@@ -9711,7 +9711,7 @@ function solveGeneral( test )
   var mo = m.clone();
 
   var y = space.makeCol([ 1,2,3 ]);
-  var r = space.solveGeneral({ m : m, y : y });
+  var r = space.solveGeneral({ m, y });
   test.equivalent( r,expected );
 
   logger.log( 'r.base',r.base );
@@ -9746,7 +9746,7 @@ function solveGeneral( test )
   var mo = m.clone();
 
   var y = space.makeCol([ +1,+3,+1 ]);
-  var r = space.solveGeneral({ m : m, y : y });
+  var r = space.solveGeneral({ m, y });
   test.equivalent( r,expected );
 
   logger.log( 'r.base',r.base );
@@ -9941,7 +9941,7 @@ function polynomExactFor( test )
   var polynom = space.polynomExactFor
   ({
     order : 3,
-    points : points,
+    points,
   });
 
   logger.log( polynom );
@@ -10044,79 +10044,79 @@ var Self =
   context :
   {
 
-    makeWithOffset : makeWithOffset,
+    makeWithOffset,
 
-    _make : _make,
-    _makeSimilar : _makeSimilar,
-    _convertToClass : _convertToClass,
-    _copyTo : _copyTo,
-    _subspace : _subspace,
-    _bufferNormalize : _bufferNormalize,
-    _solveSimple : _solveSimple,
-    _solveComplicated : _solveComplicated,
+    _make,
+    _makeSimilar,
+    _convertToClass,
+    _copyTo,
+    _subspace,
+    _bufferNormalize,
+    _solveSimple,
+    _solveComplicated,
 
   },
 
   tests :
   {
 
-    // experiment : experiment,
+    // experiment,
 
     /* maker */
 
-    env : env,
-    clone : clone,
-    construct : construct,
-    make : make,
-    makeHelper : makeHelper,
-    makeLine : makeLine,
-    makeSimilar : makeSimilar,
-    from : from,
-    tempBorrow : tempBorrow,
-    copyClone : copyClone,
-    convertToClass : convertToClass,
-    copyTo : copyTo,
-    copy : copy,
+    env,
+    clone,
+    construct,
+    make,
+    makeHelper,
+    makeLine,
+    makeSimilar,
+    from,
+    tempBorrow,
+    copyClone,
+    convertToClass,
+    copyTo,
+    copy,
 
     /* structural */
 
-    offset : offset,
-    stride : stride,
-    bufferNormalize : bufferNormalize,
-    expand : expand,
+    offset,
+    stride,
+    bufferNormalize,
+    expand,
 
-    // // subspace : subspace, /* not ready */
+    // // subspace, /* not ready */
 
-    accessors : accessors,
-    partialAccessors : partialAccessors,
-    lineSwap : lineSwap,
-    pivot : pivot,
+    accessors,
+    partialAccessors,
+    lineSwap,
+    pivot,
 
     /* etc */
 
-    addAtomWise : addAtomWise,
-    subAtomWise : subAtomWise,
+    addAtomWise,
+    subAtomWise,
 
-    homogeneousWithScalarRoutines : homogeneousWithScalarRoutines,
+    homogeneousWithScalarRoutines,
 
-    colRowWiseOperations : colRowWiseOperations,
-    mul : mul,
-    furthestClosest : furthestClosest,
-    matrxHomogenousApply : matrxHomogenousApply,
+    colRowWiseOperations,
+    mul,
+    furthestClosest,
+    matrxHomogenousApply,
 
-    determinant : determinant,
-    triangulate : triangulate,
-    solveTriangulated : solveTriangulated,
-    solveSimple : solveSimple,
-    solveComplicated : solveComplicated,
-    solveWithPivoting : solveWithPivoting,
-    solveGeneral : solveGeneral,
-    invert : invert,
+    determinant,
+    triangulate,
+    solveTriangulated,
+    solveSimple,
+    solveComplicated,
+    solveWithPivoting,
+    solveGeneral,
+    invert,
 
-    polynomExactFor : polynomExactFor,
-    polynomClosestFor : polynomClosestFor,
+    polynomExactFor,
+    polynomClosestFor,
 
-    identical : identical,
+    identical,
 
   },
 
