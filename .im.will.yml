@@ -18,6 +18,9 @@ submodule :
     enabled : 0 # submodule
     criterion :
       development : 1
+  wentitybasic :
+    path : npm:///wentitybasic
+    enabled : 0 # submodule
   wTesting :
     path : npm:///wTesting
     enabled : 0 # submodule
