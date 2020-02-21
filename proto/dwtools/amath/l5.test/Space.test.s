@@ -3453,7 +3453,7 @@ function _copyTo( test, o )
   var dst = o.arrayMake([ 0, 0, 0 ]);
   var expected = o.arrayMake([ 1, 2, 3 ]);
 
-  var got = space.copyTo( dst, src );
+  var got = space.CopyTo( dst, src );
   test.identical( got, expected );
   test.is( dst === got );
 
@@ -3463,7 +3463,7 @@ function _copyTo( test, o )
   var dst = vec( o.arrayMake([ 0, 0, 0 ]) );
   var expected = vec( o.arrayMake([ 1, 2, 3 ]) );
 
-  var got = space.copyTo( dst, src );
+  var got = space.CopyTo( dst, src );
   test.identical( got, expected );
   test.is( dst === got );
 
@@ -3473,7 +3473,7 @@ function _copyTo( test, o )
   var dst = space.makeCol( o.arrayMake([ 0, 0, 0 ]) );
   var expected = space.makeCol( o.arrayMake([ 1, 2, 3 ]) );
 
-  var got = space.copyTo( dst, src );
+  var got = space.CopyTo( dst, src );
   test.identical( got, expected );
   test.is( dst === got );
 
@@ -3483,7 +3483,7 @@ function _copyTo( test, o )
   var dst = o.arrayMake([ 0, 0, 0 ]);
   var expected = o.arrayMake([ 1, 2, 3 ]);
 
-  var got = space.copyTo( dst, src );
+  var got = space.CopyTo( dst, src );
   test.identical( got, expected );
   test.is( dst === got );
 
@@ -3493,7 +3493,7 @@ function _copyTo( test, o )
   var dst = vec( o.arrayMake([ 0, 0, 0 ]) );
   var expected = vec( o.arrayMake([ 1, 2, 3 ]) );
 
-  var got = space.copyTo( dst, src );
+  var got = space.CopyTo( dst, src );
   test.identical( got, expected );
   test.is( dst === got );
 
@@ -3503,7 +3503,7 @@ function _copyTo( test, o )
   var dst = space.makeCol( o.arrayMake([ 0, 0, 0 ]) );
   var expected = space.makeCol( o.arrayMake([ 1, 2, 3 ]) );
 
-  var got = space.copyTo( dst, src );
+  var got = space.CopyTo( dst, src );
   test.identical( got, expected );
   test.is( dst === got );
 
@@ -3513,7 +3513,7 @@ function _copyTo( test, o )
   var dst = o.arrayMake([ 0, 0, 0 ]);
   var expected = o.arrayMake([ 1, 2, 3 ]);
 
-  var got = space.copyTo( dst, src );
+  var got = space.CopyTo( dst, src );
   test.identical( got, expected );
   test.is( dst === got );
 
@@ -3523,7 +3523,7 @@ function _copyTo( test, o )
   var dst = vec( o.arrayMake([ 0, 0, 0 ]) );
   var expected = vec( o.arrayMake([ 1, 2, 3 ]) );
 
-  var got = space.copyTo( dst, src );
+  var got = space.CopyTo( dst, src );
   test.identical( got, expected );
   test.is( dst === got );
 
@@ -3533,7 +3533,7 @@ function _copyTo( test, o )
   var dst = space.makeCol( o.arrayMake([ 0, 0, 0 ]) );
   var expected = space.makeCol( o.arrayMake([ 1, 2, 3 ]) );
 
-  var got = space.copyTo( dst, src );
+  var got = space.CopyTo( dst, src );
   test.identical( got, expected );
   test.is( dst === got );
 
@@ -3542,7 +3542,7 @@ function _copyTo( test, o )
   var src = space.makeCol( o.arrayMake([ 1, 2, 3 ]) );
   var expected = space.makeCol( o.arrayMake([ 1, 2, 3 ]) );
 
-  var got = space.copyTo( src, src );
+  var got = space.CopyTo( src, src );
   test.identical( got, expected );
   test.is( src === got );
 
@@ -3551,7 +3551,7 @@ function _copyTo( test, o )
   var src = vec( o.arrayMake([ 1, 2, 3 ]) );
   var expected = vec( o.arrayMake([ 1, 2, 3 ]) );
 
-  var got = space.copyTo( src, src );
+  var got = space.CopyTo( src, src );
   test.identical( got, expected );
   test.is( src === got );
 
@@ -3560,7 +3560,7 @@ function _copyTo( test, o )
   var src = o.arrayMake([ 1, 2, 3 ]);
   var expected = o.arrayMake([ 1, 2, 3 ]);
 
-  var got = space.copyTo( src, src );
+  var got = space.CopyTo( src, src );
   test.identical( got, expected );
   test.is( src === got );
 
@@ -3569,21 +3569,21 @@ function _copyTo( test, o )
   if( !Config.debug )
   return;
 
-  test.shouldThrowErrorSync( () => space.copyTo() );
-  test.shouldThrowErrorSync( () => space.makeCol( o.arrayMake([ 1 ]) ).copyTo() );
-  test.shouldThrowErrorSync( () => space.makeCol( o.arrayMake([ 1 ]) ).copyTo( [ 3 ], null ) );
+  test.shouldThrowErrorSync( () => space.CopyTo() );
+  test.shouldThrowErrorSync( () => space.makeCol( o.arrayMake([ 1 ]) ).CopyTo() );
+  test.shouldThrowErrorSync( () => space.makeCol( o.arrayMake([ 1 ]) ).CopyTo( [ 3 ], null ) );
 
-  test.shouldThrowErrorSync( () => space.copyTo( space.makeCol( o.arrayMake([ 1 ]) ) ) );
-  test.shouldThrowErrorSync( () => space.copyTo( o.arrayMake([ 1 ]) ) );
-  test.shouldThrowErrorSync( () => space.copyTo( vec( o.arrayMake([ 1 ]) ) ) );
+  test.shouldThrowErrorSync( () => space.CopyTo( space.makeCol( o.arrayMake([ 1 ]) ) ) );
+  test.shouldThrowErrorSync( () => space.CopyTo( o.arrayMake([ 1 ]) ) );
+  test.shouldThrowErrorSync( () => space.CopyTo( vec( o.arrayMake([ 1 ]) ) ) );
 
-  test.shouldThrowErrorSync( () => space.copyTo( space.makeCol( o.arrayMake([ 1 ]) ), null ) );
-  test.shouldThrowErrorSync( () => space.copyTo( o.arrayMake([ 1 ]), null ) );
-  test.shouldThrowErrorSync( () => space.copyTo( vec( o.arrayMake([ 1 ]) ), null ) );
+  test.shouldThrowErrorSync( () => space.CopyTo( space.makeCol( o.arrayMake([ 1 ]) ), null ) );
+  test.shouldThrowErrorSync( () => space.CopyTo( o.arrayMake([ 1 ]), null ) );
+  test.shouldThrowErrorSync( () => space.CopyTo( vec( o.arrayMake([ 1 ]) ), null ) );
 
-  test.shouldThrowErrorSync( () => space.copyTo( space.makeCol( o.arrayMake([ 1 ]) ), [ 3 ], null ) );
-  test.shouldThrowErrorSync( () => space.copyTo( o.arrayMake([ 1 ]), [ 3 ], null ) );
-  test.shouldThrowErrorSync( () => space.copyTo( vec( o.arrayMake([ 1 ]) ), [ 3 ], null ) );
+  test.shouldThrowErrorSync( () => space.CopyTo( space.makeCol( o.arrayMake([ 1 ]) ), [ 3 ], null ) );
+  test.shouldThrowErrorSync( () => space.CopyTo( o.arrayMake([ 1 ]), [ 3 ], null ) );
+  test.shouldThrowErrorSync( () => space.CopyTo( vec( o.arrayMake([ 1 ]) ), [ 3 ], null ) );
 
 }
 
@@ -6229,11 +6229,11 @@ function pivot( test )
   var pivot = [ 2, 0, 1 ];
   var pivotExpected = [ 2, 0, 1 ];
 
-  space.vectorPivotForward( m, pivot );
+  space.VectorPivotForward( m, pivot );
   test.identical( m, expected );
   test.identical( pivot, pivotExpected );
 
-  space.vectorPivotBackward( m, pivot );
+  space.VectorPivotBackward( m, pivot );
   test.identical( m, original );
   test.identical( pivot, pivotExpected );
 
@@ -6246,11 +6246,11 @@ function pivot( test )
   var pivot = [ 2, 0, 1 ];
   var pivotExpected = [ 2, 0, 1 ];
 
-  space.vectorPivotForward( a, pivot );
+  space.VectorPivotForward( a, pivot );
   test.identical( a, expected );
   test.identical( pivot, pivotExpected );
 
-  space.vectorPivotBackward( a, pivot );
+  space.VectorPivotBackward( a, pivot );
   test.identical( a, original );
   test.identical( pivot, pivotExpected );
 
@@ -6263,11 +6263,11 @@ function pivot( test )
   var pivot = [ 2, 0, 1 ];
   var pivotExpected = [ 2, 0, 1 ];
 
-  space.vectorPivotForward( a, pivot );
+  space.VectorPivotForward( a, pivot );
   test.identical( a, expected );
   test.identical( pivot, pivotExpected );
 
-  space.vectorPivotBackward( a, pivot );
+  space.VectorPivotBackward( a, pivot );
   test.identical( a, original );
   test.identical( pivot, pivotExpected );
 
@@ -9385,7 +9385,7 @@ function solveWithPivoting( test )
   /* */
 
   m.pivotBackward( pivots );
-  space.vectorPivotBackward( y, pivots[ 0 ] );
+  space.VectorPivotBackward( y, pivots[ 0 ] );
 
   logger.log( 'm', m );
   logger.log( 'x', x );

@@ -215,14 +215,14 @@ function _traverseAct( it )
       dst.buffer = self.long.longMakeUndefined( src.buffer , src.atomsPerSpace );
       dst.offset = 0;
       dst.strides = null;
-      dst[ stridesEffectiveSymbol ] = dst.stridesForDimensions( src.dims, !!dst.inputTransposing );
+      dst[ stridesEffectiveSymbol ] = dst.StridesForDimensions( src.dims, !!dst.inputTransposing );
     }
     else if( src.buffer && dst.atomsPerSpace !== src.atomsPerSpace )
     {
       dst.buffer = self.long.longMakeUndefined( src.buffer , src.atomsPerSpace );
       dst.offset = 0;
       dst.strides = null;
-      dst[ stridesEffectiveSymbol ] = dst.stridesForDimensions( src.dims, !!dst.inputTransposing );
+      dst[ stridesEffectiveSymbol ] = dst.StridesForDimensions( src.dims, !!dst.inputTransposing );
     }
     else debugger;
 
@@ -376,17 +376,17 @@ function clone()
 
 //
 
-function copyTo( dst,src )
+function CopyTo( dst,src )
 {
-
+  
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   if( dst === src )
   return dst;
 
   let odst = dst;
-  let dstDims = Self.dimsOf( dst );
-  let srcDims = Self.dimsOf( src );
+  let dstDims = Self.DimsOf( dst );
+  let srcDims = Self.DimsOf( src );
 
   _.assert( _.longIdentical( srcDims,dstDims ),'(-src-) and (-dst-) should have same dimensions' );
   _.assert( !_.instanceIs( this ) )
@@ -411,8 +411,8 @@ function copyTo( dst,src )
   else
   {
 
-    let dstDims = Self.dimsOf( dst );
-    let srcDims = Self.dimsOf( src );
+    let dstDims = Self.DimsOf( dst );
+    let srcDims = Self.DimsOf( src );
 
     if( _.spaceIs( dst ) )
     src.atomEach( function( it )
@@ -447,7 +447,7 @@ function extractNormalized()
 
   result.buffer = self.long.longMakeUndefined( self.buffer , self.atomsPerSpace );
   result.offset = 0;
-  result.strides = self.stridesForDimensions( self.dims,self.inputTransposing );
+  result.strides = self.StridesForDimensions( self.dims,self.inputTransposing );
 
   self.atomEach( function( it )
   {
@@ -599,16 +599,18 @@ function _atomsPerSpaceGet()
 /**
  * @summary Returns number of atoms per space for provided dimensions array `dims`.
  * @param {Array} dims Dimensions array.
- * @function atomsPerSpaceForDimensions
- * @memberof module:Tools/math/Space.wSpace#
+ * @function AtomsPerSpaceForDimensions
+ * @memberof module:Tools/math/Space.wSpace
+ * @static
  */
 
-function atomsPerSpaceForDimensions( dims )
+function AtomsPerSpaceForDimensions( dims )
 {
   let result = 1;
 
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.arrayIs( dims ) );
+  _.assert( !_.instanceIs( this ) )
 
   for( let d = dims.length-1 ; d >= 0 ; d-- )
   {
@@ -624,12 +626,13 @@ function atomsPerSpaceForDimensions( dims )
 /**
  * @summary Returns number of rows in provided space `src`.
  * @param {Object} src Instance of wSpace.
- * @function nrowOf
- * @memberof module:Tools/math/Space.wSpace#
+ * @function NrowOf
+ * @memberof module:Tools/math/Space.wSpace
+ * @static
  */
 
-function nrowOf( src )
-{
+function NrowOf( src )
+{  
   if( src instanceof Self )
   return src.dims[ 0 ];
   _.assert( src.length >= 0 );
@@ -641,11 +644,11 @@ function nrowOf( src )
 /**
  * @summary Returns number of columns in provided space `src`.
  * @param {Object} src Instance of wSpace.
- * @function ncolOf
+ * @function NcolOf
  * @memberof module:Tools/math/Space.wSpace#
  */
 
-function ncolOf( src )
+function NcolOf( src )
 {
   if( src instanceof Self )
   return src.dims[ 1 ];
@@ -658,11 +661,11 @@ function ncolOf( src )
 /**
  * @summary Returns dimensions array for provided space `src`.
  * @param {Object} src Instance of wSpace.
- * @function dimsOf
+ * @function DimsOf
  * @memberof module:Tools/math/Space.wSpace#
  */
 
-function dimsOf( src )
+function DimsOf( src )
 {
   if( src instanceof Self )
   return src.dims.slice();
@@ -750,7 +753,7 @@ function _strideInRowGet()
 
 //
 
-function stridesForDimensions( dims,transposing )
+function StridesForDimensions( dims,transposing )
 {
 
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
@@ -792,7 +795,7 @@ function stridesForDimensions( dims,transposing )
 
 //
 
-function stridesRoll( strides )
+function StridesRoll( strides )
 {
 
   _.assert( arguments.length === 1, 'Expects single argument' );
@@ -979,7 +982,7 @@ function _adjustAct()
     debugger;
     let strides = _.dup( 1,self.breadth.length+1 );
     strides[ strides.length-1 ] = self.strides;
-    self.strides = self.stridesRoll( strides );
+    self.strides = self.StridesRoll( strides );
     changed = true;
   }
 
@@ -1064,7 +1067,7 @@ function _adjustAct()
     _.assert( self.dims[ 0 ] >= 0 );
     _.assert( self.dims[ self.dims.length-1 ] >= 0 );
 
-    let strides = self[ stridesEffectiveSymbol ] = self.stridesForDimensions( self.dims,self.inputTransposing );
+    let strides = self[ stridesEffectiveSymbol ] = self.StridesForDimensions( self.dims,self.inputTransposing );
 
   }
 
@@ -1349,8 +1352,8 @@ function expand( expand )
   if( self.hasShape( dims ) )
   return self;
 
-  let atomsPerSpace = self.atomsPerSpaceForDimensions( dims );
-  let strides = self.stridesForDimensions( dims,0 );
+  let atomsPerSpace = Self.AtomsPerSpaceForDimensions( dims );
+  let strides = Self.StridesForDimensions( dims,0 );
   let buffer = self.long.longMakeZeroed( self.buffer,atomsPerSpace );
 
   /* move data */
@@ -1385,12 +1388,12 @@ function expand( expand )
 
 //
 
-function shapesAreSame( ins1,ins2 )
-{
+function ShapesAreSame( ins1,ins2 )
+{ 
   _.assert( !_.instanceIs( this ) );
 
-  let dims1 = this.dimsOf( ins1 );
-  let dims2 = this.dimsOf( ins2 );
+  let dims1 = this.DimsOf( ins1 );
+  let dims2 = this.DimsOf( ins2 );
 
   return _.longIdentical( dims1,dims2 );
 }
@@ -1401,7 +1404,7 @@ function hasShape( src )
 {
   let self = this;
 
-  // src = Self.dimsOf( src );
+  // src = Self.DimsOf( src );
 
   if( src instanceof Self )
   src = src.dims;
@@ -1613,7 +1616,7 @@ _.routineExtend( _equalAre, _._equal );
  * @memberof module:Tools/math/Space.wSpace#
  */
 
-function is( src )
+function Is( src )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
   return _.spaceIs( src );
@@ -2022,12 +2025,12 @@ function atomWiseWithAssign( onAtom,args )
 
 //
 
-function atomWiseHomogeneous( o )
+function AtomWiseHomogeneous( o )
 {
   let proto = this;
   let newDst = false;
 
-  _.routineOptions( atomWiseHomogeneous,o );
+  _.routineOptions( AtomWiseHomogeneous,o );
 
   if( o.dst !== undefined && o.dst !== _.nothing )
   {
@@ -2213,7 +2216,7 @@ function atomWiseHomogeneous( o )
   return o.onVectorsEnd.call( o.dst,op );
 }
 
-atomWiseHomogeneous.defaults =
+AtomWiseHomogeneous.defaults =
 {
   onAtom : null,
   onAtomsBegin : null,
@@ -2230,7 +2233,7 @@ atomWiseHomogeneous.defaults =
 
 //
 
-// function atomWiseHomogeneousZip( o )
+// function AtomWiseHomogeneousZip( o )
 // {
 //   let proto = this;
 //   let newDst = false;
@@ -2264,7 +2267,7 @@ atomWiseHomogeneous.defaults =
 //
 //   /* verification */
 //
-//   _.assertMapHasOnly( o,atomWiseHomogeneousZip.defaults );
+//   _.assertMapHasOnly( o,AtomWiseHomogeneousZip.defaults );
 //   _.assert( o.srcs[ 0 ] instanceof Self );
 //   _.assert( !proto.instanceIs() );
 //   _.assert( arguments.length === 1, 'Expects single argument' );
@@ -2318,7 +2321,7 @@ atomWiseHomogeneous.defaults =
 //   return o.dst;
 // }
 //
-// atomWiseHomogeneousZip.defaults =
+// AtomWiseHomogeneousZip.defaults =
 // {
 //   onAtom : null,
 //   onAtomsBegin : null,
@@ -2329,12 +2332,76 @@ atomWiseHomogeneous.defaults =
 
 //
 
+// function atomWiseZip( onAtom,dst,srcs )
+// {
+//   let self = this;
+//   let result;
+
+//   _.assert( arguments.length === 3, 'Expects exactly three arguments' );
+//   _.assert( self.dims.length === 2, 'not implemented' );
+
+//   let op = Object.create( null );
+//   op.key = -1;
+//   op.args = [ dst,srcs ];
+//   op.dstContainer = self;
+//   op.dstElement = null;
+//   op.srcContainers = srcs;
+//   op.srcElements = [];
+//   Object.preventExtensions( op );
+
+//   /* */
+
+//   for( let s = 0 ; s < srcs.length ; s++ )
+//   {
+//     let src = srcs[ s ];
+//     _.assert( srcs[ s ] instanceof Self );
+//   }
+
+//   /* */
+
+//   for( let c = 0 ; c < self.atomsPerCol ; c++ )
+//   for( let r = 0 ; r < self.atomsPerRow ; r++ )
+//   {
+//     op.key = [ c,r ];
+//     op.dstElement = self.atomGet( op.key );
+
+//     for( let s = 0 ; s < srcs.length ; s++ )
+//     op.srcElements[ s ] = srcs[ s ].atomGet( op.key );
+
+//     onAtom.call( self,op );
+//   }
+
+//   return self;
+// }
+
 function atomWiseZip( onAtom,dst,srcs )
 {
   let self = this;
-  let result;
+  let o = 
+  {
+    onAtom,
+    dst,
+    dstContainer : self,
+    srcs,
+  }
+  return self.AtomWiseZip( o )
+}
 
-  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
+//
+
+function AtomWiseZip( o )
+{
+  let result;
+  
+  _.routineOptions( AtomWiseZip, o )
+  _.assert( _.definedIs( o.dst ) );
+  _.assert( o.dstContainer instanceof Self );
+  _.assert( _.definedIs( o.srcs ) );
+  _.assert( _.routineIs( o.onAtom ) );
+  
+  let self = o.dstContainer;
+  
+  // _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( self.dims.length === 2, 'not implemented' );
 
   let op = Object.create( null );
@@ -2369,6 +2436,14 @@ function atomWiseZip( onAtom,dst,srcs )
   }
 
   return self;
+}
+
+AtomWiseZip.defaults = 
+{
+  onAtom : null,
+  dst : null,
+  dstContainer : null,
+  srcs : null,
 }
 
 //
@@ -3059,7 +3134,7 @@ function _vectorPivotDimension( v,current,expected )
 
 //
 
-function vectorPivotForward( vector,pivot )
+function VectorPivotForward( vector,pivot )
 {
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( _.arrayIs( pivot ) );
@@ -3080,7 +3155,7 @@ function vectorPivotForward( vector,pivot )
 
 //
 
-function vectorPivotBackward( vector,pivot )
+function VectorPivotBackward( vector,pivot )
 {
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( _.arrayIs( pivot ) );
@@ -3176,35 +3251,35 @@ let Statics =
 
   /* */
 
-  copyTo,
+  CopyTo,
 
-  atomsPerSpaceForDimensions,
-  nrowOf,
-  ncolOf,
-  dimsOf,
-  shapesAreSame,
+  AtomsPerSpaceForDimensions,
+  NrowOf,
+  NcolOf,
+  DimsOf,
+  ShapesAreSame,
 
-  stridesForDimensions,
-  stridesRoll,
+  StridesForDimensions,
+  StridesRoll,
 
   _flatAtomIndexFromIndexNd,
 
   _bufferFrom,
-  is,
+  Is,
 
 
   /* iterator */
 
-  atomWiseHomogeneous,
-  // atomWiseHomogeneousZip,
-  atomWiseZip,
+  AtomWiseHomogeneous,
+  // AtomWiseHomogeneousZip,
+  AtomWiseZip,
 
 
   /* pivot */
 
   _vectorPivotDimension,
-  vectorPivotForward,
-  vectorPivotBackward,
+  VectorPivotForward,
+  VectorPivotBackward,
 
 
   /* var */
@@ -3321,7 +3396,7 @@ let Extension =
   copyFromBuffer,
   clone,
 
-  copyTo,
+  CopyTo,
 
   extractNormalized,
 
@@ -3349,9 +3424,9 @@ let Extension =
   '_ncolGet' : _ncolGet,
   '_atomsPerSpaceGet' : _atomsPerSpaceGet,
 
-  atomsPerSpaceForDimensions,
-  nrowOf,
-  ncolOf,
+  AtomsPerSpaceForDimensions,
+  NrowOf,
+  NcolOf,
 
   /* stride */
 
@@ -3367,8 +3442,8 @@ let Extension =
   '_strideOfRowGet' : _strideOfRowGet,
   '_strideInRowGet' : _strideInRowGet,
 
-  stridesForDimensions,
-  stridesRoll,
+  StridesForDimensions,
+  StridesRoll,
 
   /* buffer */
 
@@ -3396,7 +3471,7 @@ let Extension =
 
   expand,
 
-  shapesAreSame,
+  ShapesAreSame,
   hasShape,
   isSquare,
 
@@ -3411,7 +3486,7 @@ let Extension =
   _equalAre,
   // equalWith,
 
-  is,
+  Is,
   toStr,
   _bufferFrom,
 
@@ -3425,8 +3500,8 @@ let Extension =
   atomWiseReduceWithFlatVector,
   atomWiseReduceWithAtomHandler,
   atomWiseWithAssign,
-  atomWiseHomogeneous,
-  // atomWiseHomogeneousZip,
+  AtomWiseHomogeneous,
+  // AtomWiseHomogeneousZip,
   atomWiseZip,
 
   elementEach,
@@ -3481,8 +3556,8 @@ let Extension =
   pivotBackward,
 
   _vectorPivotDimension,
-  vectorPivotForward,
-  vectorPivotBackward,
+  VectorPivotForward,
+  VectorPivotBackward,
 
   /* relations */
 

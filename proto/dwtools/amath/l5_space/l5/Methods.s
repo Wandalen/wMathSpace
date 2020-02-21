@@ -36,8 +36,8 @@ function make( dims )
   if( _.numberIs( dims ) )
   dims = [ dims,dims ];
 
-  let lengthFlat = proto.atomsPerSpaceForDimensions( dims );
-  let strides = proto.stridesForDimensions( dims,0 );
+  let lengthFlat = proto.AtomsPerSpaceForDimensions( dims );
+  let strides = proto.StridesForDimensions( dims,0 );
   let buffer = proto.long.longMake( lengthFlat );
   let result = new proto.Self
   ({
@@ -69,7 +69,7 @@ function makeSquare( buffer )
   _.assert( arguments.length === 1, 'Expects single argument' );
 
   let dims = [ length,length ];
-  let atomsPerSpace = this.atomsPerSpaceForDimensions( dims );
+  let atomsPerSpace = this.AtomsPerSpaceForDimensions( dims );
 
   let inputTransposing = atomsPerSpace > 0 ? 1 : 0;
   if( _.numberIs( buffer ) )
@@ -105,8 +105,8 @@ function makeZero( dims )
   if( _.numberIs( dims ) )
   dims = [ dims,dims ];
 
-  let lengthFlat = proto.atomsPerSpaceForDimensions( dims );
-  let strides = proto.stridesForDimensions( dims,0 );
+  let lengthFlat = proto.AtomsPerSpaceForDimensions( dims );
+  let strides = proto.StridesForDimensions( dims,0 );
   let buffer = proto.long.longMakeZeroed( lengthFlat );
   let result = new proto.Self
   ({
@@ -134,8 +134,8 @@ function makeIdentity( dims )
   if( _.numberIs( dims ) )
   dims = [ dims,dims ];
 
-  let lengthFlat = proto.atomsPerSpaceForDimensions( dims );
-  let strides = proto.stridesForDimensions( dims,0 );
+  let lengthFlat = proto.AtomsPerSpaceForDimensions( dims );
+  let strides = proto.StridesForDimensions( dims,0 );
   let buffer = proto.long.longMakeZeroed( lengthFlat ); /* xxx */
   let result = new proto.Self
   ({
@@ -214,7 +214,7 @@ function makeDiagonal( diagonal )
 
   let length = diagonal.length;
   let dims = [ length,length ];
-  let atomsPerSpace = this.atomsPerSpaceForDimensions( dims );
+  let atomsPerSpace = this.AtomsPerSpaceForDimensions( dims );
   let buffer = this.long.longMakeZeroed( atomsPerSpace );
   let result = new this.Self
   ({
@@ -243,7 +243,7 @@ function makeSimilar( m , dims )
   }
 
   if( dims === undefined )
-  dims = proto.dimsOf( m );
+  dims = proto.DimsOf( m );
 
   /* */
 
@@ -255,7 +255,7 @@ function makeSimilar( m , dims )
   if( m instanceof Self )
   {
 
-    let atomsPerSpace = Self.atomsPerSpaceForDimensions( dims );
+    let atomsPerSpace = Self.AtomsPerSpaceForDimensions( dims );
     let buffer = proto.long.longMakeZeroed( m.buffer, atomsPerSpace ); /* yyy */
     /* could possibly be not zeroed */
 
@@ -572,7 +572,7 @@ function fromScalar( scalar,dims )
 
   let result = new this.Self
   ({
-    buffer : this.long.longFrom( _.dup( scalar,this.atomsPerSpaceForDimensions( dims ) ) ),
+    buffer : this.long.longFrom( _.dup( scalar,this.AtomsPerSpaceForDimensions( dims ) ) ),
     dims,
     inputTransposing : 0,
   });
@@ -959,7 +959,7 @@ function _tempBorrow( src,dims,index )
   let result = this._tempMatrices[ index ][ key ] = new Self
   ({
     dims,
-    buffer : new cls( this.atomsPerSpaceForDimensions( dims ) ),
+    buffer : new cls( this.AtomsPerSpaceForDimensions( dims ) ),
     inputTransposing : 0,
   });
 
@@ -1049,7 +1049,7 @@ function mul_static( dst,srcs )
 
   if( dst === null )
   {
-    let dims = [ this.nrowOf( srcs[ srcs.length-2 ] ) , this.ncolOf( srcs[ srcs.length-1 ] ) ];
+    let dims = [ this.NrowOf( srcs[ srcs.length-2 ] ) , this.NcolOf( srcs[ srcs.length-1 ] ) ];
     dst = this.makeSimilar( srcs[ srcs.length-1 ] , dims );
   }
 
@@ -1107,14 +1107,14 @@ function mul_static( dst,srcs )
     }
 
     if( srcs.length % 2 === 0 )
-    this.copyTo( odst,dst3 );
+    this.CopyTo( odst,dst3 );
     else
-    this.copyTo( odst,dst2 );
+    this.CopyTo( odst,dst2 );
 
   }
   else
   {
-    this.copyTo( odst,dst );
+    this.CopyTo( odst,dst );
   }
 
   return odst;
@@ -2108,7 +2108,7 @@ function _solveOptions( args )
   {
     if( !_.spaceIs( o.x ) )
     o.x = vector.from( o.x );
-    this.copyTo( o.x,o.y );
+    this.CopyTo( o.x,o.y );
   }
 
   if( !_.spaceIs( o.y ) )
@@ -2118,8 +2118,8 @@ function _solveOptions( args )
   o.x = vector.from( o.x );
 
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( this.shapesAreSame( o.x , o.y ) );
-  _.assert( o.m.dims[ 0 ] === this.nrowOf( o.x ) );
+  _.assert( this.ShapesAreSame( o.x , o.y ) );
+  _.assert( o.m.dims[ 0 ] === this.NrowOf( o.x ) );
 
   return o;
 }
@@ -2145,7 +2145,7 @@ function solveWithGausianPivoting()
 
   let pivots = o.m.triangulateGausianPivoting( o.x );
   this.solveTriangleUpper( o.x,o.m,o.x );
-  Self.vectorPivotBackward( o.x,pivots[ 1 ] );
+  Self.VectorPivotBackward( o.x,pivots[ 1 ] );
 
   return o.ox;
 }
@@ -2211,7 +2211,7 @@ function _solveWithGaussJordan( o )
 
   if( o.onPivot && o.pivotingBackward )
   {
-    Self.vectorPivotBackward( o.x,o.pivots[ 1 ] );
+    Self.VectorPivotBackward( o.x,o.pivots[ 1 ] );
     /*o.m.pivotBackward( o.pivots );*/
   }
 
@@ -2307,13 +2307,13 @@ function solveWithTrianglesPivoting( x,m,y )
   let o = this._solveOptions( arguments );
   let pivots = m.triangulateLuPivoting();
 
-  o.y = Self.vectorPivotForward( o.y,pivots[ 0 ] );
+  o.y = Self.VectorPivotForward( o.y,pivots[ 0 ] );
 
   o.x = this.solveTriangleLowerNormal( o.x,o.m,o.y );
   o.x = this.solveTriangleUpper( o.x,o.m,o.x );
 
-  Self.vectorPivotBackward( o.x,pivots[ 1 ] );
-  Self.vectorPivotBackward( o.y,pivots[ 0 ] );
+  Self.VectorPivotBackward( o.x,pivots[ 1 ] );
+  Self.VectorPivotBackward( o.y,pivots[ 0 ] );
 
   // o.x = this.convertToClass( o.oy.constructor,o.x );
   return o.ox;
@@ -2553,7 +2553,7 @@ function solveGeneral( o )
 
   if( o.pivoting )
   {
-    Self.vectorPivotBackward( result.base,optionsForMethod.pivots[ 1 ] );
+    Self.VectorPivotBackward( result.base,optionsForMethod.pivots[ 1 ] );
     result.kernel.pivotBackward([ optionsForMethod.pivots[ 1 ], optionsForMethod.pivots[ 0 ] ]);
     o.m.pivotBackward( optionsForMethod.pivots );
   }
