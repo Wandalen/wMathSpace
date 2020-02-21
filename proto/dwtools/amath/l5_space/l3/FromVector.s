@@ -138,7 +138,7 @@ function declareAtomWiseReducingRoutine( routine , rname )
   // if( op.kind !== 'atomWiseReducing' )
   // return;
 
-  if( op.generator.name !== '__operationReduceToScalar_functor' )
+  if( op.generator.name !== '__operationReduceToScalar_functor' ) /* xxx */
   return;
 
   if( _.longIdentical( op.takingArguments,[ 1,1 ] ) )
@@ -428,9 +428,6 @@ for( r in routines )
   let routine = routines[ r ];
 
   _.assert( _.routineIs( routine ) );
-
-  // if( r === 'allIdentical' )
-  // debugger;
 
   declareElementsZipRoutine( routine, r );
   declareColWiseCollectingRoutine( routine, r );

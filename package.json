@@ -10,7 +10,7 @@
     { "name" : "Pablo Garcimartin", "email" : "pablogarcimartinruiz@gmail.com" }
   ], 
   "license" : "MIT", 
-  "main" : "proto/dwtools/amath/l5_space/Main.s", 
+  "main" : "proto/dwtools/amath/l5_space/Include.s", 
   "files" : [ "proto/dwtools/amath/l5_space", "proto/dwtools/Tools.s", "out" ], 
   "scripts" : { "test" : "wtest .run proto/**", "docgen" : "wdocgen proto" }, 
   "repository" : 

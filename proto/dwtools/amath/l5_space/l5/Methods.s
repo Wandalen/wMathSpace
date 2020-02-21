@@ -38,7 +38,7 @@ function make( dims )
 
   let lengthFlat = proto.atomsPerSpaceForDimensions( dims );
   let strides = proto.stridesForDimensions( dims,0 );
-  let buffer = proto.array.makeArrayOfLength( lengthFlat );
+  let buffer = proto.long.longMake( lengthFlat );
   let result = new proto.Self
   ({
     buffer,
@@ -75,7 +75,7 @@ function makeSquare( buffer )
   if( _.numberIs( buffer ) )
   {
     inputTransposing = 0;
-    buffer = this.array.makeArrayOfLength( atomsPerSpace );
+    buffer = this.long.longMake( atomsPerSpace );
   }
   else
   {
@@ -107,7 +107,7 @@ function makeZero( dims )
 
   let lengthFlat = proto.atomsPerSpaceForDimensions( dims );
   let strides = proto.stridesForDimensions( dims,0 );
-  let buffer = proto.array.makeArrayOfLengthZeroed( lengthFlat );
+  let buffer = proto.long.longMakeZeroed( lengthFlat );
   let result = new proto.Self
   ({
     buffer,
@@ -136,7 +136,7 @@ function makeIdentity( dims )
 
   let lengthFlat = proto.atomsPerSpaceForDimensions( dims );
   let strides = proto.stridesForDimensions( dims,0 );
-  let buffer = proto.array.makeArrayOfLengthZeroed( lengthFlat );
+  let buffer = proto.long.longMakeZeroed( lengthFlat ); /* xxx */
   let result = new proto.Self
   ({
     buffer,
@@ -215,7 +215,7 @@ function makeDiagonal( diagonal )
   let length = diagonal.length;
   let dims = [ length,length ];
   let atomsPerSpace = this.atomsPerSpaceForDimensions( dims );
-  let buffer = this.array.makeArrayOfLengthZeroed( atomsPerSpace );
+  let buffer = this.long.longMakeZeroed( atomsPerSpace );
   let result = new this.Self
   ({
     buffer,
@@ -353,9 +353,9 @@ function makeLine( o )
 
   }
   else if( _.numberIs( o.buffer ) )
-  o.buffer = o.zeroing ? this.array.makeArrayOfLengthZeroed( length ) : this.array.makeArrayOfLength( length );
+  o.buffer = o.zeroing ? this.long.longMakeZeroed( length ) : this.long.longMake( length );
   else if( o.zeroing )
-  o.buffer = this.array.makeArrayOfLengthZeroed( length )
+  o.buffer = this.long.longMakeZeroed( length )
   else
   o.buffer = proto.constructor._bufferFrom( o.buffer );
 
@@ -568,9 +568,11 @@ function fromScalar( scalar,dims )
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.numberIs( scalar );
 
+  debugger;
+
   let result = new this.Self
   ({
-    buffer : this.array.arrayFromCoercing( _.dup( scalar,this.atomsPerSpaceForDimensions( dims ) ) ),
+    buffer : this.long.longFrom( _.dup( scalar,this.atomsPerSpaceForDimensions( dims ) ) ),
     dims,
     inputTransposing : 0,
   });
@@ -588,7 +590,7 @@ function fromScalarForReading( scalar,dims )
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.numberIs( scalar );
 
-  let buffer = this.array.makeArrayOfLength( 1 );
+  let buffer = this.long.longMake( 1 );
   buffer[ 0 ] = scalar;
 
   let result = new this.Self
@@ -1622,7 +1624,7 @@ function scaleGet( dst )
   if( dst )
   l = dst.length;
   else
-  dst = _.vector.from( self.array.makeArrayOfLengthZeroed( self.length-1 ) );
+  dst = _.vector.from( self.long.longMakeZeroed( self.length-1 ) );
 
   let dstv = _.vector.from( dst );
 

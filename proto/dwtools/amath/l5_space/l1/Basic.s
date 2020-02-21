@@ -1,30 +1,21 @@
-(function _Main_s_() {
+(function _Basic_s_() {
 
 'use strict';
 
-/**
- * Collection of functions for matrix math. MathSpace introduces class Space which is a multidimensional structure which in the most trivial case is Matrix of scalars. A matrix of specific form could also be classified as a vector. MathSpace heavily relly on MathVector, which introduces VectorAdapter. VectorAdapter is a reference, it does not contain data but only refer on actual ( aka Long ) container of lined data.  Use MathSpace for arithmetic operations with matrices, to triangulate, permutate or transform matrix, to get a specific or the general solution of a system of linear equations, to get LU, QR decomposition, for SVD or PCA. Also, Space is a convenient and efficient data container, you may use it to continuously store huge an array of arrays or for matrix computation.
-  @module Tools/math/Space
-*/
-
-/**
- * @file wSpace.s.
- */
-
-if( typeof module !== 'undefined' )
-{
-
-  let _ = require( '../../Tools.s' );
-
-  _.include( 'wMathScalar' );
-  _.include( 'wMathVector' );
-  _.include( 'wCopyable' );
-  _.include( 'wEntityBasic' );
-
-  // require( '../l1/Scalar.s' );
-  // require( '../l3_vector/Base.s' );
-
-}
+// if( typeof module !== 'undefined' )
+// {
+//
+//   let _ = require( '../../Tools.s' );
+//
+//   _.include( 'wMathScalar' );
+//   _.include( 'wMathVector' );
+//   _.include( 'wCopyable' );
+//   _.include( 'wEntityBasic' );
+//
+//   // require( '../l1/Scalar.s' );
+//   // require( '../l3_vector/Base.s' );
+//
+// }
 
 /*
 
@@ -822,7 +813,7 @@ function _bufferSet( src )
   return;
 
   if( _.numberIs( src ) )
-  src = this.array.makeArrayOfLength([ src ]);
+  src = this.long.longMake([ src ]);
 
   _.assert( _.longIs( src ) || src === null );
 
@@ -1767,20 +1758,20 @@ function _bufferFrom( src )
 
   // if( !_.constructorIsBuffer( proto.array.ArrayType ) )
   // return dst;
-
-  debugger; xxx
-  if( !_.constructorIsBuffer( proto.longDescriptor ) )
-  return dst;
+  //
+  // debugger;
+  // if( !_.constructorIsBuffer( proto.longDescriptor ) )
+  // return dst;
 
   if( _.vectorAdapterIs( dst ) && _.arrayIs( dst._vectorBuffer ) )
   {
-    dst = this.array.makeArrayOfLength( src.length );
+    dst = this.long.longMake( src.length );
     for( let i = 0 ; i < src.length ; i++ )
     dst[ i ] = src.eGet( i );
   }
   else if( _.arrayIs( dst ) )
   {
-    dst = proto.array.arrayFromCoercing( dst );
+    dst = proto.long.longFrom( dst );
   }
 
   return dst;
@@ -3219,6 +3210,8 @@ let Statics =
   accuracy,
   accuracySqr,
 
+  long : _.vector.long,
+
 }
 
 //
@@ -3285,6 +3278,8 @@ let ReadOnlyAccessors =
   strideOfRow : 'strideOfRow',
   strideInRow : 'strideInRow',
 
+
+
 }
 
 //
@@ -3299,13 +3294,16 @@ let Accessors =
   dims : 'dims',
   breadth : 'breadth',
 
+  // vector : { readOnly : 1, getter : _.vector },
+  // long : { readOnly : 1, getter : _.vector.long },
+
 }
 
 // --
 // declare
 // --
 
-let Proto =
+let Extension =
 {
 
   init,
@@ -3323,7 +3321,6 @@ let Proto =
 
   extractNormalized,
 
-
   /* size in bytes */
 
   '_sizeGet' : _sizeGet,
@@ -3339,7 +3336,6 @@ let Proto =
 
   '_sizeOfAtomGet' : _sizeOfAtomGet,
 
-
   /* size in atoms */
 
   '_atomsPerElementGet' : _atomsPerElementGet, /* cached */
@@ -3352,7 +3348,6 @@ let Proto =
   atomsPerSpaceForDimensions,
   nrowOf,
   ncolOf,
-
 
   /* stride */
 
@@ -3371,7 +3366,6 @@ let Proto =
   stridesForDimensions,
   stridesRoll,
 
-
   /* buffer */
 
   '_bufferSet' : _bufferSet, /* cached */
@@ -3379,7 +3373,6 @@ let Proto =
 
   _bufferAssign,
   bufferCopyTo,
-
 
   /* reshape */
 
@@ -3403,7 +3396,6 @@ let Proto =
   hasShape,
   isSquare,
 
-
   /* etc */
 
   flatAtomIndexFrom,
@@ -3422,7 +3414,6 @@ let Proto =
   bufferNormalize,
   subspace,
 
-
   /* iterator */
 
   atomWhile,
@@ -3440,7 +3431,6 @@ let Proto =
   _lineEachCollecting,
   rowEachCollecting,
   colEachCollecting,
-
 
   /*
 
@@ -3490,9 +3480,7 @@ let Proto =
   vectorPivotForward,
   vectorPivotBackward,
 
-
   /* relations */
-
 
   Composes,
   Aggregates,
@@ -3500,6 +3488,8 @@ let Proto =
   Restricts,
   Medials,
   Statics,
+  Forbids,
+  Accessors,
 
 }
 
@@ -3509,12 +3499,18 @@ _.classDeclare
 ({
   cls : Self,
   parent : Parent,
-  extend : Proto,
+  extend : Extension,
 });
 
 _.Copyable.mixin( Self );
 
 //
+
+// debugger;
+_.assert( !!_.vector );
+_.assert( !!_.vector.long );
+_.assert( Self.long === _.vector.long );
+// debugger;
 
 // _.assert( _.objectIs( Self.prototype.array ) );
 // _.assert( _.objectIs( Self.prototype.withDefaultLong ) );
@@ -3527,21 +3523,21 @@ _.assert( _.objectIs( _.withDefaultLong.Fx ) );
 
 //
 
-_.accessor.forbid( Self.prototype, Forbids );
+// _.accessor.forbid( Self.prototype, Forbids );
 _.accessor.readOnly( Self.prototype, ReadOnlyAccessors );
-_.accessor.declare( Self.prototype, Accessors );
+// _.accessor.declare( Self.prototype, Accessors );
 
 //
 
-_.mapExtendConditional( _.field.mapper.srcOwnPrimitive, Self, Composes ); /* required ??? */
+_.mapExtendConditional( _.field.mapper.srcOwnPrimitive, Self, Composes ); /* xxx : required ??? */
 _global_.wSpace = _.Space = Self;
 
 //
 
-if( typeof module !== 'undefined' )
-{
-  require( './l3/FromVector.s' );
-  require( './l3/Methods.s' );
-}
+// if( typeof module !== 'undefined' )
+// {
+//   require( './l3/FromVector.s' );
+//   require( './l3/Methods.s' );
+// }
 
 })();
