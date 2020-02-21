@@ -351,7 +351,7 @@ function declareAtomWiseHomogeneousRoutine( routine,name )
       args = _.longSlice( arguments,0 );
     }
 
-    let result = self.Self.atomWiseHomogeneous
+    let result = self.Self.AtomWiseHomogeneous
     ({
       onVectorsBegin,
       onVectorsEnd,
