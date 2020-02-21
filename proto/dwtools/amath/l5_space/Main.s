@@ -3214,8 +3214,8 @@ let Statics =
 
   /* var */
 
-  array : _.LongDescriptors.Float32,
-  withDefaultLong : _.LongDescriptors,
+  // array : _.LongDescriptors.Float32,
+  // withDefaultLong : _.LongDescriptors, /* xxx */
   accuracy,
   accuracySqr,
 
@@ -3244,6 +3244,7 @@ let Forbids =
   _generator : '_generator',
   usingOptimizedAccessors : 'usingOptimizedAccessors',
   dimensionsDesired : 'dimensionsDesired',
+  array : 'array',
 
 }
 
@@ -3515,12 +3516,14 @@ _.Copyable.mixin( Self );
 
 //
 
-_.assert( _.objectIs( Self.prototype.array ) );
-_.assert( _.objectIs( Self.prototype.withDefaultLong ) );
+// _.assert( _.objectIs( Self.prototype.array ) );
+// _.assert( _.objectIs( Self.prototype.withDefaultLong ) );
 _.assert( _.objectIs( _.withDefaultLong ) );
 _.assert( _.objectIs( _.withDefaultLong.Fx ) );
-_.assert( _.objectIs( _.LongDescriptors.Float32 ) );
-_.assert( _.routineIs( _.LongDescriptors.Float32.makeArrayOfLength ) );
+// debugger;
+// _.assert( _.objectIs( _.longDescriptor.F32 ) );
+// _.assert( _.routineIs( _.longDescriptor.F32.makeArrayOfLength ) );
+// debugger;
 
 //
 
