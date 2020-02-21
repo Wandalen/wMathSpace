@@ -1348,8 +1348,8 @@ function expand( expand )
   if( self.hasShape( dims ) )
   return self;
 
-  let atomsPerSpace = self.AtomsPerSpaceForDimensions( dims );
-  let strides = self.StridesForDimensions( dims,0 );
+  let atomsPerSpace = Self.AtomsPerSpaceForDimensions( dims );
+  let strides = Self.StridesForDimensions( dims,0 );
   let buffer = _.longMakeZeroed( self.buffer,atomsPerSpace );
 
   /* move data */
