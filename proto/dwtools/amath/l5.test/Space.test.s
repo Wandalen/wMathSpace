@@ -2861,10 +2861,8 @@ function _makeSimilar( test, o )
 
   test.case = o.name + ' . special'; //
 
-  var exp = o.arrayMake([]);
-  debugger;
+  var exp = o.arrayMake([ 0, 0, 0 ]);
   var got = space.makeSimilar( o.arrayMake([ 1, 2, 3 ]), [ null, 1 ] ); /* xxx */
-  debugger;
   test.identical( got, exp );
 
   test.case = o.name + ' . bad arguments'; //
