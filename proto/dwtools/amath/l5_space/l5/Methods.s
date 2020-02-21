@@ -924,9 +924,10 @@ function _tempBorrow( src,dims,index )
   if( !src )
   {
 
-    debugger; xxx
+    debugger;
     // cls = this.array.ArrayType;
-    cls = this.longDescriptor;
+    // cls = this.longDescriptor;
+    cls = this;
     if( !dims )
     dims = src;
 

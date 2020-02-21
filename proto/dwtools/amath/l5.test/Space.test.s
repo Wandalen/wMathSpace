@@ -3145,7 +3145,9 @@ function tempBorrow( test )
 
   var t2 = m.tempBorrow();
   var t3 = space.tempBorrow( m );
+  debugger;
   var t3 = space.tempBorrow( m.dims );
+  debugger;
 
   test.is( t1 === t2 );
   test.is( t1 === t3 );
