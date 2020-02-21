@@ -915,7 +915,7 @@ function fromAxisAndAngleWithScale( axis,angle )
 
 function _tempBorrow( src,dims,index )
 {
-  let cls;
+  let bufferConstructor;
 
   _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( src instanceof Self || src === null );
@@ -924,10 +924,10 @@ function _tempBorrow( src,dims,index )
   if( !src )
   {
 
-    debugger;
-    // cls = this.array.ArrayType;
-    // cls = this.longDescriptor;
-    cls = this;
+    // debugger;
+    // bufferConstructor = this.array.ArrayType;
+    // bufferConstructor = this.longDescriptor;
+    bufferConstructor = this.long.longDescriptor.type;
     if( !dims )
     dims = src;
 
@@ -936,7 +936,7 @@ function _tempBorrow( src,dims,index )
   {
 
     if( src.buffer )
-    cls = src.buffer.constructor;
+    bufferConstructor = src.buffer.constructor;
 
     if( !dims )
     if( src.dims )
@@ -947,11 +947,11 @@ function _tempBorrow( src,dims,index )
   if( dims instanceof Self )
   dims = dims.dims;
 
-  _.assert( _.routineIs( cls ) );
+  _.assert( _.routineIs( bufferConstructor ) );
   _.assert( _.arrayIs( dims ) );
   _.assert( index < 3 );
 
-  let key = cls.name + '_' + dims.join( 'x' );
+  let key = bufferConstructor.name + '_' + dims.join( 'x' );
 
   if( this._tempMatrices[ index ][ key ] )
   return this._tempMatrices[ index ][ key ];
@@ -959,7 +959,7 @@ function _tempBorrow( src,dims,index )
   let result = this._tempMatrices[ index ][ key ] = new Self
   ({
     dims,
-    buffer : new cls( this.AtomsPerSpaceForDimensions( dims ) ),
+    buffer : new bufferConstructor( this.AtomsPerSpaceForDimensions( dims ) ),
     inputTransposing : 0,
   });
 

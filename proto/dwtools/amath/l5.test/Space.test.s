@@ -478,8 +478,6 @@ function make( test )
   o.offset = 0;
   this._make( test, o );
 
-  return; xxx
-
   o.offset = undefined;
   this._make( test, o );
 
@@ -540,8 +538,6 @@ function _make( test, o )
   test.identical( a2, 5 );
   test.identical( m.reduceToSumAtomWise(), 21 );
   test.identical( m.reduceToProductAtomWise(), 720 );
-
-  return; xxx
 
   test.case = 'matrix with dimensions without stride, non transposing'; /* */
 
@@ -2895,17 +2891,15 @@ function _makeSimilar( test, o )
 function makeSimilar( test )
 {
 
-  // var o = Object.create( null );
-  // o.name = 'Array';
-  // o.arrayMake = function( a ){ return _.longMakeUndefined( Array, a ) };
-  // this._makeSimilar( test, o );
+  var o = Object.create( null );
+  o.name = 'Array';
+  o.arrayMake = function( a ){ return _.longMakeUndefined( Array, a ) };
+  this._makeSimilar( test, o );
 
-  // var o = Object.create( null );
-  // o.name = 'F32x';
-  // o.arrayMake = function( a ){ return _.longMakeUndefined( F32x, a ) };
-  // this._makeSimilar( test, o );
-
-  // xxx
+  var o = Object.create( null );
+  o.name = 'F32x';
+  o.arrayMake = function( a ){ return _.longMakeUndefined( F32x, a ) };
+  this._makeSimilar( test, o );
 
   var o = Object.create( null );
   o.name = 'U32x';
@@ -3145,9 +3139,7 @@ function tempBorrow( test )
 
   var t2 = m.tempBorrow();
   var t3 = space.tempBorrow( m );
-  debugger;
   var t3 = space.tempBorrow( m.dims );
-  debugger;
 
   test.is( t1 === t2 );
   test.is( t1 === t3 );
@@ -3353,16 +3345,22 @@ function _convertToClass( test, o )
   test.case = o.name + ' . ' + 'space to array with class'; //
 
   var src = space.makeCol( o.arrayMake([ 1, 2, 3 ]) );
+  debugger;
   var got = space.convertToClass( o.arrayMake([]).constructor, src );
+  debugger;
   var expected = o.arrayMake([ 1, 2, 3 ]);
+  debugger;
   test.identical( got, expected );
+  debugger;
 
   test.case = o.name + ' . ' + 'array to space with class'; //
 
   var src = o.arrayMake([ 1, 2, 3 ]);
   var expected = space.make([ 3, 1 ]);
   expected.buffer = o.arrayMake([ 1, 2, 3 ]);
+  debugger;
   var got = space.convertToClass( space, src );
+  debugger;
   test.identical( got, expected );
 
   test.case = o.name + ' . ' + 'array to vector with class'; //
