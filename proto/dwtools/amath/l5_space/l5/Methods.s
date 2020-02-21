@@ -38,13 +38,13 @@ function make( dims )
 
   let lengthFlat = proto.atomsPerSpaceForDimensions( dims );
   let strides = proto.stridesForDimensions( dims,0 );
-  let buffer = proto.array.makeArrayOfLength( lengthFlat );
+  let buffer = proto.long.longMake( lengthFlat );
   let result = new proto.Self
   ({
-    buffer : buffer,
-    dims : dims,
+    buffer,
+    dims,
     inputTransposing : 0,
-    /*strides : strides,*/
+    /*strides,*/
   });
 
   _.assert( _.longIdentical( strides,result._stridesEffective ) );
@@ -75,7 +75,7 @@ function makeSquare( buffer )
   if( _.numberIs( buffer ) )
   {
     inputTransposing = 0;
-    buffer = this.array.makeArrayOfLength( atomsPerSpace );
+    buffer = this.long.longMake( atomsPerSpace );
   }
   else
   {
@@ -84,9 +84,9 @@ function makeSquare( buffer )
 
   let result = new proto.constructor
   ({
-    buffer : buffer,
-    dims : dims,
-    inputTransposing : inputTransposing,
+    buffer,
+    dims,
+    inputTransposing,
   });
 
   return result;
@@ -107,13 +107,13 @@ function makeZero( dims )
 
   let lengthFlat = proto.atomsPerSpaceForDimensions( dims );
   let strides = proto.stridesForDimensions( dims,0 );
-  let buffer = proto.array.makeArrayOfLengthZeroed( lengthFlat );
+  let buffer = proto.long.longMakeZeroed( lengthFlat );
   let result = new proto.Self
   ({
-    buffer : buffer,
-    dims : dims,
+    buffer,
+    dims,
     inputTransposing : 0,
-    /*strides : strides,*/
+    /*strides,*/
   });
 
   _.assert( _.longIdentical( strides,result._stridesEffective ) );
@@ -136,13 +136,13 @@ function makeIdentity( dims )
 
   let lengthFlat = proto.atomsPerSpaceForDimensions( dims );
   let strides = proto.stridesForDimensions( dims,0 );
-  let buffer = proto.array.makeArrayOfLengthZeroed( lengthFlat );
+  let buffer = proto.long.longMakeZeroed( lengthFlat ); /* xxx */
   let result = new proto.Self
   ({
-    buffer : buffer,
-    dims : dims,
+    buffer,
+    dims,
     inputTransposing : 0,
-    /*strides : strides,*/
+    /*strides,*/
   });
 
   result.diagonalSet( 1 );
@@ -215,11 +215,11 @@ function makeDiagonal( diagonal )
   let length = diagonal.length;
   let dims = [ length,length ];
   let atomsPerSpace = this.atomsPerSpaceForDimensions( dims );
-  let buffer = this.array.makeArrayOfLengthZeroed( atomsPerSpace );
+  let buffer = this.long.longMakeZeroed( atomsPerSpace );
   let result = new this.Self
   ({
-    buffer : buffer,
-    dims : dims,
+    buffer,
+    dims,
     inputTransposing : 0,
     // strides : [ 1,length ],
   });
@@ -261,8 +261,8 @@ function makeSimilar( m , dims )
 
     result = new m.constructor
     ({
-      buffer : buffer,
-      dims : dims,
+      buffer,
+      dims,
       inputTransposing : 0,
     });
 
@@ -353,9 +353,9 @@ function makeLine( o )
 
   }
   else if( _.numberIs( o.buffer ) )
-  o.buffer = o.zeroing ? this.array.makeArrayOfLengthZeroed( length ) : this.array.makeArrayOfLength( length );
+  o.buffer = o.zeroing ? this.long.longMakeZeroed( length ) : this.long.longMake( length );
   else if( o.zeroing )
-  o.buffer = this.array.makeArrayOfLengthZeroed( length )
+  o.buffer = this.long.longMakeZeroed( length )
   else
   o.buffer = proto.constructor._bufferFrom( o.buffer );
 
@@ -376,10 +376,10 @@ function makeLine( o )
   let result = new proto.constructor
   ({
     buffer : o.buffer,
-    dims : dims,
+    dims,
     inputTransposing : 0,
-    strides : strides,
-    offset : offset,
+    strides,
+    offset,
   });
 
   return result;
@@ -398,7 +398,7 @@ function makeCol( buffer )
 {
   return this.makeLine
   ({
-    buffer : buffer,
+    buffer,
     zeroing : 0,
     dimension : 0,
   });
@@ -410,7 +410,7 @@ function makeColZeroed( buffer )
 {
   return this.makeLine
   ({
-    buffer : buffer,
+    buffer,
     zeroing : 1,
     dimension : 0,
   });
@@ -422,7 +422,7 @@ function makeRow( buffer )
 {
   return this.makeLine
   ({
-    buffer : buffer,
+    buffer,
     zeroing : 0,
     dimension : 1,
   });
@@ -434,7 +434,7 @@ function makeRowZeroed( buffer )
 {
   return this.makeLine
   ({
-    buffer : buffer,
+    buffer,
     zeroing : 1,
     dimension : 1,
   });
@@ -568,10 +568,12 @@ function fromScalar( scalar,dims )
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.numberIs( scalar );
 
+  debugger;
+
   let result = new this.Self
   ({
-    buffer : this.array.arrayFromCoercing( _.dup( scalar,this.atomsPerSpaceForDimensions( dims ) ) ),
-    dims : dims,
+    buffer : this.long.longFrom( _.dup( scalar,this.atomsPerSpaceForDimensions( dims ) ) ),
+    dims,
     inputTransposing : 0,
   });
 
@@ -588,13 +590,13 @@ function fromScalarForReading( scalar,dims )
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.numberIs( scalar );
 
-  let buffer = this.array.makeArrayOfLength( 1 );
+  let buffer = this.long.longMake( 1 );
   buffer[ 0 ] = scalar;
 
   let result = new this.Self
   ({
-    buffer : buffer,
-    dims : dims,
+    buffer,
+    dims,
     strides : _.dup( 0,dims.length ),
   });
 
@@ -922,7 +924,9 @@ function _tempBorrow( src,dims,index )
   if( !src )
   {
 
-    cls = this.array.ArrayType;
+    debugger; xxx
+    // cls = this.array.ArrayType;
+    cls = this.longDescriptor;
     if( !dims )
     dims = src;
 
@@ -953,7 +957,7 @@ function _tempBorrow( src,dims,index )
 
   let result = this._tempMatrices[ index ][ key ] = new Self
   ({
-    dims : dims,
+    dims,
     buffer : new cls( this.atomsPerSpaceForDimensions( dims ) ),
     inputTransposing : 0,
   });
@@ -1620,7 +1624,7 @@ function scaleGet( dst )
   if( dst )
   l = dst.length;
   else
-  dst = _.vector.from( self.array.makeArrayOfLengthZeroed( self.length-1 ) );
+  dst = _.vector.from( self.long.longMakeZeroed( self.length-1 ) );
 
   let dstv = _.vector.from( dst );
 
@@ -1718,7 +1722,7 @@ function _triangulateGausian( o )
   {
     o.pivots = [];
     for( let i = 0 ; i < self.dims.length ; i += 1 )
-    o.pivots[ i ] = _.arrayFromRange([ 0, self.dims[ i ] ]);
+    o.pivots[ i ] = _.longFromRange([ 0, self.dims[ i ] ]);
   }
 
   if( o.y !== null )
@@ -1990,7 +1994,7 @@ function triangulateLuPivoting( pivots )
   {
     pivots = [];
     for( let i = 0 ; i < self.dims.length ; i += 1 )
-    pivots[ i ] = _.arrayFromRange([ 0, self.dims[ i ] ]);
+    pivots[ i ] = _.longFromRange([ 0, self.dims[ i ] ]);
   }
 
   let o = Object.create( null );
@@ -2162,7 +2166,7 @@ function _solveWithGaussJordan( o )
   {
     o.pivots = [];
     for( let i = 0 ; i < o.m.dims.length ; i += 1 )
-    o.pivots[ i ] = _.arrayFromRange([ 0, o.m.dims[ i ] ]);
+    o.pivots[ i ] = _.longFromRange([ 0, o.m.dims[ i ] ]);
   }
 
   /* */
@@ -2847,7 +2851,7 @@ function formPerspective( fov, size, depth )
 
   }
 
-  /* logger.log({ xmin : xmin, xmax : xmax, ymin : ymin, ymax : ymax }); */
+  /* logger.log({ xmin, xmax, ymin, ymax }); */
 
   return self.formFrustum( [ xmin, xmax ], [ ymin, ymax ], depth );
 }
@@ -3214,40 +3218,40 @@ let Statics =
 
   /* make */
 
-  make : make,
-  makeSquare : makeSquare,
-  // makeSquare2 : makeSquare2,
-  // makeSquare3 : makeSquare3,
-  // makeSquare4 : makeSquare4,
+  make,
+  makeSquare,
+  // makeSquare2,
+  // makeSquare3,
+  // makeSquare4,
 
-  makeZero : makeZero,
-  makeIdentity : makeIdentity,
-  makeIdentity2 : makeIdentity2,
-  makeIdentity3 : makeIdentity3,
-  makeIdentity4 : makeIdentity4,
+  makeZero,
+  makeIdentity,
+  makeIdentity2,
+  makeIdentity3,
+  makeIdentity4,
 
-  makeDiagonal : makeDiagonal,
-  makeSimilar : makeSimilar,
+  makeDiagonal,
+  makeSimilar,
 
-  makeLine : makeLine,
-  makeCol : makeCol,
-  makeColZeroed : makeColZeroed,
-  makeRow : makeRow,
-  makeRowZeroed : makeRowZeroed,
+  makeLine,
+  makeCol,
+  makeColZeroed,
+  makeRow,
+  makeRowZeroed,
 
-  fromVectorAdapter : fromVectorAdapter,
-  fromScalar : fromScalar,
-  fromScalarForReading : fromScalarForReading,
-  from : from,
-  fromForReading : fromForReading,
+  fromVectorAdapter,
+  fromScalar,
+  fromScalarForReading,
+  from,
+  fromForReading,
 
-  _tempBorrow : _tempBorrow,
+  _tempBorrow,
   tempBorrow : tempBorrow1,
-  tempBorrow1 : tempBorrow1,
-  tempBorrow2 : tempBorrow2,
-  tempBorrow3 : tempBorrow3,
+  tempBorrow1,
+  tempBorrow2,
+  tempBorrow3,
 
-  convertToClass : convertToClass,
+  convertToClass,
 
 
   /* mul */
@@ -3258,37 +3262,37 @@ let Statics =
 
   /* solve */
 
-  _pivotRook : _pivotRook,
+  _pivotRook,
 
-  solve : solve,
+  solve,
 
-  _solveOptions : _solveOptions,
+  _solveOptions,
 
-  solveWithGausian : solveWithGausian,
-  solveWithGausianPivoting : solveWithGausianPivoting,
+  solveWithGausian,
+  solveWithGausianPivoting,
 
-  _solveWithGaussJordan : _solveWithGaussJordan,
-  solveWithGaussJordan : solveWithGaussJordan,
-  solveWithGaussJordanPivoting : solveWithGaussJordanPivoting,
-  invertWithGaussJordan : invertWithGaussJordan,
+  _solveWithGaussJordan,
+  solveWithGaussJordan,
+  solveWithGaussJordanPivoting,
+  invertWithGaussJordan,
 
-  solveWithTriangles : solveWithTriangles,
-  solveWithTrianglesPivoting : solveWithTrianglesPivoting,
+  solveWithTriangles,
+  solveWithTrianglesPivoting,
 
-  _solveTriangleWithRoutine : _solveTriangleWithRoutine,
-  solveTriangleLower : solveTriangleLower,
-  solveTriangleLowerNormal : solveTriangleLowerNormal,
-  solveTriangleUpper : solveTriangleUpper,
-  solveTriangleUpperNormal : solveTriangleUpperNormal,
+  _solveTriangleWithRoutine,
+  solveTriangleLower,
+  solveTriangleLowerNormal,
+  solveTriangleUpper,
+  solveTriangleUpperNormal,
 
-  solveGeneral : solveGeneral,
+  solveGeneral,
 
 
   /* modeler */
 
-  _linearModel : _linearModel,
-  polynomExactFor : polynomExactFor,
-  polynomClosestFor : polynomClosestFor,
+  _linearModel,
+  polynomExactFor,
+  polynomClosestFor,
 
 
   /* var */
@@ -3313,162 +3317,162 @@ let Extend =
 
   // make
 
-  make : make,
-  makeSquare : makeSquare,
+  make,
+  makeSquare,
 
-  // makeSquare2 : makeSquare2,
-  // makeSquare3 : makeSquare3,
-  // makeSquare4 : makeSquare4,
+  // makeSquare2,
+  // makeSquare3,
+  // makeSquare4,
 
-  makeZero : makeZero,
+  makeZero,
 
-  makeIdentity : makeIdentity,
-  makeIdentity2 : makeIdentity2,
-  makeIdentity3 : makeIdentity3,
-  makeIdentity4 : makeIdentity4,
+  makeIdentity,
+  makeIdentity2,
+  makeIdentity3,
+  makeIdentity4,
 
-  makeDiagonal : makeDiagonal,
-  makeSimilar : makeSimilar,
+  makeDiagonal,
+  makeSimilar,
 
-  makeLine : makeLine,
-  makeCol : makeCol,
-  makeColZeroed : makeColZeroed,
-  makeRow : makeRow,
-  makeRowZeroed : makeRowZeroed,
+  makeLine,
+  makeCol,
+  makeColZeroed,
+  makeRow,
+  makeRowZeroed,
 
   // convert
 
-  convertToClass : convertToClass,
+  convertToClass,
 
-  fromVectorAdapter : fromVectorAdapter,
-  fromScalar : fromScalar,
-  fromScalarForReading : fromScalarForReading,
-  from : from,
-  fromForReading : fromForReading,
+  fromVectorAdapter,
+  fromScalar,
+  fromScalarForReading,
+  from,
+  fromForReading,
 
-  fromTransformations : fromTransformations,
-  fromQuat : fromQuat,
-  fromQuatWithScale : fromQuatWithScale,
+  fromTransformations,
+  fromQuat,
+  fromQuatWithScale,
 
-  fromAxisAndAngle : fromAxisAndAngle,
+  fromAxisAndAngle,
 
-  fromEuler : fromEuler,
+  fromEuler,
 
   // borrow
 
-  _tempBorrow : _tempBorrow,
+  _tempBorrow,
   tempBorrow : tempBorrow1,
-  tempBorrow1 : tempBorrow1,
-  tempBorrow2 : tempBorrow2,
-  tempBorrow3 : tempBorrow3,
+  tempBorrow1,
+  tempBorrow2,
+  tempBorrow3,
 
   // mul
 
   pow : spacePow,
-  mul : mul,
-  mul2Matrices : mul2Matrices,
-  mulLeft : mulLeft,
-  mulRight : mulRight,
+  mul,
+  mul2Matrices,
+  mulLeft,
+  mulRight,
 
   // partial accessors
 
-  zero : zero,
-  identify : identify,
-  diagonalSet : diagonalSet,
-  diagonalVectorGet : diagonalVectorGet,
-  triangleLowerSet : triangleLowerSet,
-  triangleUpperSet : triangleUpperSet,
+  zero,
+  identify,
+  diagonalSet,
+  diagonalVectorGet,
+  triangleLowerSet,
+  triangleUpperSet,
 
   // transformer
 
-  matrixApplyTo : matrixApplyTo,
-  matrixHomogenousApply : matrixHomogenousApply,
-  matrixDirectionsApply : matrixDirectionsApply,
+  matrixApplyTo,
+  matrixHomogenousApply,
+  matrixDirectionsApply,
 
-  positionGet : positionGet,
-  positionSet : positionSet,
-  scaleMaxGet : scaleMaxGet,
-  scaleMeanGet : scaleMeanGet,
-  scaleMagGet : scaleMagGet,
-  scaleGet : scaleGet,
-  scaleSet : scaleSet,
-  scaleAroundSet : scaleAroundSet,
-  scaleApply : scaleApply,
+  positionGet,
+  positionSet,
+  scaleMaxGet,
+  scaleMeanGet,
+  scaleMagGet,
+  scaleGet,
+  scaleSet,
+  scaleAroundSet,
+  scaleApply,
 
   // triangulator
 
-  _triangulateGausian : _triangulateGausian,
-  triangulateGausian : triangulateGausian,
-  triangulateGausianNormal : triangulateGausianNormal,
-  triangulateGausianPivoting : triangulateGausianPivoting,
+  _triangulateGausian,
+  triangulateGausian,
+  triangulateGausianNormal,
+  triangulateGausianPivoting,
 
-  triangulateLu : triangulateLu,
-  triangulateLuNormal : triangulateLuNormal,
-  triangulateLuPivoting : triangulateLuPivoting,
+  triangulateLu,
+  triangulateLuNormal,
+  triangulateLuPivoting,
 
-  _pivotRook : _pivotRook,
+  _pivotRook,
 
   // solver
 
-  solve : solve,
+  solve,
 
-  _solveOptions : _solveOptions,
+  _solveOptions,
 
-  solveWithGausian : solveWithGausian,
-  solveWithGausianPivoting : solveWithGausianPivoting,
+  solveWithGausian,
+  solveWithGausianPivoting,
 
-  _solveWithGaussJordan : _solveWithGaussJordan,
-  solveWithGaussJordan : solveWithGaussJordan,
-  solveWithGaussJordanPivoting : solveWithGaussJordanPivoting,
-  invertWithGaussJordan : invertWithGaussJordan,
+  _solveWithGaussJordan,
+  solveWithGaussJordan,
+  solveWithGaussJordanPivoting,
+  invertWithGaussJordan,
 
-  solveWithTriangles : solveWithTriangles,
-  solveWithTrianglesPivoting : solveWithTrianglesPivoting,
+  solveWithTriangles,
+  solveWithTrianglesPivoting,
 
-  _solveTriangleWithRoutine : _solveTriangleWithRoutine,
-  solveTriangleLower : solveTriangleLower,
-  solveTriangleLowerNormal : solveTriangleLowerNormal,
-  solveTriangleUpper : solveTriangleUpper,
-  solveTriangleUpperNormal : solveTriangleUpperNormal,
+  _solveTriangleWithRoutine,
+  solveTriangleLower,
+  solveTriangleLowerNormal,
+  solveTriangleUpper,
+  solveTriangleUpperNormal,
 
-  solveGeneral : solveGeneral,
+  solveGeneral,
 
-  invert : invert,
-  invertingClone : invertingClone,
-  copyAndInvert : copyAndInvert,
+  invert,
+  invertingClone,
+  copyAndInvert,
 
-  normalProjectionMatrixMake : normalProjectionMatrixMake,
-  normalProjectionMatrixGet : normalProjectionMatrixGet,
+  normalProjectionMatrixMake,
+  normalProjectionMatrixGet,
 
   // modeler
 
-  _linearModel : _linearModel,
+  _linearModel,
 
-  polynomExactFor : polynomExactFor,
-  polynomClosestFor : polynomClosestFor,
+  polynomExactFor,
+  polynomClosestFor,
 
   // projector
 
-  formPerspective : formPerspective,
-  formFrustum : formFrustum,
-  formOrthographic : formOrthographic,
-  lookAt : lookAt,
+  formPerspective,
+  formFrustum,
+  formOrthographic,
+  lookAt,
 
   // reducer
 
-  closest : closest,
-  furthest : furthest,
+  closest,
+  furthest,
 
-  elementMean : elementMean,
+  elementMean,
 
-  minmaxColWise : minmaxColWise,
-  minmaxRowWise : minmaxRowWise,
+  minmaxColWise,
+  minmaxRowWise,
 
-  determinant : determinant,
+  determinant,
 
   //
 
-  Statics : Statics,
+  Statics,
 
 }
 

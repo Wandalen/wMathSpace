@@ -1,30 +1,21 @@
-(function _Main_s_() {
+(function _Basic_s_() {
 
 'use strict';
 
-/**
- * Collection of functions for matrix math. MathSpace introduces class Space which is a multidimensional structure which in the most trivial case is Matrix of scalars. A matrix of specific form could also be classified as a vector. MathSpace heavily relly on MathVector, which introduces VectorAdapter. VectorAdapter is a reference, it does not contain data but only refer on actual ( aka Long ) container of lined data.  Use MathSpace for arithmetic operations with matrices, to triangulate, permutate or transform matrix, to get a specific or the general solution of a system of linear equations, to get LU, QR decomposition, for SVD or PCA. Also, Space is a convenient and efficient data container, you may use it to continuously store huge an array of arrays or for matrix computation.
-  @module Tools/math/Space
-*/
-
-/**
- * @file wSpace.s.
- */
-
-if( typeof module !== 'undefined' )
-{
-
-  let _ = require( '../../Tools.s' );
-
-  _.include( 'wMathScalar' );
-  _.include( 'wMathVector' );
-  _.include( 'wCopyable' );
-  _.include( 'wEntityBasic' );
-
-  // require( '../l1/Scalar.s' );
-  // require( '../l3_vector/Base.s' );
-
-}
+// if( typeof module !== 'undefined' )
+// {
+//
+//   let _ = require( '../../Tools.s' );
+//
+//   _.include( 'wMathScalar' );
+//   _.include( 'wMathVector' );
+//   _.include( 'wCopyable' );
+//   _.include( 'wEntityBasic' );
+//
+//   // require( '../l1/Scalar.s' );
+//   // require( '../l3_vector/Base.s' );
+//
+// }
 
 /*
 
@@ -291,7 +282,7 @@ function _copy( src,resetting )
 
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
-  let it = _._cloner( self._traverseAct,{ src : src, dst : self, /*resetting : resetting,*/ technique : 'object' } );
+  let it = _._cloner( self._traverseAct,{ src, dst : self, /*resetting,*/ technique : 'object' } );
 
   self._traverseAct( it );
 
@@ -822,7 +813,7 @@ function _bufferSet( src )
   return;
 
   if( _.numberIs( src ) )
-  src = this.array.makeArrayOfLength([ src ]);
+  src = this.long.longMake([ src ]);
 
   _.assert( _.longIs( src ) || src === null );
 
@@ -1380,8 +1371,8 @@ function expand( expand )
   ({
     inputTransposing : 0,
     offset : 0,
-    buffer : buffer,
-    dims : dims,
+    buffer,
+    dims,
     strides : null,
   });
 
@@ -1765,18 +1756,22 @@ function _bufferFrom( src )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.longIs( src ) || _.vectorAdapterIs( src ) );
 
-  if( !_.constructorIsBuffer( proto.array.ArrayType ) )
-  return dst;
+  // if( !_.constructorIsBuffer( proto.array.ArrayType ) )
+  // return dst;
+  //
+  // debugger;
+  // if( !_.constructorIsBuffer( proto.longDescriptor ) )
+  // return dst;
 
   if( _.vectorAdapterIs( dst ) && _.arrayIs( dst._vectorBuffer ) )
   {
-    dst = this.array.makeArrayOfLength( src.length );
+    dst = this.long.longMake( src.length );
     for( let i = 0 ; i < src.length ; i++ )
     dst[ i ] = src.eGet( i );
   }
   else if( _.arrayIs( dst ) )
   {
-    dst = proto.array.arrayFromCoercing( dst );
+    dst = proto.long.longFrom( dst );
   }
 
   return dst;
@@ -1801,7 +1796,7 @@ function bufferNormalize()
 
   self.copy
   ({
-    buffer : buffer,
+    buffer,
     offset : 0,
     inputTransposing : 0,
   });
@@ -1856,9 +1851,9 @@ function subspace( subspace )
   let result = new Self
   ({
     buffer : self.buffer,
-    offset : offset,
-    strides : strides,
-    dims : dims,
+    offset,
+    strides,
+    dims,
     inputTransposing : self.inputTransposing,
   });
 
@@ -2489,11 +2484,11 @@ function colEachCollecting( onEach , args , returningNumber )
 
   let result = self._lineEachCollecting
   ({
-    onEach : onEach,
-    args : args,
+    onEach,
+    args,
     length : self.atomsPerRow,
     lineOrder : 0,
-    returningNumber : returningNumber,
+    returningNumber,
   });
 
   return result;
@@ -2509,11 +2504,11 @@ function rowEachCollecting( onEach , args , returningNumber )
 
   let result = self._lineEachCollecting
   ({
-    onEach : onEach,
-    args : args,
+    onEach,
+    args,
     length : self.atomsPerCol,
     lineOrder : 1,
-    returningNumber : returningNumber,
+    returningNumber,
   });
 
   return result;
@@ -3006,7 +3001,7 @@ function pivotForward( pivots )
 
   for( let d = 0 ; d < pivots.length ; d++ )
   {
-    let current = _.arrayFromRange([ 0,self.dims[ d ] ]);
+    let current = _.longFromRange([ 0,self.dims[ d ] ]);
     let expected = pivots[ d ];
     if( expected === null )
     continue;
@@ -3028,7 +3023,7 @@ function pivotBackward( pivots )
   for( let d = 0 ; d < pivots.length ; d++ )
   {
     let current = pivots[ d ];
-    let expected = _.arrayFromRange([ 0,self.dims[ d ] ]);
+    let expected = _.longFromRange([ 0,self.dims[ d ] ]);
     if( current === null )
     continue;
     current = current.slice();
@@ -3070,7 +3065,7 @@ function vectorPivotForward( vector,pivot )
 
   let original = vector;
   vector = _.vector.from( vector );
-  let current = _.arrayFromRange([ 0,vector.length ]);
+  let current = _.longFromRange([ 0,vector.length ]);
   let expected = pivot;
   if( expected === null )
   return vector;
@@ -3092,7 +3087,7 @@ function vectorPivotBackward( vector,pivot )
   let original = vector;
   vector = _.vector.from( vector );
   let current = pivot.slice();
-  let expected = _.arrayFromRange([ 0,vector.length ]);
+  let expected = _.longFromRange([ 0,vector.length ]);
   if( current === null )
   return vector;
   this._vectorPivotDimension( vector,current,expected )
@@ -3177,43 +3172,45 @@ let Statics =
 
   /* */
 
-  copyTo : copyTo,
+  copyTo,
 
-  atomsPerSpaceForDimensions : atomsPerSpaceForDimensions,
-  nrowOf : nrowOf,
-  ncolOf : ncolOf,
-  dimsOf : dimsOf,
-  shapesAreSame : shapesAreSame,
+  atomsPerSpaceForDimensions,
+  nrowOf,
+  ncolOf,
+  dimsOf,
+  shapesAreSame,
 
-  stridesForDimensions : stridesForDimensions,
-  stridesRoll : stridesRoll,
+  stridesForDimensions,
+  stridesRoll,
 
-  _flatAtomIndexFromIndexNd : _flatAtomIndexFromIndexNd,
+  _flatAtomIndexFromIndexNd,
 
-  _bufferFrom : _bufferFrom,
-  is : is,
+  _bufferFrom,
+  is,
 
 
   /* iterator */
 
-  atomWiseHomogeneous : atomWiseHomogeneous,
-  // atomWiseHomogeneousZip : atomWiseHomogeneousZip,
-  atomWiseZip : atomWiseZip,
+  atomWiseHomogeneous,
+  // atomWiseHomogeneousZip,
+  atomWiseZip,
 
 
   /* pivot */
 
-  _vectorPivotDimension : _vectorPivotDimension,
-  vectorPivotForward : vectorPivotForward,
-  vectorPivotBackward : vectorPivotBackward,
+  _vectorPivotDimension,
+  vectorPivotForward,
+  vectorPivotBackward,
 
 
   /* var */
 
-  array : _.ArrayNameSpaces.Float32,
-  withArray : _.ArrayNameSpaces,
-  accuracy : accuracy,
-  accuracySqr : accuracySqr,
+  // array : _.LongDescriptors.Float32,
+  // withDefaultLong : _.LongDescriptors, /* xxx */
+  accuracy,
+  accuracySqr,
+
+  long : _.vector.long,
 
 }
 
@@ -3240,6 +3237,7 @@ let Forbids =
   _generator : '_generator',
   usingOptimizedAccessors : 'usingOptimizedAccessors',
   dimensionsDesired : 'dimensionsDesired',
+  array : 'array',
 
 }
 
@@ -3280,6 +3278,8 @@ let ReadOnlyAccessors =
   strideOfRow : 'strideOfRow',
   strideInRow : 'strideInRow',
 
+
+
 }
 
 //
@@ -3294,30 +3294,32 @@ let Accessors =
   dims : 'dims',
   breadth : 'breadth',
 
+  // vector : { readOnly : 1, getter : _.vector },
+  // long : { readOnly : 1, getter : _.vector.long },
+
 }
 
 // --
 // declare
 // --
 
-let Proto =
+let Extension =
 {
 
-  init : init,
+  init,
 
-  _traverseAct : _traverseAct,
-  _copy : _copy,
-  copy : copy,
-  copyResetting : copyResetting,
+  _traverseAct,
+  _copy,
+  copy,
+  copyResetting,
 
-  copyFromScalar : copyFromScalar,
-  copyFromBuffer : copyFromBuffer,
-  clone : clone,
+  copyFromScalar,
+  copyFromBuffer,
+  clone,
 
-  copyTo : copyTo,
+  copyTo,
 
-  extractNormalized : extractNormalized,
-
+  extractNormalized,
 
   /* size in bytes */
 
@@ -3334,7 +3336,6 @@ let Proto =
 
   '_sizeOfAtomGet' : _sizeOfAtomGet,
 
-
   /* size in atoms */
 
   '_atomsPerElementGet' : _atomsPerElementGet, /* cached */
@@ -3344,10 +3345,9 @@ let Proto =
   '_ncolGet' : _ncolGet,
   '_atomsPerSpaceGet' : _atomsPerSpaceGet,
 
-  atomsPerSpaceForDimensions : atomsPerSpaceForDimensions,
-  nrowOf : nrowOf,
-  ncolOf : ncolOf,
-
+  atomsPerSpaceForDimensions,
+  nrowOf,
+  ncolOf,
 
   /* stride */
 
@@ -3363,79 +3363,74 @@ let Proto =
   '_strideOfRowGet' : _strideOfRowGet,
   '_strideInRowGet' : _strideInRowGet,
 
-  stridesForDimensions : stridesForDimensions,
-  stridesRoll : stridesRoll,
-
+  stridesForDimensions,
+  stridesRoll,
 
   /* buffer */
 
   '_bufferSet' : _bufferSet, /* cached */
   '_offsetSet' : _offsetSet, /* cached */
 
-  _bufferAssign : _bufferAssign,
-  bufferCopyTo : bufferCopyTo,
-
+  _bufferAssign,
+  bufferCopyTo,
 
   /* reshape */
 
-  _changeBegin : _changeBegin,
-  _changeEnd : _changeEnd,
+  _changeBegin,
+  _changeEnd,
 
-  _sizeChanged : _sizeChanged,
+  _sizeChanged,
 
-  _adjust : _adjust,
-  _adjustAct : _adjustAct,
-  _adjustVerify : _adjustVerify,
-  _adjustValidate : _adjustValidate,
+  _adjust,
+  _adjustAct,
+  _adjustVerify,
+  _adjustValidate,
 
   '_breadthGet' : _breadthGet, /* cached */
   '_breadthSet' : _breadthSet,
   '_dimsSet' : _dimsSet, /* cached */
 
-  expand : expand,
+  expand,
 
-  shapesAreSame : shapesAreSame,
-  hasShape : hasShape,
-  isSquare : isSquare,
-
+  shapesAreSame,
+  hasShape,
+  isSquare,
 
   /* etc */
 
-  flatAtomIndexFrom : flatAtomIndexFrom,
-  _flatAtomIndexFromIndexNd : _flatAtomIndexFromIndexNd,
-  flatGranuleIndexFrom : flatGranuleIndexFrom,
+  flatAtomIndexFrom,
+  _flatAtomIndexFromIndexNd,
+  flatGranuleIndexFrom,
 
-  transpose : transpose,
+  transpose,
 
-  _equalAre : _equalAre,
-  // equalWith : equalWith,
+  _equalAre,
+  // equalWith,
 
-  is : is,
-  toStr : toStr,
-  _bufferFrom : _bufferFrom,
+  is,
+  toStr,
+  _bufferFrom,
 
-  bufferNormalize : bufferNormalize,
-  subspace : subspace,
-
+  bufferNormalize,
+  subspace,
 
   /* iterator */
 
-  atomWhile : atomWhile,
-  atomEach : atomEach,
-  atomWiseReduceWithFlatVector : atomWiseReduceWithFlatVector,
-  atomWiseReduceWithAtomHandler : atomWiseReduceWithAtomHandler,
-  atomWiseWithAssign : atomWiseWithAssign,
-  atomWiseHomogeneous : atomWiseHomogeneous,
-  // atomWiseHomogeneousZip : atomWiseHomogeneousZip,
-  atomWiseZip : atomWiseZip,
+  atomWhile,
+  atomEach,
+  atomWiseReduceWithFlatVector,
+  atomWiseReduceWithAtomHandler,
+  atomWiseWithAssign,
+  atomWiseHomogeneous,
+  // atomWiseHomogeneousZip,
+  atomWiseZip,
 
-  elementEach : elementEach,
-  elementsZip : elementsZip,
+  elementEach,
+  elementsZip,
 
-  _lineEachCollecting : _lineEachCollecting,
-  rowEachCollecting : rowEachCollecting,
-  colEachCollecting : colEachCollecting,
-
+  _lineEachCollecting,
+  rowEachCollecting,
+  colEachCollecting,
 
   /*
 
@@ -3450,51 +3445,51 @@ let Proto =
 
   /* components accessor */
 
-  atomFlatGet : atomFlatGet,
-  atomFlatSet : atomFlatSet,
-  atomGet : atomGet,
-  atomSet : atomSet,
-  atomsGet : atomsGet,
-  asVector : asVector,
+  atomFlatGet,
+  atomFlatSet,
+  atomGet,
+  atomSet,
+  atomsGet,
+  asVector,
 
-  granuleGet : granuleGet,
-  elementSlice : elementSlice,
-  elementsInRangeGet : elementsInRangeGet,
-  eGet : eGet,
-  eSet : eSet,
-  elementsSwap : elementsSwap,
+  granuleGet,
+  elementSlice,
+  elementsInRangeGet,
+  eGet,
+  eSet,
+  elementsSwap,
 
-  lineVectorGet : lineVectorGet,
-  lineSet : lineSet,
-  linesSwap : linesSwap,
+  lineVectorGet,
+  lineSet,
+  linesSwap,
 
-  rowVectorOfMatrixGet : rowVectorOfMatrixGet,
-  rowVectorGet : rowVectorGet,
-  rowSet : rowSet,
-  rowsSwap : rowsSwap,
+  rowVectorOfMatrixGet,
+  rowVectorGet,
+  rowSet,
+  rowsSwap,
 
-  colVectorGet : colVectorGet,
-  colSet : colSet,
-  colsSwap : colsSwap,
+  colVectorGet,
+  colSet,
+  colsSwap,
 
-  _pivotDimension : _pivotDimension,
-  pivotForward : pivotForward,
-  pivotBackward : pivotBackward,
+  _pivotDimension,
+  pivotForward,
+  pivotBackward,
 
-  _vectorPivotDimension : _vectorPivotDimension,
-  vectorPivotForward : vectorPivotForward,
-  vectorPivotBackward : vectorPivotBackward,
-
+  _vectorPivotDimension,
+  vectorPivotForward,
+  vectorPivotBackward,
 
   /* relations */
 
-
-  Composes : Composes,
-  Aggregates : Aggregates,
-  Associates : Associates,
-  Restricts : Restricts,
-  Medials : Medials,
-  Statics : Statics,
+  Composes,
+  Aggregates,
+  Associates,
+  Restricts,
+  Medials,
+  Statics,
+  Forbids,
+  Accessors,
 
 }
 
@@ -3504,37 +3499,45 @@ _.classDeclare
 ({
   cls : Self,
   parent : Parent,
-  extend : Proto,
+  extend : Extension,
 });
 
 _.Copyable.mixin( Self );
 
 //
 
-_.assert( _.objectIs( Self.prototype.array ) );
-_.assert( _.objectIs( Self.prototype.withArray ) );
-_.assert( _.objectIs( _.withArray ) );
-_.assert( _.objectIs( _.withArray.Float32 ) );
-_.assert( _.objectIs( _.ArrayNameSpaces.Float32 ) );
-_.assert( _.routineIs( _.ArrayNameSpaces.Float32.makeArrayOfLength ) );
+// debugger;
+_.assert( !!_.vector );
+_.assert( !!_.vector.long );
+_.assert( Self.long === _.vector.long );
+// debugger;
+
+// _.assert( _.objectIs( Self.prototype.array ) );
+// _.assert( _.objectIs( Self.prototype.withDefaultLong ) );
+_.assert( _.objectIs( _.withDefaultLong ) );
+_.assert( _.objectIs( _.withDefaultLong.Fx ) );
+// debugger;
+// _.assert( _.objectIs( _.longDescriptor.F32 ) );
+// _.assert( _.routineIs( _.longDescriptor.F32.makeArrayOfLength ) );
+// debugger;
 
 //
 
-_.accessor.forbid( Self.prototype, Forbids );
+// _.accessor.forbid( Self.prototype, Forbids );
 _.accessor.readOnly( Self.prototype, ReadOnlyAccessors );
-_.accessor.declare( Self.prototype, Accessors );
+// _.accessor.declare( Self.prototype, Accessors );
 
 //
 
-_.mapExtendConditional( _.field.mapper.srcOwnPrimitive, Self, Composes ); /* required ??? */
+_.mapExtendConditional( _.field.mapper.srcOwnPrimitive, Self, Composes ); /* xxx : required ??? */
 _global_.wSpace = _.Space = Self;
 
 //
 
-if( typeof module !== 'undefined' )
-{
-  require( './l3/FromVector.s' );
-  require( './l3/Methods.s' );
-}
+// if( typeof module !== 'undefined' )
+// {
+//   require( './l3/FromVector.s' );
+//   require( './l3/Methods.s' );
+// }
 
 })();

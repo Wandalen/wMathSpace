@@ -2,15 +2,12 @@ format: outwillfile-2.0
 root:
   - wMathSpace.out
 consistency:
-  wMathSpace.out.will.yml: &ref_0
-    hash: 33d793cb5ecd4d4d3041945c616540ad
-    size: 40516
-  ../.ex.will.yml: &ref_1
+  ../.ex.will.yml: &ref_0
     hash: 950925402d0bb906551fc04019b363d9
     size: 2548
-  ../.im.will.yml: &ref_2
-    hash: 6335a70bb0f9f8e87aa63be8b047559d
-    size: 5159
+  ../.im.will.yml: &ref_1
+    hash: 14f6b390e37dd4080dcf554ffae2787d
+    size: 5165
 module:
   wMathSpace.out:
     about:
@@ -31,11 +28,11 @@ module:
         computation.
       enabled: 1
       version: 0.4.0
-      interpreters:
+      interpreters: &ref_2
         - njs >= 8.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords:
+      keywords: &ref_3
         - wTools
         - math
         - matrix
@@ -43,11 +40,11 @@ module:
         - convolution
       license: MIT
       author: Kostiantyn Wandalen <wanalen@willbe.so>
-      contributors:
+      contributors: &ref_4
         - Kostiantyn Wandalen <wanalen@willbe.so>
         - Pablo Garcimartin <pablogarcimartinruiz@gmail.com>
       npm.name: wmathspace
-      npm.scripts:
+      npm.scripts: &ref_5
         test: wtest .run proto/**
         docgen: wdocgen .build proto
     path:
@@ -129,7 +126,7 @@ module:
       entry.proto.no.tests:
         criterion:
           tests: no.tests
-        path: ../proto/dwtools/amath/l5_space/Main.s
+        path: ../proto/dwtools/amath/l5_space/Include.s
       entry.proto.only.tests:
         criterion:
           tests: only.tests
@@ -139,13 +136,13 @@ module:
           debug: debug
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/amath/l5_space/Main.s'
+        path: '{path::out.*=1}/source/dwtools/amath/l5_space/Include.s'
       entry.out.raw.debug.release:
         criterion:
           debug: release
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/amath/l5_space/Main.s'
+        path: '{path::out.*=1}/source/dwtools/amath/l5_space/Include.s'
       entry.out.compiled.debug.debug:
         criterion:
           debug: debug
@@ -178,10 +175,13 @@ module:
           - ../proto/dwtools/amath/l5.test
           - ../proto/dwtools/amath/l5.test/Space.test.s
           - ../proto/dwtools/amath/l5_space
-          - ../proto/dwtools/amath/l5_space/Main.s
+          - ../proto/dwtools/amath/l5_space/Include.s
+          - ../proto/dwtools/amath/l5_space/l1
+          - ../proto/dwtools/amath/l5_space/l1/Basic.s
           - ../proto/dwtools/amath/l5_space/l3
           - ../proto/dwtools/amath/l5_space/l3/FromVector.s
-          - ../proto/dwtools/amath/l5_space/l3/Methods.s
+          - ../proto/dwtools/amath/l5_space/l5
+          - ../proto/dwtools/amath/l5_space/l5/Methods.s
           - ../proto/dwtools/amid
           - ../proto/dwtools/atop
     submodule:
@@ -728,24 +728,6 @@ module:
           content: prime
         inherit:
           - files.transpile
-      exported.proto.export:
-        opts:
-          reflector: 'reflector::exported.proto.export*'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
-      exported.files.proto.export:
-        opts:
-          reflector: 'reflector::exported.files.proto.export*'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
     build:
       proto.export:
         steps:
@@ -834,9 +816,8 @@ module:
           content: proto
           export: 1
     consistency:
-      wMathSpace.out.will.yml: *ref_0
-      ../.ex.will.yml: *ref_1
-      ../.im.will.yml: *ref_2
+      ../.ex.will.yml: *ref_0
+      ../.im.will.yml: *ref_1
   ../:
     about:
       name: wMathSpace
@@ -856,25 +837,13 @@ module:
         computation.
       enabled: 1
       version: 0.4.0
-      interpreters:
-        - njs >= 8.0.0
-        - chrome >= 60.0.0
-        - firefox >= 60.0.0
-      keywords:
-        - wTools
-        - math
-        - matrix
-        - matrix math
-        - convolution
+      interpreters: *ref_2
+      keywords: *ref_3
       license: MIT
       author: Kostiantyn Wandalen <wanalen@willbe.so>
-      contributors:
-        - Kostiantyn Wandalen <wanalen@willbe.so>
-        - Pablo Garcimartin <pablogarcimartinruiz@gmail.com>
+      contributors: *ref_4
       npm.name: wmathspace
-      npm.scripts:
-        test: wtest .run proto/**
-        docgen: wdocgen .build proto
+      npm.scripts: *ref_5
     path:
       module.willfiles:
         criterion:
@@ -954,7 +923,7 @@ module:
       entry.proto.no.tests:
         criterion:
           tests: no.tests
-        path: proto/dwtools/amath/l5_space/Main.s
+        path: proto/dwtools/amath/l5_space/Include.s
       entry.proto.only.tests:
         criterion:
           tests: only.tests
@@ -964,13 +933,13 @@ module:
           debug: debug
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/amath/l5_space/Main.s'
+        path: '{path::out.*=1}/source/dwtools/amath/l5_space/Include.s'
       entry.out.raw.debug.release:
         criterion:
           debug: release
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/amath/l5_space/Main.s'
+        path: '{path::out.*=1}/source/dwtools/amath/l5_space/Include.s'
       entry.out.compiled.debug.debug:
         criterion:
           debug: debug
@@ -1556,6 +1525,5 @@ module:
         hash: 950925402d0bb906551fc04019b363d9
         size: 2548
       ../.im.will.yml:
-        hash: 6335a70bb0f9f8e87aa63be8b047559d
-        size: 5159
-      wMathSpace.out.will.yml: *ref_0
+        hash: 14f6b390e37dd4080dcf554ffae2787d
+        size: 5165
