@@ -256,7 +256,7 @@ function makeSimilar( m , dims )
   {
 
     let atomsPerSpace = Self.atomsPerSpaceForDimensions( dims );
-    let buffer = _.longMakeZeroed( m.buffer,atomsPerSpace );
+    let buffer = proto.long.longMakeZeroed( m.buffer, atomsPerSpace ); /* yyy */
     /* could possibly be not zeroed */
 
     result = new m.constructor
@@ -271,7 +271,7 @@ function makeSimilar( m , dims )
   {
 
     _.assert( dims[ 1 ] === 1 );
-    result = _.longMakeUndefined( m, dims[ 0 ] );
+    result = proto.long.longMakeUndefined( m, dims[ 0 ] ); /* yyy */
 
   }
   else if( _.vectorAdapterIs( m ) )

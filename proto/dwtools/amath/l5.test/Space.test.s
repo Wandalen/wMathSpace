@@ -63,7 +63,7 @@ function spaceIs( test )
     inputTransposing : 0,
     strides : [ 2, 6 ],
     dims : [ 3, 1 ],
-  }); 
+  });
   var got = _.spaceIs( src );
   test.identical( got, true );
 }
@@ -81,7 +81,7 @@ function constructorIsSpace( test )
     inputTransposing : 0,
     strides : [ 2, 6 ],
     dims : [ 3, 1 ],
-  }); 
+  });
   var got = _.constructorIsSpace( src );
   test.identical( got, false );
 
@@ -134,8 +134,10 @@ function clone( test )
 
   test.case = 'clone'; /* */
 
+  debugger;
   var b = a.clone();
   test.identical( a, b );
+  debugger;
   test.is( a.buffer !== b.buffer );
   test.is( a.buffer === buffer );
 
@@ -1841,6 +1843,7 @@ function makeHelper( test )
     4, 5, 6,
     7, 8, 9,
   ];
+  debugger;
   var m = space.makeSquare( buffer );
   debugger;
 
@@ -1917,7 +1920,9 @@ function makeHelper( test )
 
   test.case = 'diagonal'; /* */
 
+  debugger;
   var m = space.makeDiagonal([ 1, 2, 3 ]);
+  debugger;
 
   logger.log( 'm\n' + _.toStr( m ) );
 
@@ -2854,6 +2859,14 @@ function _makeSimilar( test, o )
   test.is( _.vectorAdapterIs( src ) );
   test.identical( got.length , 5 );
 
+  test.case = o.name + ' . special'; //
+
+  var exp = o.arrayMake([]);
+  debugger;
+  var got = space.makeSimilar( o.arrayMake([ 1, 2, 3 ]), [ null, 1 ] ); /* xxx */
+  debugger;
+  test.identical( got, exp );
+
   test.case = o.name + ' . bad arguments'; //
 
   if( !Config.debug )
@@ -2870,7 +2883,6 @@ function _makeSimilar( test, o )
   test.shouldThrowErrorSync( () => space.makeSimilar( o.arrayMake([ 1, 2, 3 ]), [ 3, 2 ] ) );
   test.shouldThrowErrorSync( () => space.makeSimilar( vec( o.arrayMake([ 1, 2, 3 ]) ), [ 3, 2 ] ) );
 
-  test.shouldThrowErrorSync( () => space.makeSimilar( o.arrayMake([ 1, 2, 3 ]), [ null, 1 ] ) );
   test.shouldThrowErrorSync( () => space.makeSimilar( vec( o.arrayMake([ 1, 2, 3 ]) ), [ null, 1 ] ) );
   test.shouldThrowErrorSync( () => space.makeSimilar( space.make([ 2, 2 ]), [ null, 1 ] ) );
 
@@ -2885,15 +2897,17 @@ function _makeSimilar( test, o )
 function makeSimilar( test )
 {
 
-  var o = Object.create( null );
-  o.name = 'Array';
-  o.arrayMake = function( a ){ return _.longMakeUndefined( Array, a ) };
-  this._makeSimilar( test, o );
+  // var o = Object.create( null );
+  // o.name = 'Array';
+  // o.arrayMake = function( a ){ return _.longMakeUndefined( Array, a ) };
+  // this._makeSimilar( test, o );
 
-  var o = Object.create( null );
-  o.name = 'F32x';
-  o.arrayMake = function( a ){ return _.longMakeUndefined( F32x, a ) };
-  this._makeSimilar( test, o );
+  // var o = Object.create( null );
+  // o.name = 'F32x';
+  // o.arrayMake = function( a ){ return _.longMakeUndefined( F32x, a ) };
+  // this._makeSimilar( test, o );
+
+  // xxx
 
   var o = Object.create( null );
   o.name = 'U32x';
