@@ -2374,7 +2374,7 @@ AtomWiseHomogeneous.defaults =
 //   return self;
 // }
 
-function atomWiseZip( onAtom,dst,srcs )
+function AtomWiseZip( onAtom,dst,srcs )
 {
   let self = this;
   let o = 
@@ -3502,7 +3502,7 @@ let Extension =
   atomWiseWithAssign,
   AtomWiseHomogeneous,
   // AtomWiseHomogeneousZip,
-  atomWiseZip,
+  AtomWiseZip,
 
   elementEach,
   elementsZip,
