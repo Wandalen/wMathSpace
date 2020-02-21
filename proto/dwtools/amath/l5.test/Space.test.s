@@ -268,7 +268,7 @@ function construct( test )
 
   test.identical( cloned,expected );
 
-    test.case = 'deserializing clone'; /* */
+  test.case = 'deserializing clone'; /* */
 
   var b = new _.Space({ buffer : new F32x(), inputTransposing : true });
   b.copyDeserializing( cloned );
