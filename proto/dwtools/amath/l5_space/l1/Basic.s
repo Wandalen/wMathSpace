@@ -132,6 +132,7 @@ function init( o )
 
 function _traverseAct( it )
 {
+  let self = this;
 
   if( it.resetting === undefined )
   it.resetting = 1;
@@ -210,17 +211,18 @@ function _traverseAct( it )
     }
     else if( src.buffer && !dst.buffer )
     {
-      dst.buffer = _.longMakeUndefined( src.buffer , src.atomsPerSpace );
+      debugger;
+      dst.buffer = self.long.longMakeUndefined( src.buffer , src.atomsPerSpace );
       dst.offset = 0;
       dst.strides = null;
-      dst[ stridesEffectiveSymbol ] = dst.StridesForDimensions( src.dims,!!dst.inputTransposing );
+      dst[ stridesEffectiveSymbol ] = dst.StridesForDimensions( src.dims, !!dst.inputTransposing );
     }
     else if( src.buffer && dst.atomsPerSpace !== src.atomsPerSpace )
     {
-      dst.buffer = _.longMakeUndefined( src.buffer , src.atomsPerSpace );
+      dst.buffer = self.long.longMakeUndefined( src.buffer , src.atomsPerSpace );
       dst.offset = 0;
       dst.strides = null;
-      dst[ stridesEffectiveSymbol ] = dst.StridesForDimensions( src.dims,!!dst.inputTransposing );
+      dst[ stridesEffectiveSymbol ] = dst.StridesForDimensions( src.dims, !!dst.inputTransposing );
     }
     else debugger;
 
@@ -443,7 +445,7 @@ function extractNormalized()
 
   _.assert( arguments.length === 0, 'Expects no arguments' );
 
-  result.buffer = _.longMakeUndefined( self.buffer , self.atomsPerSpace );
+  result.buffer = self.long.longMakeUndefined( self.buffer , self.atomsPerSpace );
   result.offset = 0;
   result.strides = self.StridesForDimensions( self.dims,self.inputTransposing );
 
@@ -820,13 +822,15 @@ function _bufferSet( src )
 
   _.assert( _.longIs( src ) || src === null );
 
+  // if( src )
+  // debugger;
+
   self[ bufferSymbol ] = src;
 
   if( !self._changing[ 0 ] )
   self[ dimsSymbol ] = null;
 
   self._sizeChanged();
-
 }
 
 //
@@ -889,7 +893,7 @@ function bufferCopyTo( dst )
   let atomsPerSpace = self.atomsPerSpace;
 
   if( !dst )
-  dst = _.longMakeUndefined( self.buffer, atomsPerSpace );
+  dst = self.long.longMakeUndefined( self.buffer, atomsPerSpace );
 
   _.assert( arguments.length === 0 || arguments.length === 1 );
   _.assert( _.longIs( dst ) );
@@ -1350,7 +1354,7 @@ function expand( expand )
 
   let atomsPerSpace = Self.AtomsPerSpaceForDimensions( dims );
   let strides = Self.StridesForDimensions( dims,0 );
-  let buffer = _.longMakeZeroed( self.buffer,atomsPerSpace );
+  let buffer = self.long.longMakeZeroed( self.buffer,atomsPerSpace );
 
   /* move data */
 
@@ -1788,7 +1792,7 @@ function bufferNormalize()
 
   _.assert( arguments.length === 0, 'Expects no arguments' );
 
-  let buffer = _.longMakeUndefined( self.buffer,self.atomsPerSpace );
+  let buffer = self.long.longMakeUndefined( self.buffer,self.atomsPerSpace );
 
   let i = 0;
   self.atomEach( function( it )
