@@ -6,8 +6,8 @@ consistency:
     hash: 950925402d0bb906551fc04019b363d9
     size: 2548
   ../.im.will.yml: &ref_1
-    hash: 14f6b390e37dd4080dcf554ffae2787d
-    size: 5165
+    hash: 28b552be5895ae6800a28d51e5bd8630
+    size: 5241
 module:
   wMathSpace.out:
     about:
@@ -207,6 +207,10 @@ module:
         enabled: 0
         criterion:
           development: 1
+      wentitybasic:
+        path: 'npm:///wentitybasic'
+        autoExporting: 0
+        enabled: 0
       wTesting:
         path: 'npm:///wTesting'
         autoExporting: 0
@@ -975,6 +979,10 @@ module:
         enabled: 0
         criterion:
           development: 1
+      wentitybasic:
+        path: 'npm:///wentitybasic'
+        autoExporting: 0
+        enabled: 0
       wTesting:
         path: 'npm:///wTesting'
         autoExporting: 0
@@ -1525,5 +1533,5 @@ module:
         hash: 950925402d0bb906551fc04019b363d9
         size: 2548
       ../.im.will.yml:
-        hash: 14f6b390e37dd4080dcf554ffae2787d
-        size: 5165
+        hash: 28b552be5895ae6800a28d51e5bd8630
+        size: 5241
