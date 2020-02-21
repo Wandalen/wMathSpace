@@ -27,7 +27,8 @@
     "wTools" : "", 
     "wCopyable" : "", 
     "wmathscalar" : "", 
-    "wmathvector" : ""
+    "wmathvector" : "",
+    "wentitybasic": ""
   }, 
   "devDependencies" : { "wTesting" : "" }, 
   "keywords" : [ "wTools", "math", "matrix", "matrix math", "convolution" ]
