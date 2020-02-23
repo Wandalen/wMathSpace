@@ -297,13 +297,13 @@ function makeLine( o )
   let dims = null;
 
   _.assert( !this.instanceIs() );
-  _.assert( _.spaceIs( o.buffer ) || _.vectorAdapterIs( o.buffer ) || _.arrayIs( o.buffer ) || _.bufferTypedIs( o.buffer ) || _.numberIs( o.buffer ) );
+  _.assert( _.matrixIs( o.buffer ) || _.vectorAdapterIs( o.buffer ) || _.arrayIs( o.buffer ) || _.bufferTypedIs( o.buffer ) || _.numberIs( o.buffer ) );
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.routineOptions( makeLine, o );
 
   /* */
 
-  if( _.spaceIs( o.buffer ) )
+  if( _.matrixIs( o.buffer ) )
   {
     _.assert( o.buffer.dims.length === 2 );
     if( o.dimension === 0 )
@@ -456,7 +456,7 @@ function convertToClass( cls, src )
   return src;
 
   let result;
-  if( _.spaceIs( src ) )
+  if( _.matrixIs( src ) )
   {
 
     if( _.isSubClassOf( cls, src.Self ) )
@@ -1024,7 +1024,7 @@ function tempBorrow3( src )
 // mul
 // --
 
-function spacePow( exponent )
+function matrixPow( exponent )
 {
 
   _.assert( _.instanceIs( this ) );
@@ -1539,7 +1539,7 @@ function matrixDirectionsApply( dstVector )
 
   debugger;
 
-  Self.mul( v, [ self.subspace([ [ 0, v.length ], [ 0, v.length ] ]), v ] );
+  Self.mul( v, [ self.submatrix([ [ 0, v.length ], [ 0, v.length ] ]), v ] );
   vector.normalize( v );
 
   return dstVector;
@@ -2106,15 +2106,15 @@ function _solveOptions( args )
   }
   else
   {
-    if( !_.spaceIs( o.x ) )
+    if( !_.matrixIs( o.x ) )
     o.x = vector.From( o.x );
     this.CopyTo( o.x, o.y );
   }
 
-  if( !_.spaceIs( o.y ) )
+  if( !_.matrixIs( o.y ) )
   o.y = vector.From( o.y );
 
-  if( !_.spaceIs( o.x ) )
+  if( !_.matrixIs( o.x ) )
   o.x = vector.From( o.x );
 
   _.assert( arguments.length === 1, 'Expects single argument' );
@@ -2331,7 +2331,7 @@ function _solveTriangleWithRoutine( args, onSolve )
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( y );
 
-  if( _.spaceIs( y ) )
+  if( _.matrixIs( y ) )
   {
 
     if( x === null )
@@ -2674,7 +2674,7 @@ function normalProjectionMatrixGet( src )
   }
 
   // debugger;
-  let sub = src.subspace([ [ 0, src.dims[ 0 ]-1 ], [ 0, src.dims[ 1 ]-1 ] ]);
+  let sub = src.submatrix([ [ 0, src.dims[ 0 ]-1 ], [ 0, src.dims[ 1 ]-1 ] ]);
   // debugger;
 
   return self.copy( sub ).invert().transpose();
@@ -3368,7 +3368,7 @@ let Extend =
 
   // mul
 
-  pow : spacePow,
+  pow : matrixPow,
   mul,
   mul2Matrices,
   mulLeft,

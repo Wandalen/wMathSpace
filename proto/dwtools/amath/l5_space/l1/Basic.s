@@ -20,7 +20,7 @@
 /*
 
 - implement power
-- implement subspace
+- implement submatrix
 -- make sure inputTransposing of product set correctly
 - implement compose
 
@@ -391,7 +391,7 @@ function CopyTo( dst, src )
   _.assert( _.longIdentical( srcDims, dstDims ), '(-src-) and (-dst-) should have same dimensions' );
   _.assert( !_.instanceIs( this ) )
 
-  if( !_.spaceIs( src ) )
+  if( !_.matrixIs( src ) )
   {
 
     src = vector.From( src );
@@ -401,7 +401,7 @@ function CopyTo( dst, src )
     if( _.vectorAdapterIs( dst ) )
     for( let s = 0 ; s < src.length ; s += 1 )
     dst.eSet( s, src.eGet( s ) )
-    else if( _.spaceIs( dst ) )
+    else if( _.matrixIs( dst ) )
     for( let s = 0 ; s < src.length ; s += 1 )
     dst.atomSet( [ s, 0 ], src.eGet( s ) )
     else _.assert( 0, 'unknown type of (-dst-)', _.strType( dst ) );
@@ -414,7 +414,7 @@ function CopyTo( dst, src )
     let dstDims = Self.DimsOf( dst );
     let srcDims = Self.DimsOf( src );
 
-    if( _.spaceIs( dst ) )
+    if( _.matrixIs( dst ) )
     src.atomEach( function( it )
     {
       dst.atomSet( it.indexNd , it.atom );
@@ -597,7 +597,7 @@ function _atomsPerMatrixGet()
 //
 
 /**
- * @summary Returns number of atoms per space for provided dimensions array `dims`.
+ * @summary Returns number of atoms per matrix for provided dimensions array `dims`.
  * @param {Array} dims Dimensions array.
  * @function AtomsPerMatrixForDimensions
  * @memberof module:Tools/math/Matrix.wMatrix
@@ -624,7 +624,7 @@ function AtomsPerMatrixForDimensions( dims )
 //
 
 /**
- * @summary Returns number of rows in provided space `src`.
+ * @summary Returns number of rows in provided matrix `src`.
  * @param {Object} src Instance of wMatrix.
  * @function NrowOf
  * @memberof module:Tools/math/Matrix.wMatrix
@@ -642,7 +642,7 @@ function NrowOf( src )
 //
 
 /**
- * @summary Returns number of columns in provided space `src`.
+ * @summary Returns number of columns in provided matrix `src`.
  * @param {Object} src Instance of wMatrix.
  * @function NcolOf
  * @memberof module:Tools/math/Matrix.wMatrix#
@@ -659,7 +659,7 @@ function NcolOf( src )
 //
 
 /**
- * @summary Returns dimensions array for provided space `src`.
+ * @summary Returns dimensions array for provided matrix `src`.
  * @param {Object} src Instance of wMatrix.
  * @function DimsOf
  * @memberof module:Tools/math/Matrix.wMatrix#
@@ -856,7 +856,7 @@ function _bufferAssign( src )
 
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.longIs( src ) );
-  _.assert( self.atomsPerMatrix === src.length, 'space', self.dims, 'should have', self.atomsPerMatrix, 'atoms, but got', src.length );
+  _.assert( self.atomsPerMatrix === src.length, 'matrix', self.dims, 'should have', self.atomsPerMatrix, 'atoms, but got', src.length );
 
   // /*
   //  !!! maybe problem if stride is not regular
@@ -897,7 +897,7 @@ function bufferCopyTo( dst )
 
   _.assert( arguments.length === 0 || arguments.length === 1 );
   _.assert( _.longIs( dst ) );
-  _.assert( atomsPerMatrix === dst.length, 'space', self.dims, 'should have', atomsPerMatrix, 'atoms, but got', dst.length );
+  _.assert( atomsPerMatrix === dst.length, 'matrix', self.dims, 'should have', atomsPerMatrix, 'atoms, but got', dst.length );
 
   throw _.err( 'not tested' );
 
@@ -1133,10 +1133,10 @@ function _adjustVerify()
 {
   let self = this;
 
-  _.assert( _.longIs( self.buffer ), 'space needs buffer' );
+  _.assert( _.longIs( self.buffer ), 'matrix needs buffer' );
   _.assert( _.longIs( self.strides ) || self.strides === null );
   // _.assert( _.longIs( self.strides ) || _.numberIs( self.strides ) || self.strides === null );
-  _.assert( _.numberIs( self.offset ), 'space needs offset' );
+  _.assert( _.numberIs( self.offset ), 'matrix needs offset' );
 
 }
 
@@ -1302,8 +1302,8 @@ function _dimsSet( src )
 //
 
 /**
- * @summary Expands current space to size.
- * @param {Array} expand New dimensions of the space.
+ * @summary Expands current matrix to size.
+ * @param {Array} expand New dimensions of the matrix.
  * @function expand
  * @memberof module:Tools/math/Matrix.wMatrix#
  */
@@ -1619,13 +1619,13 @@ _.routineExtend( _equalAre, _._equal );
 function Is( src )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
-  return _.spaceIs( src );
+  return _.matrixIs( src );
 }
 
 //
 
 /**
- * @summary Converts current space to string.
+ * @summary Converts current matrix to string.
  * @description Returns formatted string that represents maxtrix of scalars.
  * @param {Object} o Options map.
  * @param {String} o.tab='' String inserted before each new line
@@ -1812,43 +1812,43 @@ function bufferNormalize()
 
 //
 
-function subspace( subspace )
+function submatrix( submatrix )
 {
   let self = this;
 
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.arrayIs( subspace ), 'Expects array (-subspace-)' );
-  _.assert( subspace.length <= self.dims.length, 'Expects array (-subspace-) of length of self.dims' );
+  _.assert( _.arrayIs( submatrix ), 'Expects array (-submatrix-)' );
+  _.assert( submatrix.length <= self.dims.length, 'Expects array (-submatrix-) of length of self.dims' );
 
-  for( let s = subspace.length ; s < self.dims.length ; s++ )
-  subspace.unshift( _.all );
+  for( let s = submatrix.length ; s < self.dims.length ; s++ )
+  submatrix.unshift( _.all );
 
   let dims = [];
   let strides = [];
   let stride = 1;
   let offset = Infinity;
 
-  for( let s = 0 ; s < subspace.length ; s++ )
+  for( let s = 0 ; s < submatrix.length ; s++ )
   {
-    if( subspace[ s ] === _.all )
+    if( submatrix[ s ] === _.all )
     {
       dims[ s ] = self.dims[ s ];
       strides[ s ] = self._stridesEffective[ s ];
     }
-    else if( _.numberIs( subspace[ s ] ) )
+    else if( _.numberIs( submatrix[ s ] ) )
     {
       dims[ s ] = 1;
       strides[ s ] = self._stridesEffective[ s ];
-      offset = Math.min( self._stridesEffective[ s ]*subspace[ s ], offset );
+      offset = Math.min( self._stridesEffective[ s ]*submatrix[ s ], offset );
     }
-    else if( _.arrayIs( subspace[ s ] ) )
+    else if( _.arrayIs( submatrix[ s ] ) )
     {
-      _.assert( _.arrayIs( subspace[ s ] ) && subspace[ s ].length === 2 );
-      dims[ s ] = subspace[ s ][ 1 ] - subspace[ s ][ 0 ];
+      _.assert( _.arrayIs( submatrix[ s ] ) && submatrix[ s ].length === 2 );
+      dims[ s ] = submatrix[ s ][ 1 ] - submatrix[ s ][ 0 ];
       strides[ s ] = self._stridesEffective[ s ];
-      offset = Math.min( self._stridesEffective[ s ]*subspace[ s ][ 0 ], offset );
+      offset = Math.min( self._stridesEffective[ s ]*submatrix[ s ][ 0 ], offset );
     }
-    else _.assert( 0, 'unknown subspace request' );
+    else _.assert( 0, 'unknown submatrix request' );
   }
 
   if( offset === Infinity )
@@ -2471,7 +2471,7 @@ function elementEach( onElement )
 
 //
 
-function elementsZip( onEach, space )
+function elementsZip( onEach, matrix )
 {
   let self = this;
   let args = _.longSlice( arguments, 2 );
@@ -2484,7 +2484,7 @@ function elementsZip( onEach, space )
   for( let i = 0 ; i < self.length ; i++ )
   {
     args[ 0 ] = self.eGet( i );
-    args[ 1 ] = space.eGet( i );
+    args[ 1 ] = matrix.eGet( i );
     onEach.apply( self, args );
   }
 
@@ -3141,7 +3141,7 @@ function VectorPivotForward( vector, pivot )
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( _.arrayIs( pivot ) );
 
-  if( _.spaceIs( vector ) )
+  if( _.matrixIs( vector ) )
   return vector.pivotForward([ pivot, null ]);
 
   let original = vector;
@@ -3162,7 +3162,7 @@ function VectorPivotBackward( vector, pivot )
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( _.arrayIs( pivot ) );
 
-  if( _.spaceIs( vector ) )
+  if( _.matrixIs( vector ) )
   return vector.pivotBackward([ pivot, null ]);
 
   let original = vector;
@@ -3504,7 +3504,7 @@ let Extension =
   _bufferFrom,
 
   bufferNormalize,
-  subspace,
+  submatrix,
 
   /* iterator */
 
