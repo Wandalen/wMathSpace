@@ -3,7 +3,7 @@
 'use strict';
 
 let _ = _global_.wTools;
-let vector = _.vector;
+let vector = _.vectorAdapter;
 let abs = Math.abs;
 let min = Math.min;
 let max = Math.max;
@@ -16,10 +16,10 @@ let sqr = _.sqr;
 let longSlice = Array.prototype.slice;
 
 let Parent = null;
-let Self = _global_.wSpace;
+let Self = _global_.wMatrix;
 
 _.assert( _.objectIs( vector ) );
-_.assert( _.routineIs( Self ),'wSpace is not defined, please include wSpace.s first' );
+_.assert( _.routineIs( Self ), 'wMatrix is not defined, please include wMatrix.s first' );
 
 // --
 // make
@@ -31,23 +31,23 @@ function make( dims )
 
   _.assert( !this.instanceIs() );
   _.assert( _.longIs( dims ) || _.numberIs( dims ) );
-  _.assert( arguments.length === 1,'make expects single argument array (-dims-)' );
+  _.assert( arguments.length === 1, 'make expects single argument array (-dims-)' );
 
   if( _.numberIs( dims ) )
-  dims = [ dims,dims ];
+  dims = [ dims, dims ];
 
-  let lengthFlat = proto.AtomsPerSpaceForDimensions( dims );
-  let strides = proto.StridesForDimensions( dims,0 );
+  let lengthFlat = proto.AtomsPerMatrixForDimensions( dims );
+  let strides = proto.StridesForDimensions( dims, 0 );
   let buffer = proto.long.longMake( lengthFlat );
   let result = new proto.Self
   ({
     buffer,
     dims,
     inputTransposing : 0,
-    /*strides,*/
+    /*strides, */
   });
 
-  _.assert( _.longIdentical( strides,result._stridesEffective ) );
+  _.assert( _.longIdentical( strides, result._stridesEffective ) );
 
   return result;
 }
@@ -65,17 +65,17 @@ function makeSquare( buffer )
   _.assert( !this.instanceIs() );
   _.assert( _.prototypeIs( this ) || _.constructorIs( this ) );
   _.assert( _.longIs( buffer ) || _.numberIs( buffer ) );
-  _.assert( _.intIs( length ),'makeSquare expects square buffer' );
+  _.assert( _.intIs( length ), 'makeSquare expects square buffer' );
   _.assert( arguments.length === 1, 'Expects single argument' );
 
-  let dims = [ length,length ];
-  let atomsPerSpace = this.AtomsPerSpaceForDimensions( dims );
+  let dims = [ length, length ];
+  let atomsPerMatrix = this.AtomsPerMatrixForDimensions( dims );
 
-  let inputTransposing = atomsPerSpace > 0 ? 1 : 0;
+  let inputTransposing = atomsPerMatrix > 0 ? 1 : 0;
   if( _.numberIs( buffer ) )
   {
     inputTransposing = 0;
-    buffer = this.long.longMake( atomsPerSpace );
+    buffer = this.long.longMake( atomsPerMatrix );
   }
   else
   {
@@ -103,20 +103,20 @@ function makeZero( dims )
   _.assert( arguments.length === 1, 'Expects single argument' );
 
   if( _.numberIs( dims ) )
-  dims = [ dims,dims ];
+  dims = [ dims, dims ];
 
-  let lengthFlat = proto.AtomsPerSpaceForDimensions( dims );
-  let strides = proto.StridesForDimensions( dims,0 );
+  let lengthFlat = proto.AtomsPerMatrixForDimensions( dims );
+  let strides = proto.StridesForDimensions( dims, 0 );
   let buffer = proto.long.longMakeZeroed( lengthFlat );
   let result = new proto.Self
   ({
     buffer,
     dims,
     inputTransposing : 0,
-    /*strides,*/
+    /*strides, */
   });
 
-  _.assert( _.longIdentical( strides,result._stridesEffective ) );
+  _.assert( _.longIdentical( strides, result._stridesEffective ) );
 
   return result;
 }
@@ -132,22 +132,22 @@ function makeIdentity( dims )
   _.assert( arguments.length === 1, 'Expects single argument' );
 
   if( _.numberIs( dims ) )
-  dims = [ dims,dims ];
+  dims = [ dims, dims ];
 
-  let lengthFlat = proto.AtomsPerSpaceForDimensions( dims );
-  let strides = proto.StridesForDimensions( dims,0 );
+  let lengthFlat = proto.AtomsPerMatrixForDimensions( dims );
+  let strides = proto.StridesForDimensions( dims, 0 );
   let buffer = proto.long.longMakeZeroed( lengthFlat ); /* xxx */
   let result = new proto.Self
   ({
     buffer,
     dims,
     inputTransposing : 0,
-    /*strides,*/
+    /*strides, */
   });
 
   result.diagonalSet( 1 );
 
-  _.assert( _.longIdentical( strides,result._stridesEffective ) );
+  _.assert( _.longIdentical( strides, result._stridesEffective ) );
 
   return result;
 }
@@ -213,15 +213,15 @@ function makeDiagonal( diagonal )
   /* */
 
   let length = diagonal.length;
-  let dims = [ length,length ];
-  let atomsPerSpace = this.AtomsPerSpaceForDimensions( dims );
-  let buffer = this.long.longMakeZeroed( atomsPerSpace );
+  let dims = [ length, length ];
+  let atomsPerMatrix = this.AtomsPerMatrixForDimensions( dims );
+  let buffer = this.long.longMakeZeroed( atomsPerMatrix );
   let result = new this.Self
   ({
     buffer,
     dims,
     inputTransposing : 0,
-    // strides : [ 1,length ],
+    // strides : [ 1, length ],
   });
 
   result.diagonalSet( diagonal );
@@ -255,8 +255,8 @@ function makeSimilar( m , dims )
   if( m instanceof Self )
   {
 
-    let atomsPerSpace = Self.AtomsPerSpaceForDimensions( dims );
-    let buffer = proto.long.longMakeZeroed( m.buffer, atomsPerSpace ); /* yyy */
+    let atomsPerMatrix = Self.AtomsPerMatrixForDimensions( dims );
+    let buffer = proto.long.longMakeZeroed( m.buffer, atomsPerMatrix ); /* yyy */
     /* could possibly be not zeroed */
 
     result = new m.constructor
@@ -281,7 +281,7 @@ function makeSimilar( m , dims )
     result = m.makeSimilar( dims[ 0 ] );
 
   }
-  else _.assert( 0,'unexpected type of container',_.strType( m ) );
+  else _.assert( 0, 'unexpected type of container', _.strType( m ) );
 
   return result;
 }
@@ -299,7 +299,7 @@ function makeLine( o )
   _.assert( !this.instanceIs() );
   _.assert( _.spaceIs( o.buffer ) || _.vectorAdapterIs( o.buffer ) || _.arrayIs( o.buffer ) || _.bufferTypedIs( o.buffer ) || _.numberIs( o.buffer ) );
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.routineOptions( makeLine,o );
+  _.routineOptions( makeLine, o );
 
   /* */
 
@@ -344,9 +344,9 @@ function makeLine( o )
     if( o.buffer.stride !== 1 )
     {
       if( o.dimension === 0 )
-      strides = [ o.buffer.stride,o.buffer.stride ];
+      strides = [ o.buffer.stride, o.buffer.stride ];
       else
-      strides = [ o.buffer.stride,o.buffer.stride ];
+      strides = [ o.buffer.stride, o.buffer.stride ];
     }
 
     o.buffer = o.buffer._vectorBuffer;
@@ -363,13 +363,13 @@ function makeLine( o )
 
   if( o.dimension === 0 )
   {
-    dims = [ length,1 ];
+    dims = [ length, 1 ];
   }
   else if( o.dimension === 1 )
   {
-    dims = [ 1,length ];
+    dims = [ 1, length ];
   }
-  else _.assert( 0,'bad dimension',o.dimension );
+  else _.assert( 0, 'bad dimension', o.dimension );
 
   /* */
 
@@ -444,7 +444,7 @@ function makeRowZeroed( buffer )
 // converter
 // --
 
-function convertToClass( cls,src )
+function convertToClass( cls, src )
 {
   let self = this;
 
@@ -461,7 +461,7 @@ function convertToClass( cls,src )
 
     if( _.isSubClassOf( cls, src.Self ) )
     {
-      _.assert( src.Self === cls,'not tested' );
+      _.assert( src.Self === cls, 'not tested' );
       return src;
     }
 
@@ -469,56 +469,56 @@ function convertToClass( cls,src )
     _.assert( src.dims[ 1 ] === 1 );
 
     let array;
-    let atomsPerSpace = src.atomsPerSpace;
+    let atomsPerMatrix = src.atomsPerMatrix;
 
     if( _.constructorLikeArray( cls ) )
     {
-      result = new cls( atomsPerSpace );
+      result = new cls( atomsPerMatrix );
       array = result;
     }
     else if( _.constructorIsVector( cls ) )
     {
-      array = new src.buffer.constructor( atomsPerSpace );
-      result = vector.fromArray( array );
+      array = new src.buffer.constructor( atomsPerMatrix );
+      result = vector.FromLong( array );
     }
-    else _.assert( 0,'unknown class (-cls-)',cls.name );
+    else _.assert( 0, 'unknown class (-cls-)', cls.name );
 
     for( let i = 0 ; i < result.length ; i += 1 )
-    array[ i ] = src.atomGet([ i,0 ]);
+    array[ i ] = src.atomGet([ i, 0 ]);
 
   }
   else
   {
 
-    let atomsPerSpace = src.length;
-    src = vector.from( src );
+    let atomsPerMatrix = src.length;
+    src = vector.From( src );
 
-    if( _.constructorIsSpace( cls ) )
+    if( _.constructorIsMatrix( cls ) )
     {
-      let array = new src._vectorBuffer.constructor( atomsPerSpace );
+      let array = new src._vectorBuffer.constructor( atomsPerMatrix );
       result = new cls
       ({
-        dims : [ src.length,1 ],
+        dims : [ src.length, 1 ],
         buffer : array,
         inputTransposing : 0,
       });
       for( let i = 0 ; i < src.length ; i += 1 )
-      result.atomSet( [ i,0 ],src.eGet( i ) );
+      result.atomSet( [ i, 0 ], src.eGet( i ) );
     }
     else if( _.constructorLikeArray( cls ) )
     {
-      result = new cls( atomsPerSpace );
+      result = new cls( atomsPerMatrix );
       for( let i = 0 ; i < src.length ; i += 1 )
       result[ i ] = src.eGet( i );
     }
     else if( _.constructorIsVector( cls ) )
     {
-      let array = new src._vectorBuffer.constructor( atomsPerSpace );
-      result = vector.fromArray( array );
+      let array = new src._vectorBuffer.constructor( atomsPerMatrix );
+      result = vector.FromLong( array );
       for( let i = 0 ; i < src.length ; i += 1 )
       array[ i ] = src.eGet( i );
     }
-    else _.assert( 0,'unknown class (-cls-)',cls.name );
+    else _.assert( 0, 'unknown class (-cls-)', cls.name );
 
   }
 
@@ -539,8 +539,8 @@ function fromVectorAdapter( src )
     result = new this.Self
     ({
       buffer : src._vectorBuffer,
-      dims : [ src.length,1 ],
-      strides : src.stride > 1 ? [ src.stride,1 ] : undefined,
+      dims : [ src.length, 1 ],
+      strides : src.stride > 1 ? [ src.stride, 1 ] : undefined,
       inputTransposing : 0,
     });
   }
@@ -549,18 +549,18 @@ function fromVectorAdapter( src )
     result = new this.Self
     ({
       buffer : src,
-      dims : [ src.length,1 ],
+      dims : [ src.length, 1 ],
       inputTransposing : 0,
     });
   }
-  else _.assert( 0,'cant convert',_.strType( src ),'to Space' );
+  else _.assert( 0, 'cant convert', _.strType( src ), 'to Matrix' );
 
   return result;
 }
 
 //
 
-function fromScalar( scalar,dims )
+function fromScalar( scalar, dims )
 {
 
   _.assert( !this.instanceIs() );
@@ -572,7 +572,7 @@ function fromScalar( scalar,dims )
 
   let result = new this.Self
   ({
-    buffer : this.long.longFrom( _.dup( scalar,this.AtomsPerSpaceForDimensions( dims ) ) ),
+    buffer : this.long.longFrom( _.dup( scalar, this.AtomsPerMatrixForDimensions( dims ) ) ),
     dims,
     inputTransposing : 0,
   });
@@ -582,7 +582,7 @@ function fromScalar( scalar,dims )
 
 //
 
-function fromScalarForReading( scalar,dims )
+function fromScalarForReading( scalar, dims )
 {
 
   _.assert( !this.instanceIs() );
@@ -597,7 +597,7 @@ function fromScalarForReading( scalar,dims )
   ({
     buffer,
     dims,
-    strides : _.dup( 0,dims.length ),
+    strides : _.dup( 0, dims.length ),
   });
 
   return result;
@@ -605,7 +605,7 @@ function fromScalarForReading( scalar,dims )
 
 //
 
-function from( src,dims )
+function from( src, dims )
 {
   let result;
 
@@ -625,7 +625,7 @@ function from( src,dims )
   else if( _.numberIs( src ) )
   {
     _.assert( _.arrayIs( dims ) );
-    result = this.fromScalar( src,dims );
+    result = this.fromScalar( src, dims );
   }
   else
   {
@@ -639,7 +639,7 @@ function from( src,dims )
 
 //
 
-function fromForReading( src,dims )
+function fromForReading( src, dims )
 {
   let result;
 
@@ -654,7 +654,7 @@ function fromForReading( src,dims )
   else if( _.numberIs( src ) )
   {
     _.assert( _.arrayIs( dims ) );
-    result = this.fromScalarForReading( src,dims );
+    result = this.fromScalarForReading( src, dims );
   }
   else
   {
@@ -687,7 +687,7 @@ function fromQuat( q )
 {
   let self = this;
 
-  q = _.vector.from( q );
+  q = _.vectorAdapter.From( q );
   let x = q.eGet( 0 );
   let y = q.eGet( 1 );
   let z = q.eGet( 2 );
@@ -703,27 +703,27 @@ function fromQuat( q )
   let yy = y * y2, yz = y * z2, zz = z * z2;
   let wx = w * x2, wy = w * y2, wz = w * z2;
 
-  self.atomSet( [ 0,0 ] , 1 - ( yy + zz ) );
-  self.atomSet( [ 0,1 ] , xy - wz );
-  self.atomSet( [ 0,2 ] , xz + wy );
+  self.atomSet( [ 0, 0 ] , 1 - ( yy + zz ) );
+  self.atomSet( [ 0, 1 ] , xy - wz );
+  self.atomSet( [ 0, 2 ] , xz + wy );
 
-  self.atomSet( [ 1,0 ] , xy + wz );
-  self.atomSet( [ 1,1 ] , 1 - ( xx + zz ) );
-  self.atomSet( [ 1,2 ] , yz - wx );
+  self.atomSet( [ 1, 0 ] , xy + wz );
+  self.atomSet( [ 1, 1 ] , 1 - ( xx + zz ) );
+  self.atomSet( [ 1, 2 ] , yz - wx );
 
-  self.atomSet( [ 2,0 ] , xz - wy );
-  self.atomSet( [ 2,1 ] , yz + wx );
-  self.atomSet( [ 2,2 ] , 1 - ( xx + yy ) );
+  self.atomSet( [ 2, 0 ] , xz - wy );
+  self.atomSet( [ 2, 1 ] , yz + wx );
+  self.atomSet( [ 2, 2 ] , 1 - ( xx + yy ) );
 
   if( self.dims[ 0 ] > 3 )
   {
-    self.atomSet( [ 3,0 ] , 0 );
-    self.atomSet( [ 3,1 ] , 0 );
-    self.atomSet( [ 3,2 ] , 0 );
-    self.atomSet( [ 0,3 ], 0 );
-    self.atomSet( [ 1,3 ], 0 );
-    self.atomSet( [ 2,3 ], 0 );
-    self.atomSet( [ 3,3 ], 1 );
+    self.atomSet( [ 3, 0 ] , 0 );
+    self.atomSet( [ 3, 1 ] , 0 );
+    self.atomSet( [ 3, 2 ] , 0 );
+    self.atomSet( [ 0, 3 ], 0 );
+    self.atomSet( [ 1, 3 ], 0 );
+    self.atomSet( [ 2, 3 ], 0 );
+    self.atomSet( [ 3, 3 ], 1 );
   }
 
   return self;
@@ -735,7 +735,7 @@ function fromQuatWithScale( q )
 {
   let self = this;
 
-  q = _.vector.from( q );
+  q = _.vectorAdapter.From( q );
   let m = q.mag();
   let x = q.eGet( 0 ) / m;
   let y = q.eGet( 1 ) / m;
@@ -752,27 +752,27 @@ function fromQuatWithScale( q )
   let yy = y * y2, yz = y * z2, zz = z * z2;
   let wx = w * x2, wy = w * y2, wz = w * z2;
 
-  self.atomSet( [ 0,0 ] , m*( 1 - ( yy + zz ) ) );
-  self.atomSet( [ 0,1 ] , m*( xy - wz ) );
-  self.atomSet( [ 0,2 ] , m*( xz + wy ) );
+  self.atomSet( [ 0, 0 ] , m*( 1 - ( yy + zz ) ) );
+  self.atomSet( [ 0, 1 ] , m*( xy - wz ) );
+  self.atomSet( [ 0, 2 ] , m*( xz + wy ) );
 
-  self.atomSet( [ 1,0 ] , m*( xy + wz ) );
-  self.atomSet( [ 1,1 ] , m*( 1 - ( xx + zz ) ) );
-  self.atomSet( [ 1,2 ] , m*( yz - wx ) );
+  self.atomSet( [ 1, 0 ] , m*( xy + wz ) );
+  self.atomSet( [ 1, 1 ] , m*( 1 - ( xx + zz ) ) );
+  self.atomSet( [ 1, 2 ] , m*( yz - wx ) );
 
-  self.atomSet( [ 2,0 ] , m*( xz - wy ) );
-  self.atomSet( [ 2,1 ] , m*( yz + wx ) );
-  self.atomSet( [ 2,2 ] , m*( 1 - ( xx + yy ) ) );
+  self.atomSet( [ 2, 0 ] , m*( xz - wy ) );
+  self.atomSet( [ 2, 1 ] , m*( yz + wx ) );
+  self.atomSet( [ 2, 2 ] , m*( 1 - ( xx + yy ) ) );
 
   if( self.dims[ 0 ] > 3 )
   {
-    self.atomSet( [ 3,0 ] , 0 );
-    self.atomSet( [ 3,1 ] , 0 );
-    self.atomSet( [ 3,2 ] , 0 );
-    self.atomSet( [ 0,3 ], 0 );
-    self.atomSet( [ 1,3 ], 0 );
-    self.atomSet( [ 2,3 ], 0 );
-    self.atomSet( [ 3,3 ], 1 );
+    self.atomSet( [ 3, 0 ] , 0 );
+    self.atomSet( [ 3, 1 ] , 0 );
+    self.atomSet( [ 3, 2 ] , 0 );
+    self.atomSet( [ 0, 3 ], 0 );
+    self.atomSet( [ 1, 3 ], 0 );
+    self.atomSet( [ 2, 3 ], 0 );
+    self.atomSet( [ 3, 3 ], 1 );
   }
 
   return self;
@@ -780,10 +780,10 @@ function fromQuatWithScale( q )
 
 //
 
-function fromAxisAndAngle( axis,angle )
+function fromAxisAndAngle( axis, angle )
 {
   let self = this;
-  axis = _.vector.from( axis );
+  axis = _.vectorAdapter.From( axis );
 
   // let m = axis.mag();
   // debugger;
@@ -821,17 +821,17 @@ function fromAxisAndAngle( axis,angle )
   let m21 = a + b;
   let m12 = a - b;
 
-  self.atomSet( [ 0,0 ],m00 );
-  self.atomSet( [ 1,0 ],m10 );
-  self.atomSet( [ 2,0 ],m20 );
+  self.atomSet( [ 0, 0 ], m00 );
+  self.atomSet( [ 1, 0 ], m10 );
+  self.atomSet( [ 2, 0 ], m20 );
 
-  self.atomSet( [ 0,1 ],m01 );
-  self.atomSet( [ 1,1 ],m11 );
-  self.atomSet( [ 2,1 ],m21 );
+  self.atomSet( [ 0, 1 ], m01 );
+  self.atomSet( [ 1, 1 ], m11 );
+  self.atomSet( [ 2, 1 ], m21 );
 
-  self.atomSet( [ 0,2 ],m02 );
-  self.atomSet( [ 1,2 ],m12 );
-  self.atomSet( [ 2,2 ],m22 );
+  self.atomSet( [ 0, 2 ], m02 );
+  self.atomSet( [ 1, 2 ], m12 );
+  self.atomSet( [ 2, 2 ], m22 );
 
   return self;
 }
@@ -841,23 +841,23 @@ function fromAxisAndAngle( axis,angle )
 function fromEuler( euler )
 {
   let self = this;
-  // let euler = _.vector.from( euler );
+  // let euler = _.vectorAdapter.From( euler );
 
   // _.assert( self.dims[ 0 ] >= 3 );
   // _.assert( self.dims[ 1 ] >= 3 );
   _.assert( arguments.length === 1, 'Expects single argument' );
 
-  _.euler.toMatrix( euler,self );
+  _.euler.toMatrix( euler, self );
 
   return self;
 }
 
 //
 
-function fromAxisAndAngleWithScale( axis,angle )
+function fromAxisAndAngleWithScale( axis, angle )
 {
   let self = this;
-  axis = _.vector.from( axis );
+  axis = _.vectorAdapter.From( axis );
 
   let m = axis.mag();
   debugger;
@@ -894,17 +894,17 @@ function fromAxisAndAngleWithScale( axis,angle )
   let m21 = a + b;
   let m12 = a - b;
 
-  self.atomSet( [ 0,0 ],m*m00 );
-  self.atomSet( [ 1,0 ],m*m10 );
-  self.atomSet( [ 2,0 ],m*m20 );
+  self.atomSet( [ 0, 0 ], m*m00 );
+  self.atomSet( [ 1, 0 ], m*m10 );
+  self.atomSet( [ 2, 0 ], m*m20 );
 
-  self.atomSet( [ 0,1 ],m*m01 );
-  self.atomSet( [ 1,1 ],m*m11 );
-  self.atomSet( [ 2,1 ],m*m21 );
+  self.atomSet( [ 0, 1 ], m*m01 );
+  self.atomSet( [ 1, 1 ], m*m11 );
+  self.atomSet( [ 2, 1 ], m*m21 );
 
-  self.atomSet( [ 0,2 ],m*m02 );
-  self.atomSet( [ 1,2 ],m*m12 );
-  self.atomSet( [ 2,2 ],m*m22 );
+  self.atomSet( [ 0, 2 ], m*m02 );
+  self.atomSet( [ 1, 2 ], m*m12 );
+  self.atomSet( [ 2, 2 ], m*m22 );
 
   return self;
 }
@@ -913,7 +913,7 @@ function fromAxisAndAngleWithScale( axis,angle )
 // borrow
 // --
 
-function _tempBorrow( src,dims,index )
+function _tempBorrow( src, dims, index )
 {
   let bufferConstructor;
 
@@ -959,7 +959,7 @@ function _tempBorrow( src,dims,index )
   let result = this._tempMatrices[ index ][ key ] = new Self
   ({
     dims,
-    buffer : new bufferConstructor( this.AtomsPerSpaceForDimensions( dims ) ),
+    buffer : new bufferConstructor( this.AtomsPerMatrixForDimensions( dims ) ),
     inputTransposing : 0,
   });
 
@@ -1038,7 +1038,7 @@ function spacePow( exponent )
 
 //
 
-function mul_static( dst,srcs )
+function mul_static( dst, srcs )
 {
 
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
@@ -1096,25 +1096,25 @@ function mul_static( dst,srcs )
       let src = srcs[ s ];
       if( s % 2 === 0 )
       {
-        dst2 = dst.tempBorrow2([ dst3.dims[ 0 ],src.dims[ 1 ] ]);
+        dst2 = dst.tempBorrow2([ dst3.dims[ 0 ], src.dims[ 1 ] ]);
         this.mul2Matrices( dst2 , dst3 , src );
       }
       else
       {
-        dst3 = dst.tempBorrow3([ dst2.dims[ 0 ],src.dims[ 1 ] ]);
+        dst3 = dst.tempBorrow3([ dst2.dims[ 0 ], src.dims[ 1 ] ]);
         this.mul2Matrices( dst3 , dst2 , src );
       }
     }
 
     if( srcs.length % 2 === 0 )
-    this.CopyTo( odst,dst3 );
+    this.CopyTo( odst, dst3 );
     else
-    this.CopyTo( odst,dst2 );
+    this.CopyTo( odst, dst2 );
 
   }
   else
   {
-    this.CopyTo( odst,dst );
+    this.CopyTo( odst, dst );
   }
 
   return odst;
@@ -1129,12 +1129,12 @@ function mul( srcs )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.arrayIs( srcs ) );
 
-  return dst.Self.mul( dst,srcs );
+  return dst.Self.mul( dst, srcs );
 }
 
 //
 
-function mul2Matrices_static( dst,src1,src2 )
+function mul2Matrices_static( dst, src1, src2 )
 {
 
   src1 = Self.fromForReading( src1 );
@@ -1142,7 +1142,7 @@ function mul2Matrices_static( dst,src1,src2 )
 
   if( dst === null )
   {
-    dst = this.make([ src1.dims[ 0 ],src2.dims[ 1 ] ]);
+    dst = this.make([ src1.dims[ 0 ], src2.dims[ 1 ] ]);
   }
 
   _.assert( arguments.length === 3, 'Expects exactly three arguments' );
@@ -1153,7 +1153,7 @@ function mul2Matrices_static( dst,src1,src2 )
   _.assert( src2 instanceof Self );
   _.assert( dst !== src1 );
   _.assert( dst !== src2 );
-  _.assert( src1.dims[ 1 ] === src2.dims[ 0 ],'Expects src1.dims[ 1 ] === src2.dims[ 0 ]' );
+  _.assert( src1.dims[ 1 ] === src2.dims[ 0 ], 'Expects src1.dims[ 1 ] === src2.dims[ 0 ]' );
   _.assert( src1.dims[ 0 ] === dst.dims[ 0 ] );
   _.assert( src2.dims[ 1 ] === dst.dims[ 1 ] );
 
@@ -1165,8 +1165,8 @@ function mul2Matrices_static( dst,src1,src2 )
   {
     let row = src1.rowVectorGet( r );
     let col = src2.colVectorGet( c );
-    let dot = vector.dot( row,col );
-    dst.atomSet( [ r,c ],dot );
+    let dot = vector.dot( row, col );
+    dst.atomSet( [ r, c ], dot );
   }
 
   return dst;
@@ -1174,13 +1174,13 @@ function mul2Matrices_static( dst,src1,src2 )
 
 //
 
-function mul2Matrices( src1,src2 )
+function mul2Matrices( src1, src2 )
 {
   let dst = this;
 
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
-  return dst.Self.mul2Matrices( dst,src1,src2 );
+  return dst.Self.mul2Matrices( dst, src1, src2 );
 }
 
 //
@@ -1193,7 +1193,7 @@ function mulLeft( src )
 
   // debugger;
 
-  dst.mul([ dst,src ])
+  dst.mul([ dst, src ])
 
   return dst;
 }
@@ -1208,8 +1208,8 @@ function mulRight( src )
 
   // debugger;
 
-  dst.mul([ src,dst ]);
-  // dst.mul2Matrices( src,dst );
+  dst.mul([ src, dst ]);
+  // dst.mul2Matrices( src, dst );
 
   return dst;
 }
@@ -1229,11 +1229,11 @@ function mulRight( src )
 //
 //   debugger;
 //   if( !self._tempMatrices[ code ] )
-//   self._tempMatrices[ code ] = self.Self.make([ atomsPerCol,atomsPerRow ]);
+//   self._tempMatrices[ code ] = self.Self.make([ atomsPerCol, atomsPerRow ]);
 //   let dst = self._tempMatrices[ code ]
 //
 //   debugger;
-//   dst.mul2Matrices( dst,self,src );
+//   dst.mul2Matrices( dst, self, src );
 //   debugger;
 //
 //   self.copy( dst );
@@ -1266,7 +1266,7 @@ function mulRight( src )
 //   _.assert( self.dims.length === 2 );
 //
 //   let result = Self.make( src.dims );
-//   result.mul2Matrices( result,self,src );
+//   result.mul2Matrices( result, self, src );
 //
 //   return result;
 // }
@@ -1281,7 +1281,7 @@ function zero()
 
   _.assert( arguments.length === 0, 'Expects no arguments' );
 
-  self.atomEach( ( it ) => self.atomSet( it.indexNd,0 ) );
+  self.atomEach( ( it ) => self.atomSet( it.indexNd, 0 ) );
 
   return self;
 }
@@ -1294,7 +1294,7 @@ function identify()
 
   _.assert( arguments.length === 0, 'Expects no arguments' );
 
-  self.atomEach( ( it ) => it.indexNd[ 0 ] === it.indexNd[ 1 ] ? self.atomSet( it.indexNd,1 ) : self.atomSet( it.indexNd,0 ) );
+  self.atomEach( ( it ) => it.indexNd[ 0 ] === it.indexNd[ 1 ] ? self.atomSet( it.indexNd, 1 ) : self.atomSet( it.indexNd, 0 ) );
 
   return self;
 }
@@ -1304,12 +1304,12 @@ function identify()
 function diagonalSet( src )
 {
   let self = this;
-  let length = Math.min( self.atomsPerCol,self.atomsPerRow );
+  let length = Math.min( self.atomsPerCol, self.atomsPerRow );
 
   if( src instanceof Self )
   src = src.diagonalVectorGet();
 
-  src = vector.fromMaybeNumber( src,length );
+  src = vector.FromMaybeNumber( src, length );
 
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( self.dims.length === 2 );
@@ -1317,7 +1317,7 @@ function diagonalSet( src )
 
   for( let i = 0 ; i < length ; i += 1 )
   {
-    self.atomSet( [ i,i ],src.eGet( i ) );
+    self.atomSet( [ i, i ], src.eGet( i ) );
   }
 
   return self;
@@ -1328,13 +1328,13 @@ function diagonalSet( src )
 function diagonalVectorGet()
 {
   let self = this;
-  let length = Math.min( self.atomsPerCol,self.atomsPerRow );
+  let length = Math.min( self.atomsPerCol, self.atomsPerRow );
   let strides = self._stridesEffective;
 
   _.assert( arguments.length === 0, 'Expects no arguments' );
   _.assert( self.dims.length === 2 );
 
-  let result = vector.fromSubArrayWithStride( self.buffer, self.offset, length, strides[ 0 ] + strides[ 1 ] );
+  let result = vector.FromSubLongWithStride( self.buffer, self.offset, length, strides[ 0 ] + strides[ 1 ] );
 
   return result;
 }
@@ -1356,13 +1356,13 @@ function triangleLowerSet( src )
   {
 
     _.assert( src.dims[ 0 ] >= self.dims[ 0 ] );
-    _.assert( src.dims[ 1 ] >= min( self.dims[ 0 ]-1,self.dims[ 1 ] ) );
+    _.assert( src.dims[ 1 ] >= min( self.dims[ 0 ]-1, self.dims[ 1 ] ) );
 
     for( let r = 1 ; r < nrow ; r++ )
     {
-      let cl = min( r,ncol );
+      let cl = min( r, ncol );
       for( let c = 0 ; c < cl ; c++ )
-      self.atomSet( [ r,c ],src.atomGet([ r,c ]) );
+      self.atomSet( [ r, c ], src.atomGet([ r, c ]) );
     }
 
   }
@@ -1371,9 +1371,9 @@ function triangleLowerSet( src )
 
     for( let r = 1 ; r < nrow ; r++ )
     {
-      let cl = min( r,ncol );
+      let cl = min( r, ncol );
       for( let c = 0 ; c < cl ; c++ )
-      self.atomSet( [ r,c ],src );
+      self.atomSet( [ r, c ], src );
     }
 
   }
@@ -1398,13 +1398,13 @@ function triangleUpperSet( src )
   {
 
     _.assert( src.dims[ 1 ] >= self.dims[ 1 ] );
-    _.assert( src.dims[ 0 ] >= min( self.dims[ 1 ]-1,self.dims[ 0 ] ) );
+    _.assert( src.dims[ 0 ] >= min( self.dims[ 1 ]-1, self.dims[ 0 ] ) );
 
     for( let c = 1 ; c < ncol ; c++ )
     {
-      let cl = min( c,nrow );
+      let cl = min( c, nrow );
       for( let r = 0 ; r < cl ; r++ )
-      self.atomSet( [ r,c ],src.atomGet([ r,c ]) );
+      self.atomSet( [ r, c ], src.atomGet([ r, c ]) );
     }
 
   }
@@ -1413,9 +1413,9 @@ function triangleUpperSet( src )
 
     for( let c = 1 ; c < ncol ; c++ )
     {
-      let cl = min( c,nrow );
+      let cl = min( c, nrow );
       for( let r = 0 ; r < cl ; r++ )
-      self.atomSet( [ r,c ],src );
+      self.atomSet( [ r, c ], src );
     }
 
   }
@@ -1431,9 +1431,9 @@ function triangleUpperSet( src )
 // {
 //   let self = this;
 //
-//   _.assert( 0,'deprecated' );
+//   _.assert( 0, 'deprecated' );
 //
-//   vector.matrixApplyTo( dstVector,self );
+//   vector.matrixApplyTo( dstVector, self );
 //
 //   return self;
 // }
@@ -1445,9 +1445,9 @@ function triangleUpperSet( src )
 //   let self = this;
 //
 //   _.assert( arguments.length === 1 )
-//   _.assert( 0,'not tested' );
+//   _.assert( 0, 'not tested' );
 //
-//   vector.matrixHomogenousApply( dstVector,self );
+//   vector.matrixHomogenousApply( dstVector, self );
 //
 //   return self;
 // }
@@ -1456,17 +1456,17 @@ function matrixApplyTo( dstVector )
 {
   let self = this;
 
-  if( self.hasShape([ 3,3 ]) )
+  if( self.hasShape([ 3, 3 ]) )
   {
 
-    let dstVectorv = _.vector.from( dstVector );
+    let dstVectorv = _.vectorAdapter.From( dstVector );
     let x = dstVectorv.eGet( 0 );
     let y = dstVectorv.eGet( 1 );
     let z = dstVectorv.eGet( 2 );
 
-    let s00 = self.atomGet([ 0,0 ]), s10 = self.atomGet([ 1,0 ]), s20 = self.atomGet([ 2,0 ]);
-    let s01 = self.atomGet([ 0,1 ]), s11 = self.atomGet([ 1,1 ]), s21 = self.atomGet([ 2,1 ]);
-    let s02 = self.atomGet([ 0,2 ]), s12 = self.atomGet([ 1,2 ]), s22 = self.atomGet([ 2,2 ]);
+    let s00 = self.atomGet([ 0, 0 ]), s10 = self.atomGet([ 1, 0 ]), s20 = self.atomGet([ 2, 0 ]);
+    let s01 = self.atomGet([ 0, 1 ]), s11 = self.atomGet([ 1, 1 ]), s21 = self.atomGet([ 2, 1 ]);
+    let s02 = self.atomGet([ 0, 2 ]), s12 = self.atomGet([ 1, 2 ]), s22 = self.atomGet([ 2, 2 ]);
 
     dstVectorv.eSet( 0 , s00 * x + s01 * y + s02 * z );
     dstVectorv.eSet( 1 , s10 * x + s11 * y + s12 * z );
@@ -1474,15 +1474,15 @@ function matrixApplyTo( dstVector )
 
     return dstVector;
   }
-  else if( self.hasShape([ 2,2 ]) )
+  else if( self.hasShape([ 2, 2 ]) )
   {
 
-    let dstVectorv = _.vector.from( dstVector );
+    let dstVectorv = _.vectorAdapter.From( dstVector );
     let x = dstVectorv.eGet( 0 );
     let y = dstVectorv.eGet( 1 );
 
-    let s00 = self.atomGet([ 0,0 ]), s10 = self.atomGet([ 1,0 ]);
-    let s01 = self.atomGet([ 0,1 ]), s11 = self.atomGet([ 1,1 ]);
+    let s00 = self.atomGet([ 0, 0 ]), s10 = self.atomGet([ 1, 0 ]);
+    let s01 = self.atomGet([ 0, 1 ]), s11 = self.atomGet([ 1, 1 ]);
 
     dstVectorv.eSet( 0 , s00 * x + s01 * y );
     dstVectorv.eSet( 1 , s10 * x + s11 * y );
@@ -1490,7 +1490,7 @@ function matrixApplyTo( dstVector )
     return dstVector;
   }
 
-  return Self.mul( dstVector,[ self,dstVector ] );
+  return Self.mul( dstVector, [ self, dstVector ] );
 }
 
 //
@@ -1498,7 +1498,7 @@ function matrixApplyTo( dstVector )
 function matrixHomogenousApply( dstVector )
 {
   let self = this;
-  let _dstVector = vector.from( dstVector );
+  let _dstVector = vector.From( dstVector );
   let dstLength = dstVector.length;
   let ncol = self.ncol;
   let nrow = self.nrow;
@@ -1520,7 +1520,7 @@ function matrixHomogenousApply( dstVector )
   }
 
   for( let j = 0 ; j < dstLength ; j++ )
-  _dstVector.eSet( j,result[ j ] / result[ dstLength ] );
+  _dstVector.eSet( j, result[ j ] / result[ dstLength ] );
 
   return dstVector;
 }
@@ -1539,7 +1539,7 @@ function matrixDirectionsApply( dstVector )
 
   debugger;
 
-  Self.mul( v,[ self.subspace([ [ 0,v.length ],[ 0,v.length ] ]),v ] );
+  Self.mul( v, [ self.subspace([ [ 0, v.length ], [ 0, v.length ] ]), v ] );
   vector.normalize( v );
 
   return dstVector;
@@ -1556,10 +1556,10 @@ function positionGet()
   _.assert( arguments.length === 0, 'Expects no arguments' );
 
   // debugger;
-  result = vector.fromSubArray( result,0,loe-1 );
+  result = vector.FromSubLong( result, 0, loe-1 );
 
-  //let result = self.elementsInRangeGet([ (l-1)*loe,l*loe ]);
-  //let result = vector.fromSubArray( this.buffer,12,3 );
+  //let result = self.elementsInRangeGet([ (l-1)*loe, l*loe ]);
+  //let result = vector.FromSubLong( this.buffer, 12, 3 );
 
   return result;
 }
@@ -1569,7 +1569,7 @@ function positionGet()
 function positionSet( src )
 {
   let self = this;
-  src = vector.fromArray( src );
+  src = vector.FromLong( src );
   let dst = this.positionGet();
 
   _.assert( src.length === dst.length );
@@ -1625,14 +1625,14 @@ function scaleGet( dst )
   if( dst )
   l = dst.length;
   else
-  dst = _.vector.from( self.long.longMakeZeroed( self.length-1 ) );
+  dst = _.vectorAdapter.From( self.long.longMakeZeroed( self.length-1 ) );
 
-  let dstv = _.vector.from( dst );
+  let dstv = _.vectorAdapter.From( dst );
 
   _.assert( arguments.length === 0 || arguments.length === 1 );
 
   for( let i = 0 ; i < l ; i += 1 )
-  dstv.eSet( i , vector.mag( vector.fromSubArray( this.buffer,loe*i,loe-1 ) ) );
+  dstv.eSet( i , vector.mag( vector.FromSubLong( this.buffer, loe*i, loe-1 ) ) );
 
   return dst;
 }
@@ -1642,7 +1642,7 @@ function scaleGet( dst )
 function scaleSet( src )
 {
   let self = this;
-  src = vector.fromArray( src );
+  src = vector.FromLong( src );
   let l = self.length;
   let loe = self.atomsPerElement;
   let cur = this.scaleGet();
@@ -1650,19 +1650,19 @@ function scaleSet( src )
   _.assert( src.length === l-1 );
 
   for( let i = 0 ; i < l-1 ; i += 1 )
-  vector.mulScalar( self.eGet( i ),src.eGet( i ) / cur[ i ] );
+  vector.mulScalar( self.eGet( i ), src.eGet( i ) / cur[ i ] );
 
   let lastElement = self.eGet( l-1 );
-  vector.mulScalar( lastElement,1 / lastElement.eGet( loe-1 ) );
+  vector.mulScalar( lastElement, 1 / lastElement.eGet( loe-1 ) );
 
 }
 
 //
 
-function scaleAroundSet( scale,center )
+function scaleAroundSet( scale, center )
 {
   let self = this;
-  scale = vector.fromArray( scale );
+  scale = vector.FromLong( scale );
   let l = self.length;
   let loe = self.atomsPerElement;
   let cur = this.scaleGet();
@@ -1670,18 +1670,18 @@ function scaleAroundSet( scale,center )
   _.assert( scale.length === l-1 );
 
   for( let i = 0 ; i < l-1 ; i += 1 )
-  vector.mulScalar( self.eGet( i ),scale.eGet( i ) / cur[ i ] );
+  vector.mulScalar( self.eGet( i ), scale.eGet( i ) / cur[ i ] );
 
   let lastElement = self.eGet( l-1 );
-  vector.mulScalar( lastElement,1 / lastElement.eGet( loe-1 ) );
+  vector.mulScalar( lastElement, 1 / lastElement.eGet( loe-1 ) );
 
   /* */
 
   debugger;
-  center = vector.fromArray( center );
+  center = vector.FromLong( center );
   let pos = vector.slice( scale );
-  pos = vector.fromArray( pos );
-  vector.mulScalar( pos,-1 );
+  pos = vector.FromLong( pos );
+  vector.mulScalar( pos, -1 );
   vector.addScalar( pos, 1 );
   vector.mulVectors( pos, center );
 
@@ -1694,15 +1694,15 @@ function scaleAroundSet( scale,center )
 function scaleApply( src )
 {
   let self = this;
-  src = vector.fromArray( src );
+  src = vector.FromLong( src );
   let ape = self.atomsPerElement;
   let l = self.length;
 
   for( let i = 0 ; i < ape ; i += 1 )
   {
     let c = self.rowVectorGet( i );
-    c = vector.fromSubArray( c,0,l-1 );
-    vector.mulVectors( c,src );
+    c = vector.FromSubLong( c, 0, l-1 );
+    vector.mulVectors( c, src );
   }
 
 }
@@ -1715,9 +1715,9 @@ function _triangulateGausian( o )
 {
   let self = this;
   let nrow = self.nrow;
-  let ncol = Math.min( self.ncol,nrow );
+  let ncol = Math.min( self.ncol, nrow );
 
-  _.routineOptions( _triangulateGausian,o );
+  _.routineOptions( _triangulateGausian, o );
 
   if( o.onPivot && !o.pivots )
   {
@@ -1739,15 +1739,15 @@ function _triangulateGausian( o )
   {
 
     if( o.onPivot )
-    o.onPivot.call( self,r1,o );
+    o.onPivot.call( self, r1, o );
 
     let row1 = self.rowVectorGet( r1 );
     let yrow1 = o.y.rowVectorGet( r1 );
     let scaler1 = row1.eGet( r1 );
     if( o.normal )
     {
-      vector.divScalar( row1,scaler1 );
-      vector.divScalar( yrow1,scaler1 );
+      vector.divScalar( row1, scaler1 );
+      vector.divScalar( yrow1, scaler1 );
       scaler1 = 1;
     }
 
@@ -1756,24 +1756,24 @@ function _triangulateGausian( o )
       let row2 = self.rowVectorGet( r2 );
       let yrow2 = o.y.rowVectorGet( r2 );
       let scaler = row2.eGet( r1 ) / scaler1;
-      vector.subScaled( row2,row1,scaler );
-      vector.subScaled( yrow2,yrow1,scaler );
+      vector.subScaled( row2, row1, scaler );
+      vector.subScaled( yrow2, yrow1, scaler );
     }
 
-    // logger.log( 'self',self );
+    // logger.log( 'self', self );
 
   }
   else for( let r1 = 0 ; r1 < ncol ; r1++ )
   {
 
     if( o.onPivot )
-    o.onPivot.call( self,r1,o );
+    o.onPivot.call( self, r1, o );
 
     let row1 = self.rowVectorGet( r1 );
     let scaler1 = row1.eGet( r1 );
     if( o.normal )
     {
-      vector.divScalar( row1,scaler1 );
+      vector.divScalar( row1, scaler1 );
       scaler1 = 1;
     }
 
@@ -1781,10 +1781,10 @@ function _triangulateGausian( o )
     {
       let row2 = self.rowVectorGet( r2 );
       let scaler = row2.eGet( r1 ) / scaler1;
-      vector.subScaled( row2,row1,scaler );
+      vector.subScaled( row2, row1, scaler );
     }
 
-    // logger.log( 'self',self );
+    // logger.log( 'self', self );
 
   }
 
@@ -1810,7 +1810,7 @@ function triangulateGausian( y )
 
   // let self = this;
   // let nrow = self.nrow;
-  // let ncol = Math.min( self.ncol,nrow );
+  // let ncol = Math.min( self.ncol, nrow );
   //
   // if( y !== undefined )
   // y = Self.from( y );
@@ -1830,8 +1830,8 @@ function triangulateGausian( y )
   //     let row2 = self.rowVectorGet( r2 );
   //     let yrow2 = y.rowVectorGet( r2 );
   //     let scaler = row2.eGet( r1 ) / scaler1;
-  //     vector.subScaled( row2,row1,scaler );
-  //     vector.subScaled( yrow2,yrow1,scaler );
+  //     vector.subScaled( row2, row1, scaler );
+  //     vector.subScaled( yrow2, yrow1, scaler );
   //   }
   //
   // }
@@ -1843,7 +1843,7 @@ function triangulateGausian( y )
   //   {
   //     let row2 = self.rowVectorGet( r2 );
   //     let scaler = row2.eGet( r1 ) / row1.eGet( r1 );
-  //     vector.subScaled( row2,row1,scaler );
+  //     vector.subScaled( row2, row1, scaler );
   //   }
   //
   // }
@@ -1865,7 +1865,7 @@ function triangulateGausianNormal( y )
 
   self = this;
   let nrow = self.nrow;
-  let ncol = Math.min( self.ncol,nrow );
+  let ncol = Math.min( self.ncol, nrow );
 
   if( y !== undefined )
   y = Self.from( y );
@@ -1879,16 +1879,16 @@ function triangulateGausianNormal( y )
     let row1 = self.rowVectorGet( r1 );
     let yrow1 = y.rowVectorGet( r1 );
     let scaler1 = row1.eGet( r1 );
-    vector.divScalar( row1,scaler1 );
-    vector.divScalar( yrow1,scaler1 );
+    vector.divScalar( row1, scaler1 );
+    vector.divScalar( yrow1, scaler1 );
 
     for( let r2 = r1+1 ; r2 < nrow ; r2++ )
     {
       let row2 = self.rowVectorGet( r2 );
       let yrow2 = y.rowVectorGet( r2 );
       let scaler = row2.eGet( r1 );
-      vector.subScaled( row2,row1,scaler );
-      vector.subScaled( yrow2,yrow1,scaler );
+      vector.subScaled( row2, row1, scaler );
+      vector.subScaled( yrow2, yrow1, scaler );
     }
 
   }
@@ -1896,13 +1896,13 @@ function triangulateGausianNormal( y )
   {
     let row1 = self.rowVectorGet( r1 );
     let scaler1 = row1.eGet( r1 );
-    vector.divScalar( row1,scaler1 );
+    vector.divScalar( row1, scaler1 );
 
     for( let r2 = r1+1 ; r2 < nrow ; r2++ )
     {
       let row2 = self.rowVectorGet( r2 );
       let scaler = row2.eGet( r1 );
-      vector.subScaled( row2,row1,scaler );
+      vector.subScaled( row2, row1, scaler );
     }
 
   }
@@ -1927,11 +1927,11 @@ function triangulateLu()
 {
   let self = this;
   let nrow = self.nrow;
-  let ncol = Math.min( self.ncol,nrow );
+  let ncol = Math.min( self.ncol, nrow );
 
   _.assert( arguments.length === 0, 'Expects no arguments' );
 
-  logger.log( 'self',self );
+  logger.log( 'self', self );
 
   for( let r1 = 0 ; r1 < ncol ; r1++ )
   {
@@ -1943,11 +1943,11 @@ function triangulateLu()
     {
       let row2 = self.rowVectorGet( r2 );
       let scaler = row2.eGet( r1 ) / scaler1;
-      vector.subScaled( row2.subarray( r1+1 ),row1,scaler );
+      vector.subScaled( row2.subarray( r1+1 ), row1, scaler );
       row2.eSet( r1, scaler );
     }
 
-    logger.log( 'self',self );
+    logger.log( 'self', self );
   }
 
   return self;
@@ -1959,7 +1959,7 @@ function triangulateLuNormal()
 {
   let self = this;
   let nrow = self.nrow;
-  let ncol = Math.min( self.ncol,nrow );
+  let ncol = Math.min( self.ncol, nrow );
 
   _.assert( arguments.length === 0, 'Expects no arguments' );
 
@@ -1968,13 +1968,13 @@ function triangulateLuNormal()
     let row1 = self.rowVectorGet( r1 );
     let scaler1 = row1.eGet( r1 );
     row1 = row1.subarray( r1+1 );
-    vector.divScalar( row1,scaler1 );
+    vector.divScalar( row1, scaler1 );
 
     for( let r2 = r1+1 ; r2 < nrow ; r2++ )
     {
       let row2 = self.rowVectorGet( r2 );
       let scaler = row2.eGet( r1 );
-      vector.subScaled( row2.subarray( r1+1 ),row1,scaler );
+      vector.subScaled( row2.subarray( r1+1 ), row1, scaler );
       row2.eSet( r1, scaler );
     }
 
@@ -1989,7 +1989,7 @@ function triangulateLuPivoting( pivots )
 {
   let self = this;
   let nrow = self.nrow;
-  let ncol = Math.min( self.ncol,nrow );
+  let ncol = Math.min( self.ncol, nrow );
 
   if( !pivots )
   {
@@ -2010,7 +2010,7 @@ function triangulateLuPivoting( pivots )
 
   /* */
 
-  logger.log( 'self',self );
+  logger.log( 'self', self );
 
   for( let r1 = 0 ; r1 < ncol ; r1++ )
   {
@@ -2025,11 +2025,11 @@ function triangulateLuPivoting( pivots )
     {
       let row2 = self.rowVectorGet( r2 );
       let scaler = row2.eGet( r1 ) / scaler1;
-      vector.subScaled( row2.subarray( r1+1 ),row1,scaler );
+      vector.subScaled( row2.subarray( r1+1 ), row1, scaler );
       row2.eSet( r1, scaler );
     }
 
-    logger.log( 'self',self );
+    logger.log( 'self', self );
 
   }
 
@@ -2038,7 +2038,7 @@ function triangulateLuPivoting( pivots )
 
 //
 
-function _pivotRook( i,o )
+function _pivotRook( i, o )
 {
   let self = this;
 
@@ -2057,18 +2057,18 @@ function _pivotRook( i,o )
     if( maxr.value === value )
     return false;
     let i2 = maxr.index + i;
-    _.longSwapElements( o.pivots[ 1 ],i,i2 );
-    self.colsSwap( i,i2 );
+    _.longSwapElements( o.pivots[ 1 ], i, i2 );
+    self.colsSwap( i, i2 );
   }
   else
   {
     if( maxc.value === value )
     return false;
     let i2 = maxc.index + i;
-    _.longSwapElements( o.pivots[ 0 ],i,i2 );
-    self.rowsSwap( i,i2 );
+    _.longSwapElements( o.pivots[ 0 ], i, i2 );
+    self.rowsSwap( i, i2 );
     if( o.y )
-    o.y.rowsSwap( i,i2 );
+    o.y.rowsSwap( i, i2 );
   }
 
   return true;
@@ -2078,10 +2078,10 @@ function _pivotRook( i,o )
 // solver
 // --
 
-function solve( x,m,y )
+function solve( x, m, y )
 {
   _.assert( arguments.length === 3, 'Expects exactly three arguments' );
-  return this.solveWithTrianglesPivoting( x,m,y )
+  return this.solveWithTrianglesPivoting( x, m, y )
 }
 
 //
@@ -2107,15 +2107,15 @@ function _solveOptions( args )
   else
   {
     if( !_.spaceIs( o.x ) )
-    o.x = vector.from( o.x );
-    this.CopyTo( o.x,o.y );
+    o.x = vector.From( o.x );
+    this.CopyTo( o.x, o.y );
   }
 
   if( !_.spaceIs( o.y ) )
-  o.y = vector.from( o.y );
+  o.y = vector.From( o.y );
 
   if( !_.spaceIs( o.x ) )
-  o.x = vector.from( o.x );
+  o.x = vector.From( o.x );
 
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( this.ShapesAreSame( o.x , o.y ) );
@@ -2131,9 +2131,9 @@ function solveWithGausian()
   let o = this._solveOptions( arguments );
 
   o.m.triangulateGausian( o.x );
-  this.solveTriangleUpper( o.x,o.m,o.x );
+  this.solveTriangleUpper( o.x, o.m, o.x );
 
-  // o.x = this.convertToClass( o.oy.constructor,o.x );
+  // o.x = this.convertToClass( o.oy.constructor, o.x );
   return o.ox;
 }
 
@@ -2144,8 +2144,8 @@ function solveWithGausianPivoting()
   let o = this._solveOptions( arguments );
 
   let pivots = o.m.triangulateGausianPivoting( o.x );
-  this.solveTriangleUpper( o.x,o.m,o.x );
-  Self.VectorPivotBackward( o.x,pivots[ 1 ] );
+  this.solveTriangleUpper( o.x, o.m, o.x );
+  Self.VectorPivotBackward( o.x, pivots[ 1 ] );
 
   return o.ox;
 }
@@ -2156,7 +2156,7 @@ function _solveWithGaussJordan( o )
 {
 
   let nrow = o.m.nrow;
-  let ncol = Math.min( o.m.ncol,nrow );
+  let ncol = Math.min( o.m.ncol, nrow );
 
   o.x = this.from( o.x );
   o.y = o.x;
@@ -2176,7 +2176,7 @@ function _solveWithGaussJordan( o )
   {
 
     if( o.onPivot )
-    o.onPivot.call( o.m,r1,o );
+    o.onPivot.call( o.m, r1, o );
 
     let row1 = o.m.rowVectorGet( r1 );
     let scaler1 = row1.eGet( r1 );
@@ -2211,13 +2211,13 @@ function _solveWithGaussJordan( o )
 
   if( o.onPivot && o.pivotingBackward )
   {
-    Self.VectorPivotBackward( o.x,o.pivots[ 1 ] );
+    Self.VectorPivotBackward( o.x, o.pivots[ 1 ] );
     /*o.m.pivotBackward( o.pivots );*/
   }
 
   /* */
 
-  // o.x = this.convertToClass( o.oy.constructor,o.x );
+  // o.x = this.convertToClass( o.oy.constructor, o.x );
   return o.ox;
 }
 
@@ -2254,7 +2254,7 @@ function invertWithGaussJordan()
   {
 
     let row1 = m.rowVectorGet( r1 ).subarray( r1+1 );
-    let xrow1 = m.rowVectorGet( r1 ).subarray( 0,r1+1 );
+    let xrow1 = m.rowVectorGet( r1 ).subarray( 0, r1+1 );
 
     let scaler1 = 1 / xrow1.eGet( r1 );
     xrow1.eSet( r1, 1 );
@@ -2268,16 +2268,16 @@ function invertWithGaussJordan()
       continue;
 
       let row2 = m.rowVectorGet( r2 ).subarray( r1+1 );
-      let xrow2 = m.rowVectorGet( r2 ).subarray( 0,r1+1 );
+      let xrow2 = m.rowVectorGet( r2 ).subarray( 0, r1+1 );
       let scaler2 = xrow2.eGet( r1 );
-      xrow2.eSet( r1,0 )
+      xrow2.eSet( r1, 0 )
 
       vector.subScaled( row2, row1, scaler2 );
       vector.subScaled( xrow2, xrow1, scaler2 );
 
     }
 
-    // logger.log( 'm',m );
+    // logger.log( 'm', m );
 
   }
 
@@ -2286,42 +2286,42 @@ function invertWithGaussJordan()
 
 //
 
-function solveWithTriangles( x,m,y )
+function solveWithTriangles( x, m, y )
 {
 
   let o = this._solveOptions( arguments );
   m.triangulateLuNormal();
 
-  o.x = this.solveTriangleLower( o.x,o.m,o.y );
-  o.x = this.solveTriangleUpperNormal( o.x,o.m,o.x );
+  o.x = this.solveTriangleLower( o.x, o.m, o.y );
+  o.x = this.solveTriangleUpperNormal( o.x, o.m, o.x );
 
-  // o.x = this.convertToClass( o.oy.constructor,o.x );
+  // o.x = this.convertToClass( o.oy.constructor, o.x );
   return o.ox;
 }
 
 //
 
-function solveWithTrianglesPivoting( x,m,y )
+function solveWithTrianglesPivoting( x, m, y )
 {
 
   let o = this._solveOptions( arguments );
   let pivots = m.triangulateLuPivoting();
 
-  o.y = Self.VectorPivotForward( o.y,pivots[ 0 ] );
+  o.y = Self.VectorPivotForward( o.y, pivots[ 0 ] );
 
-  o.x = this.solveTriangleLowerNormal( o.x,o.m,o.y );
-  o.x = this.solveTriangleUpper( o.x,o.m,o.x );
+  o.x = this.solveTriangleLowerNormal( o.x, o.m, o.y );
+  o.x = this.solveTriangleUpper( o.x, o.m, o.x );
 
-  Self.VectorPivotBackward( o.x,pivots[ 1 ] );
-  Self.VectorPivotBackward( o.y,pivots[ 0 ] );
+  Self.VectorPivotBackward( o.x, pivots[ 1 ] );
+  Self.VectorPivotBackward( o.y, pivots[ 0 ] );
 
-  // o.x = this.convertToClass( o.oy.constructor,o.x );
+  // o.x = this.convertToClass( o.oy.constructor, o.x );
   return o.ox;
 }
 
 //
 
-function _solveTriangleWithRoutine( args,onSolve )
+function _solveTriangleWithRoutine( args, onSolve )
 {
   let x = args[ 0 ];
   let m = args[ 1 ];
@@ -2340,7 +2340,7 @@ function _solveTriangleWithRoutine( args,onSolve )
     }
     else
     {
-      x = Self.from( x,y.dims );
+      x = Self.from( x, y.dims );
       x.copy( y );
     }
 
@@ -2349,7 +2349,7 @@ function _solveTriangleWithRoutine( args,onSolve )
 
     for( let v = 0 ; v < y.dims[ 1 ] ; v++ )
     {
-      onSolve( x.colVectorGet( v ),m,y.colVectorGet( v ) );
+      onSolve( x.colVectorGet( v ), m, y.colVectorGet( v ) );
     }
 
     return x;
@@ -2357,7 +2357,7 @@ function _solveTriangleWithRoutine( args,onSolve )
 
   /* */
 
-  y = _.vector.from( y );
+  y = _.vectorAdapter.From( y );
 
   if( x === null )
   {
@@ -2365,7 +2365,7 @@ function _solveTriangleWithRoutine( args,onSolve )
   }
   else
   {
-    x = _.vector.from( x );
+    x = _.vectorAdapter.From( x );
     x.copy( y );
   }
 
@@ -2373,101 +2373,101 @@ function _solveTriangleWithRoutine( args,onSolve )
 
   _.assert( x.length === y.length );
 
-  return onSolve( x,m,y );
+  return onSolve( x, m, y );
 }
 
 //
 
-function solveTriangleLower( x,m,y )
+function solveTriangleLower( x, m, y )
 {
 
-  function handleSolve( x,m,y )
+  function handleSolve( x, m, y )
   {
 
     for( let r1 = 0 ; r1 < y.length ; r1++ )
     {
-      let xu = x.subarray( 0,r1 );
+      let xu = x.subarray( 0, r1 );
       let row = m.rowVectorGet( r1 );
       let scaler = row.eGet( r1 );
-      row = row.subarray( 0,r1 );
-      let xval = ( x.eGet( r1 ) - _.vector.dot( row,xu ) ) / scaler;
-      x.eSet( r1,xval );
+      row = row.subarray( 0, r1 );
+      let xval = ( x.eGet( r1 ) - _.vectorAdapter.dot( row, xu ) ) / scaler;
+      x.eSet( r1, xval );
     }
 
     return x;
   }
 
-  return this._solveTriangleWithRoutine( arguments,handleSolve );
+  return this._solveTriangleWithRoutine( arguments, handleSolve );
 }
 
 //
 
-function solveTriangleLowerNormal( x,m,y )
+function solveTriangleLowerNormal( x, m, y )
 {
 
-  function handleSolve( x,m,y )
+  function handleSolve( x, m, y )
   {
 
     for( let r1 = 0 ; r1 < y.length ; r1++ )
     {
-      let xu = x.subarray( 0,r1 );
+      let xu = x.subarray( 0, r1 );
       let row = m.rowVectorGet( r1 );
-      row = row.subarray( 0,r1 );
-      let xval = ( x.eGet( r1 ) - _.vector.dot( row,xu ) );
-      x.eSet( r1,xval );
+      row = row.subarray( 0, r1 );
+      let xval = ( x.eGet( r1 ) - _.vectorAdapter.dot( row, xu ) );
+      x.eSet( r1, xval );
     }
 
     return x;
   }
 
-  return this._solveTriangleWithRoutine( arguments,handleSolve );
+  return this._solveTriangleWithRoutine( arguments, handleSolve );
 }
 
 //
 
-function solveTriangleUpper( x,m,y )
+function solveTriangleUpper( x, m, y )
 {
 
-  function handleSolve( x,m,y )
+  function handleSolve( x, m, y )
   {
 
     for( let r1 = y.length-1 ; r1 >= 0 ; r1-- )
     {
-      let xu = x.subarray( r1+1,x.length );
+      let xu = x.subarray( r1+1, x.length );
       let row = m.rowVectorGet( r1 );
       let scaler = row.eGet( r1 );
-      row = row.subarray( r1+1,row.length );
-      let xval = ( x.eGet( r1 ) - _.vector.dot( row,xu ) ) / scaler;
-      x.eSet( r1,xval );
+      row = row.subarray( r1+1, row.length );
+      let xval = ( x.eGet( r1 ) - _.vectorAdapter.dot( row, xu ) ) / scaler;
+      x.eSet( r1, xval );
     }
 
     return x;
   }
 
-  return this._solveTriangleWithRoutine( arguments,handleSolve );
+  return this._solveTriangleWithRoutine( arguments, handleSolve );
 }
 
 //
 
-function solveTriangleUpperNormal( x,m,y )
+function solveTriangleUpperNormal( x, m, y )
 {
 
-  function handleSolve( x,m,y )
+  function handleSolve( x, m, y )
   {
 
     for( let r1 = y.length-1 ; r1 >= 0 ; r1-- )
     {
-      let xu = x.subarray( r1+1,x.length );
+      let xu = x.subarray( r1+1, x.length );
       let row = m.rowVectorGet( r1 );
-      row = row.subarray( r1+1,row.length );
-      let xval = ( x.eGet( r1 ) - _.vector.dot( row,xu ) );
-      x.eSet( r1,xval );
+      row = row.subarray( r1+1, row.length );
+      let xval = ( x.eGet( r1 ) - _.vectorAdapter.dot( row, xu ) );
+      x.eSet( r1, xval );
     }
 
     return x;
   }
 
-  return this._solveTriangleWithRoutine( arguments,handleSolve );
+  return this._solveTriangleWithRoutine( arguments, handleSolve );
 }
 
 //
@@ -2476,7 +2476,7 @@ function solveGeneral( o )
 {
 
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.routineOptions( solveGeneral,o );
+  _.routineOptions( solveGeneral, o );
 
   /* */
 
@@ -2490,8 +2490,8 @@ function solveGeneral( o )
   if( o.m.nrow < o.m.ncol )
   {
     let missing = o.m.ncol - o.m.nrow;
-    o.m.expand([ [ 0,missing ],0 ]);
-    o.y.expand([ [ 0,missing ],0 ]);
+    o.m.expand([ [ 0, missing ], 0 ]);
+    o.y.expand([ [ 0, missing ], 0 ]);
   }
 
   if( !result.kernel )
@@ -2511,35 +2511,35 @@ function solveGeneral( o )
   let optionsForMethod;
   if( o.pivoting )
   {
-    optionsForMethod = this._solveOptions([ o.x,o.m,o.y ]);
+    optionsForMethod = this._solveOptions([ o.x, o.m, o.y ]);
     optionsForMethod.onPivot = this._pivotRook;
     optionsForMethod.pivotingBackward = 0;
     o.x = result.base = this._solveWithGaussJordan( optionsForMethod );
   }
   else
   {
-    optionsForMethod = this._solveOptions([ o.x,o.m,o.y ]);
+    optionsForMethod = this._solveOptions([ o.x, o.m, o.y ]);
     o.x = result.base = this._solveWithGaussJordan( optionsForMethod );
   }
 
   /* analyse */
 
-  logger.log( 'm',o.m );
-  logger.log( 'x',o.x );
+  logger.log( 'm', o.m );
+  logger.log( 'x', o.x );
 
   for( let r = 0 ; r < nrow ; r++ )
   {
     let row = o.m.rowVectorGet( r );
     if( abs( row.eGet( r ) ) < this.accuracy )
     {
-      if( abs( o.x.atomGet([ r,0 ]) ) < this.accuracy )
+      if( abs( o.x.atomGet([ r, 0 ]) ) < this.accuracy )
       {
         result.nsolutions = Infinity;
         let termCol = result.kernel.colVectorGet( r );
         let srcCol = o.m.colVectorGet( r );
         termCol.copy( srcCol );
-        vector.mulScalar( termCol,-1 );
-        termCol.eSet( r,1 );
+        vector.mulScalar( termCol, -1 );
+        termCol.eSet( r, 1 );
         result.nkernel += 1;
       }
       else
@@ -2553,7 +2553,7 @@ function solveGeneral( o )
 
   if( o.pivoting )
   {
-    Self.VectorPivotBackward( result.base,optionsForMethod.pivots[ 1 ] );
+    Self.VectorPivotBackward( result.base, optionsForMethod.pivots[ 1 ] );
     result.kernel.pivotBackward([ optionsForMethod.pivots[ 1 ], optionsForMethod.pivots[ 0 ] ]);
     o.m.pivotBackward( optionsForMethod.pivots );
   }
@@ -2593,7 +2593,7 @@ function invertingClone()
   _.assert( self.isSquare() );
   _.assert( arguments.length === 0, 'Expects no arguments' );
 
-  return Self.solveWithGaussJordan( null,self.clone(),self.Self.makeIdentity( self.dims[ 0 ] ) );
+  return Self.solveWithGaussJordan( null, self.clone(), self.Self.makeIdentity( self.dims[ 0 ] ) );
 }
 
 //
@@ -2627,13 +2627,13 @@ function normalProjectionMatrixGet( src )
 {
   let self = this;
 
-  if( src.hasShape([ 4,4 ]) )
+  if( src.hasShape([ 4, 4 ]) )
   {
     // debugger;
 
-    let s00 = self.atomGet([ 0,0 ]), s10 = self.atomGet([ 1,0 ]), s20 = self.atomGet([ 2,0 ]);
-    let s01 = self.atomGet([ 0,1 ]), s11 = self.atomGet([ 1,1 ]), s21 = self.atomGet([ 2,1 ]);
-    let s02 = self.atomGet([ 0,2 ]), s12 = self.atomGet([ 1,2 ]), s22 = self.atomGet([ 2,2 ]);
+    let s00 = self.atomGet([ 0, 0 ]), s10 = self.atomGet([ 1, 0 ]), s20 = self.atomGet([ 2, 0 ]);
+    let s01 = self.atomGet([ 0, 1 ]), s11 = self.atomGet([ 1, 1 ]), s21 = self.atomGet([ 2, 1 ]);
+    let s02 = self.atomGet([ 0, 2 ]), s12 = self.atomGet([ 1, 2 ]), s22 = self.atomGet([ 2, 2 ]);
 
     let d1 = s22 * s11 - s21 * s12;
     let d2 = s21 * s02 - s22 * s01;
@@ -2658,23 +2658,23 @@ function normalProjectionMatrixGet( src )
     let d12 = ( s10 * s02 - s12 * s00 ) * determiant;
     let d22 = ( s11 * s00 - s10 * s01 ) * determiant;
 
-    self.atomSet( [ 0,0 ],d00 );
-    self.atomSet( [ 1,0 ],d10 );
-    self.atomSet( [ 2,0 ],d20 );
+    self.atomSet( [ 0, 0 ], d00 );
+    self.atomSet( [ 1, 0 ], d10 );
+    self.atomSet( [ 2, 0 ], d20 );
 
-    self.atomSet( [ 0,1 ],d01 );
-    self.atomSet( [ 1,1 ],d11 );
-    self.atomSet( [ 2,1 ],d21 );
+    self.atomSet( [ 0, 1 ], d01 );
+    self.atomSet( [ 1, 1 ], d11 );
+    self.atomSet( [ 2, 1 ], d21 );
 
-    self.atomSet( [ 0,2 ],d02 );
-    self.atomSet( [ 1,2 ],d12 );
-    self.atomSet( [ 2,2 ],d22 );
+    self.atomSet( [ 0, 2 ], d02 );
+    self.atomSet( [ 1, 2 ], d12 );
+    self.atomSet( [ 2, 2 ], d22 );
 
     return self;
   }
 
   // debugger;
-  let sub = src.subspace([ [ 0,src.dims[ 0 ]-1 ],[ 0,src.dims[ 1 ]-1 ] ]);
+  let sub = src.subspace([ [ 0, src.dims[ 0 ]-1 ], [ 0, src.dims[ 1 ]-1 ] ]);
   // debugger;
 
   return self.copy( sub ).invert().transpose();
@@ -2687,7 +2687,7 @@ function normalProjectionMatrixGet( src )
 function _linearModel( o )
 {
 
-  _.routineOptions( polynomExactFor,o );
+  _.routineOptions( polynomExactFor, o );
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( o.order >= 1 );
 
@@ -2698,7 +2698,7 @@ function _linearModel( o )
   if( o.npoints === null )
   o.npoints = o.points ? o.points.length : o.order;
 
-  let m = this.makeZero([ o.npoints,o.order ]);
+  let m = this.makeZero([ o.npoints, o.order ]);
   let ys = [];
 
   /* */
@@ -2709,7 +2709,7 @@ function _linearModel( o )
     ys[ i ] = p[ 1 ];
     let row = m.rowVectorGet( i )
     for( let d = 0 ; d < o.order ; d++ )
-    row.eSet( d,pow( p[ 0 ],d ) );
+    row.eSet( d, pow( p[ 0 ], d ) );
     i += 1;
   }
 
@@ -2726,7 +2726,7 @@ function _linearModel( o )
   {
 
     if( o.domain === null )
-    o.domain = [ 0,o.order ]
+    o.domain = [ 0, o.order ]
 
     _.assert( o.order === o.domain[ 1 ] - o.domain[ 0 ] )
 
@@ -2734,7 +2734,7 @@ function _linearModel( o )
     while( x < o.domain[ 1 ] )
     {
       let y = o.onFunction( x );
-      fixPoint([ x,y ]);
+      fixPoint([ x, y ]);
       x += 1;
     }
 
@@ -2764,7 +2764,7 @@ _linearModel.defaults =
 function polynomExactFor( o )
 {
 
-  _.routineOptions( polynomExactFor,o );
+  _.routineOptions( polynomExactFor, o );
   _.assert( arguments.length === 1, 'Expects single argument' );
 
   if( o.points )
@@ -2787,7 +2787,7 @@ polynomExactFor.defaults.__proto__ = _linearModel.defaults;
 function polynomClosestFor( o )
 {
 
-  _.routineOptions( polynomExactFor,o );
+  _.routineOptions( polynomExactFor, o );
   _.assert( arguments.length === 1, 'Expects single argument' );
 
   let model = this._linearModel( o );
@@ -2822,12 +2822,12 @@ function formPerspective( fov, size, depth )
   let aspect = size[ 0 ] / size[ 1 ];
 
   // debugger;
-  // _.assert( 0,'not tested' );
+  // _.assert( 0, 'not tested' );
 
   _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( size.length === 2 );
   _.assert( depth.length === 2 );
-  _.assert( self.hasShape([ 4,4 ]) );
+  _.assert( self.hasShape([ 4, 4 ]) );
 
   fov = Math.tan( _.degToRad( fov * 0.5 ) );
 
@@ -2865,13 +2865,13 @@ function formFrustum( horizontal, vertical, depth )
   let self = this;
 
   // debugger;
-  // _.assert( 0,'not tested' );
+  // _.assert( 0, 'not tested' );
 
   _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( horizontal.length === 2 );
   _.assert( vertical.length === 2 );
   _.assert( depth.length === 2 );
-  _.assert( self.hasShape([ 4,4 ]) );
+  _.assert( self.hasShape([ 4, 4 ]) );
 
   // let te = this.buffer;
   let x = 2 * depth[ 0 ] / ( horizontal[ 1 ] - horizontal[ 0 ] );
@@ -2882,25 +2882,25 @@ function formFrustum( horizontal, vertical, depth )
   let c = - ( depth[ 1 ] + depth[ 0 ] ) / ( depth[ 1 ] - depth[ 0 ] );
   let d = - 2 * depth[ 1 ] * depth[ 0 ] / ( depth[ 1 ] - depth[ 0 ] );
 
-  self.atomSet( [ 0,0 ],x );
-  self.atomSet( [ 1,0 ],0 );
-  self.atomSet( [ 2,0 ],0 );
-  self.atomSet( [ 3,0 ],0 );
+  self.atomSet( [ 0, 0 ], x );
+  self.atomSet( [ 1, 0 ], 0 );
+  self.atomSet( [ 2, 0 ], 0 );
+  self.atomSet( [ 3, 0 ], 0 );
 
-  self.atomSet( [ 0,1 ],0 );
-  self.atomSet( [ 1,1 ],y );
-  self.atomSet( [ 2,1 ],0 );
-  self.atomSet( [ 3,1 ],0 );
+  self.atomSet( [ 0, 1 ], 0 );
+  self.atomSet( [ 1, 1 ], y );
+  self.atomSet( [ 2, 1 ], 0 );
+  self.atomSet( [ 3, 1 ], 0 );
 
-  self.atomSet( [ 0,2 ],a );
-  self.atomSet( [ 1,2 ],b );
-  self.atomSet( [ 2,2 ],c );
-  self.atomSet( [ 3,2 ],-1 );
+  self.atomSet( [ 0, 2 ], a );
+  self.atomSet( [ 1, 2 ], b );
+  self.atomSet( [ 2, 2 ], c );
+  self.atomSet( [ 3, 2 ], -1 );
 
-  self.atomSet( [ 0,3 ],0 );
-  self.atomSet( [ 1,3 ],0 );
-  self.atomSet( [ 2,3 ],d );
-  self.atomSet( [ 3,3 ],0 );
+  self.atomSet( [ 0, 3 ], 0 );
+  self.atomSet( [ 1, 3 ], 0 );
+  self.atomSet( [ 2, 3 ], d );
+  self.atomSet( [ 3, 3 ], 0 );
 
   // debugger;
   return self;
@@ -2914,13 +2914,13 @@ function formOrthographic( horizontal, vertical, depth )
   let self = this;
 
   // debugger;
-  // _.assert( 0,'not tested' );
+  // _.assert( 0, 'not tested' );
 
   _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( horizontal.length === 2 );
   _.assert( vertical.length === 2 );
   _.assert( depth.length === 2 );
-  _.assert( self.hasShape([ 4,4 ]) );
+  _.assert( self.hasShape([ 4, 4 ]) );
 
   let w = horizontal[ 1 ] - horizontal[ 0 ];
   let h = vertical[ 1 ] - vertical[ 0 ];
@@ -2930,25 +2930,25 @@ function formOrthographic( horizontal, vertical, depth )
   let y = ( vertical[ 1 ] + vertical[ 0 ] ) / h;
   let z = ( depth[ 1 ] + depth[ 0 ] ) / d;
 
-  self.atomSet( [ 0,0 ],2 / w );
-  self.atomSet( [ 1,0 ],0 );
-  self.atomSet( [ 2,0 ],0 );
-  self.atomSet( [ 3,0 ],0 );
+  self.atomSet( [ 0, 0 ], 2 / w );
+  self.atomSet( [ 1, 0 ], 0 );
+  self.atomSet( [ 2, 0 ], 0 );
+  self.atomSet( [ 3, 0 ], 0 );
 
-  self.atomSet( [ 0,1 ],0 );
-  self.atomSet( [ 1,1 ],2 / h );
-  self.atomSet( [ 2,1 ],0 );
-  self.atomSet( [ 3,1 ],0 );
+  self.atomSet( [ 0, 1 ], 0 );
+  self.atomSet( [ 1, 1 ], 2 / h );
+  self.atomSet( [ 2, 1 ], 0 );
+  self.atomSet( [ 3, 1 ], 0 );
 
-  self.atomSet( [ 0,2 ],0 );
-  self.atomSet( [ 1,2 ],0 );
-  self.atomSet( [ 2,2 ],-2 / d );
-  self.atomSet( [ 3,2 ],0 );
+  self.atomSet( [ 0, 2 ], 0 );
+  self.atomSet( [ 1, 2 ], 0 );
+  self.atomSet( [ 2, 2 ], -2 / d );
+  self.atomSet( [ 3, 2 ], 0 );
 
-  self.atomSet( [ 0,3 ],-x );
-  self.atomSet( [ 1,3 ],-y );
-  self.atomSet( [ 2,3 ],-z );
-  self.atomSet( [ 3,3 ],1 );
+  self.atomSet( [ 0, 3 ], -x );
+  self.atomSet( [ 1, 3 ], -y );
+  self.atomSet( [ 2, 3 ], -z );
+  self.atomSet( [ 3, 3 ], 1 );
 
   // te[ 0 ] = 2 / w; te[ 4 ] = 0; te[ 8 ] = 0; te[ 12 ] = - x;
   // te[ 1 ] = 0; te[ 5 ] = 2 / h; te[ 9 ] = 0; te[ 13 ] = - y;
@@ -2963,15 +2963,15 @@ function formOrthographic( horizontal, vertical, depth )
 let lookAt = ( function lookAt()
 {
 
-  let x = [ 0,0,0 ];
-  let y = [ 0,0,0 ];
-  let z = [ 0,0,0 ];
+  let x = [ 0, 0, 0 ];
+  let y = [ 0, 0, 0 ];
+  let z = [ 0, 0, 0 ];
 
   return function( eye, target, up1 )
   {
 
     debugger;
-    _.assert( 0,'not tested' );
+    _.assert( 0, 'not tested' );
 
     let self = this;
     let te = this.buffer;
@@ -2993,12 +2993,12 @@ let lookAt = ( function lookAt()
     {
 
       z[ 0 ] += 0.0001;
-      _.avector._cross3( x,up1, z );
+      _.avector._cross3( x, up1, z );
       xmag = _.avector.mag( x );
 
     }
 
-    _.avector.mulScalar( x,1 / xmag );
+    _.avector.mulScalar( x, 1 / xmag );
 
     _.avector._cross3( y, z, x );
 
@@ -3018,7 +3018,7 @@ let lookAt = ( function lookAt()
 function closest( insElement )
 {
   let self = this;
-  insElement = vector.fromArray( insElement );
+  insElement = vector.FromLong( insElement );
   let result =
   {
     index : null,
@@ -3030,7 +3030,7 @@ function closest( insElement )
   for( let i = 0 ; i < self.length ; i += 1 )
   {
 
-    let d = vector.distanceSqr( insElement,self.eGet( i ) );
+    let d = vector.distanceSqr( insElement, self.eGet( i ) );
     if( d < result.distance )
     {
       result.distance = d;
@@ -3049,7 +3049,7 @@ function closest( insElement )
 function furthest( insElement )
 {
   let self = this;
-  insElement = vector.fromArray( insElement );
+  insElement = vector.FromLong( insElement );
   let result =
   {
     index : null,
@@ -3061,7 +3061,7 @@ function furthest( insElement )
   for( let i = 0 ; i < self.length ; i += 1 )
   {
 
-    let d = vector.distanceSqr( insElement,self.eGet( i ) );
+    let d = vector.distanceSqr( insElement, self.eGet( i ) );
     if( d > result.distance )
     {
       result.distance = d;
@@ -3083,7 +3083,7 @@ function elementMean()
 
   let result = self.elementAdd();
 
-  vector.divScalar( result,self.length );
+  vector.divScalar( result, self.length );
 
   return result;
 }
@@ -3097,9 +3097,8 @@ function minmaxColWise()
   let minmax = self.distributionRangeSummaryValueColWise();
   let result = Object.create( null );
 
-  result.min = self.array.makeSimilar( self.buffer,minmax.length );
-  result.max = self.array.makeSimilar( self.buffer,minmax.length );
-
+  result.min = self.long.longMakeUndefined( self.buffer, minmax.length );
+  result.max = self.long.longMakeUndefined( self.buffer, minmax.length );
 
   for( let i = 0 ; i < minmax.length ; i += 1 )
   {
@@ -3119,8 +3118,8 @@ function minmaxRowWise()
   let minmax = self.distributionRangeSummaryValueRowWise();
   let result = Object.create( null );
 
-  result.min = self.array.makeSimilar( self.buffer,minmax.length );
-  result.max = self.array.makeSimilar( self.buffer,minmax.length );
+  result.min = self.long.longMakeUndefined( self.buffer, minmax.length );
+  result.max = self.long.longMakeUndefined( self.buffer, minmax.length );
 
   for( let i = 0 ; i < minmax.length ; i += 1 )
   {
@@ -3159,7 +3158,7 @@ function determinant()
   {
     let r = 1;
     for( let i = 0 ; i < l ; i += 1 )
-    r *= self.atomGet([ index[ i ],i ]);
+    r *= self.atomGet([ index[ i ], i ]);
     r *= sign;
     // console.log( index );
     // console.log( r );
@@ -3169,7 +3168,7 @@ function determinant()
 
   /* */
 
-  function swap( a,b )
+  function swap( a, b )
   {
     let v = index[ a ];
     index[ a ] = index[ b ];
@@ -3186,8 +3185,8 @@ function determinant()
     for( let s = 0 ; s < l-1 ; s++ )
     {
       let r = add();
-      //console.log( 'add',i,index,r );
-      swap( s,l-1 );
+      //console.log( 'add', i, index, r );
+      swap( s, l-1 );
       i += 1;
     }
 
@@ -3205,7 +3204,7 @@ function determinant()
   // 201
   // 210
 
-  // console.log( 'determinant',result );
+  // console.log( 'determinant', result );
 
   return result;
 }
@@ -3214,7 +3213,7 @@ function determinant()
 // relations
 // --
 
-let Statics =
+let Statics = /* qqq : split static routines. ask how */
 {
 
   /* make */

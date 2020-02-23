@@ -1,4 +1,4 @@
-( function _Space_test_s_( ) {
+( function _Matrix_test_s_( ) {
 
 'use strict';
 
@@ -12,24 +12,26 @@ if( typeof module !== 'undefined' )
 
   _.include( 'wTesting' );
 
-  require( '../l5_space/Include.s' );
+  require( '../l5_matrix/Include.s' );
 
 }
 
 //
 
 var _ = _global_.wTools.withDefaultLong.Fx;
-var space = _.Space;
-var vector = _.vector;
-var vec = _.vector.fromArray;
-var fvec = function( src ){ return _.vector.fromArray( new F32x( src ) ) }
-var ivec = function( src ){ return _.vector.fromArray( new I32x( src ) ) }
+var space = _.Matrix;
+var vad = _.vectorAdapter;
+var vec = _.vectorAdapter.FromLong;
+var fvec = function( src ){ return _.vectorAdapter.FromLong( new F32x( src ) ) }
+var ivec = function( src ){ return _.vectorAdapter.FromLong( new I32x( src ) ) }
 var avector = _.avector;
 
 var sqr = _.sqr;
 var sqrt = _.sqrt;
 
-//
+// --
+// context
+// --
 
 function makeWithOffset( o )
 {
@@ -50,12 +52,14 @@ function makeWithOffset( o )
   return m;
 }
 
-//
+// --
+// inter
+// --
 
 function spaceIs( test )
 {
-  test.case = 'instance of _.Space';
-  var src = new _.Space
+  test.case = 'instance of _.Matrix';
+  var src = new _.Matrix
   ({
     buffer : new F32x( [ 0, 1, 2, 3, 4, 5, 6, 7 ] ),
     offset : 1,
@@ -70,10 +74,10 @@ function spaceIs( test )
 
 //
 
-function constructorIsSpace( test )
+function constructorIsMatrix( test )
 {
-  test.case = 'instance of _.Space';
-  var src = new _.Space
+  test.case = 'instance of _.Matrix';
+  var src = new _.Matrix
   ({
     buffer : new F32x( [ 0, 1, 2, 3, 4, 5, 6, 7 ] ),
     offset : 1,
@@ -82,15 +86,34 @@ function constructorIsSpace( test )
     strides : [ 2, 6 ],
     dims : [ 3, 1 ],
   });
-  var got = _.constructorIsSpace( src );
+  var got = _.constructorIsMatrix( src );
   test.identical( got, false );
 
-  test.case = '_.Space';
-  var got = _.constructorIsSpace( space );
+  test.case = '_.Matrix';
+  var got = _.constructorIsMatrix( space );
   test.identical( got, true );
 }
 
 //
+
+function vectorToMatrix( test )
+{
+
+  /* */
+
+  test.case = 'vector to space'; /* */
+  var v = _.vectorAdapter.From([ 1, 2, 3 ]);
+  var got = v.to( _.Matrix );
+  var expected = _.Matrix.makeCol([ 1, 2, 3 ]);
+  test.identical( got, expected );
+
+  /* */
+
+}
+
+// --
+//
+// --
 
 function experiment( test )
 {
@@ -112,7 +135,7 @@ function env( test )
 {
 
   test.is( _.routineIs( space ) );
-  test.is( _.objectIs( vector ) );
+  test.is( _.objectIs( vad ) );
   test.is( _.objectIs( avector ) );
 
 }
@@ -125,7 +148,7 @@ function clone( test )
   test.case = 'make'; /* */
 
   var buffer = new F32x([ 1, 2, 3, 4, 5, 6 ]);
-  var a = new _.Space
+  var a = new _.Matrix
   ({
     buffer,
     dims : [ 3, 2 ],
@@ -250,7 +273,7 @@ function construct( test )
 
   test.case = 'creating'; /* */
 
-  var a = new _.Space
+  var a = new _.Matrix
   ({
     buffer : new F32x([ 0, 1, 2, 3, 4, 5, 6, 7 ]),
     offset : 1,
@@ -312,7 +335,7 @@ function construct( test )
 
   test.case = 'deserializing clone'; /* */
 
-  var b = new _.Space({ buffer : new F32x(), inputTransposing : true });
+  var b = new _.Matrix({ buffer : new F32x(), inputTransposing : true });
   b.copyDeserializing( cloned );
   test.identical( b, a );
   test.is( a.buffer !== b.buffer );
@@ -353,7 +376,7 @@ function construct( test )
 
   test.case = 'creating'; /* */
 
-  var a = new _.Space
+  var a = new _.Matrix
   ({
     buffer : new F32x([ 0, 1, 2, 3, 4, 5, 6, 7 ]),
     offset : 1,
@@ -415,7 +438,7 @@ function construct( test )
 
   test.case = 'deserializing clone'; /* */
 
-  var b = new _.Space({ buffer : new F32x(), inputTransposing : true });
+  var b = new _.Matrix({ buffer : new F32x(), inputTransposing : true });
   b.copyDeserializing( cloned );
   test.identical( b, a );
   test.is( a.buffer !== b.buffer );
@@ -485,6 +508,8 @@ function make( test )
   this._make( test, o );
 
 }
+
+make.timeOut = 30000;
 
 //
 
@@ -860,7 +885,7 @@ function _make( test, o )
 
   test.case = 'construct empty matrix with long column, non transposing'; /* */
 
-  function checkEmptySpaceWithLongColNonTransposing( m )
+  function checkEmptyMatrixWithLongColNonTransposing( m )
   {
 
     test.identical( m.size, 0 );
@@ -914,24 +939,24 @@ function _make( test, o )
     dims : [ 3, 0 ],
   });
   logger.log( 'm\n' + _.toStr( m ) );
-  // checkEmptySpaceWithLongColNonTransposing( m ); xxx
+  // checkEmptyMatrixWithLongColNonTransposing( m ); xxx
 
   var m = space.make([ 3, 0 ]);
   logger.log( 'm\n' + _.toStr( m ) );
-  checkEmptySpaceWithLongColNonTransposing( m );
+  checkEmptyMatrixWithLongColNonTransposing( m );
   test.identical( m.strides, null );
 
   test.case = 'change by empty buffer of empty matrix with long column, non transposing'; /* */
 
   m.buffer = new I32x();
   logger.log( 'm\n' + _.toStr( m ) );
-  checkEmptySpaceWithLongColNonTransposing( m );
+  checkEmptyMatrixWithLongColNonTransposing( m );
 
   test.case = 'change by empty buffer of empty matrix with long column, non transposing, with copy'; /* */
 
   m.copy({ buffer : o.arrayMake(), offset : o.offset });
   logger.log( 'm\n' + _.toStr( m ) );
-  checkEmptySpaceWithLongColNonTransposing( m );
+  checkEmptyMatrixWithLongColNonTransposing( m );
 
   test.case = 'change buffer of empty matrix with long column, non transposing'; /* */
 
@@ -1009,7 +1034,7 @@ function _make( test, o )
 
   test.case = 'construct empty matrix with long column, transposing'; /* */
 
-  function checkEmptySpaceWithLongColTransposing( m )
+  function checkEmptyMatrixWithLongColTransposing( m )
   {
 
     test.identical( m.size, 0 );
@@ -1063,7 +1088,7 @@ function _make( test, o )
   });
 
   logger.log( 'm\n' + _.toStr( m ) );
-  checkEmptySpaceWithLongColTransposing( m );
+  checkEmptyMatrixWithLongColTransposing( m );
 
   test.case = 'change by empty buffer of empty matrix with long column, transposing'; /* */
 
@@ -1075,13 +1100,13 @@ function _make( test, o )
   });
   m.buffer = new I32x();
   logger.log( 'm\n' + _.toStr( m ) );
-  checkEmptySpaceWithLongColTransposing( m );
+  checkEmptyMatrixWithLongColTransposing( m );
 
   test.case = 'change by empty buffer of empty matrix with long column, transposing, by copy'; /* */
 
   m.copy({ buffer : o.arrayMake([]), offset : o.offset });
   logger.log( 'm\n' + _.toStr( m ) );
-  checkEmptySpaceWithLongColTransposing( m );
+  checkEmptyMatrixWithLongColTransposing( m );
 
   test.case = 'change buffer of empty matrix with long column, transposing'; /* */
 
@@ -1159,7 +1184,7 @@ function _make( test, o )
 
   test.case = 'construct empty matrix with long row, transposing'; /* */
 
-  function checkEmptySpaceWithLongRowTransposing( m )
+  function checkEmptyMatrixWithLongRowTransposing( m )
   {
 
     test.identical( m.size, 0 );
@@ -1214,7 +1239,7 @@ function _make( test, o )
     dims : [ 0, 3 ],
   });
   logger.log( 'm\n' + _.toStr( m ) );
-  checkEmptySpaceWithLongRowTransposing( m );
+  checkEmptyMatrixWithLongRowTransposing( m );
   test.shouldThrowErrorSync( () => m.buffer = new I32x() );
 
   test.case = 'change by empty buffer of empty matrix with long row, transposing'; /* */
@@ -1229,11 +1254,11 @@ function _make( test, o )
 
   m.buffer = new I32x();
   logger.log( 'm\n' + _.toStr( m ) );
-  checkEmptySpaceWithLongRowTransposing( m );
+  checkEmptyMatrixWithLongRowTransposing( m );
 
   m.copy({ buffer : o.arrayMake([]), offset : o.offset });
   logger.log( 'm\n' + _.toStr( m ) );
-  checkEmptySpaceWithLongRowTransposing( m );
+  checkEmptyMatrixWithLongRowTransposing( m );
 
   test.case = 'change by non empty buffer of empty matrix with long row, transposing'; /* */
 
@@ -1311,7 +1336,7 @@ function _make( test, o )
 
   test.case = 'construct empty matrix with long row, non transposing'; /* */
 
-  function checkEmptySpaceWithLongRowNonTransposing( m )
+  function checkEmptyMatrixWithLongRowNonTransposing( m )
   {
 
     test.identical( m.size, 0 );
@@ -1366,11 +1391,11 @@ function _make( test, o )
     dims : [ 0, 3 ],
   });
   logger.log( 'm\n' + _.toStr( m ) );
-  checkEmptySpaceWithLongRowNonTransposing( m );
+  checkEmptyMatrixWithLongRowNonTransposing( m );
 
   var m = space.make([ 0, 3 ]);
   logger.log( 'm\n' + _.toStr( m ) );
-  checkEmptySpaceWithLongRowNonTransposing( m );
+  checkEmptyMatrixWithLongRowNonTransposing( m );
   test.identical( m.strides, null );
 
   var m = space.make([ 0, 3 ]);
@@ -1382,13 +1407,13 @@ function _make( test, o )
   m.growingDimension = 0;
   m.buffer = new I32x();
   logger.log( 'm\n' + _.toStr( m ) );
-  checkEmptySpaceWithLongRowNonTransposing( m );
+  checkEmptyMatrixWithLongRowNonTransposing( m );
 
   test.case = 'change by empty buffer of empty matrix with long row, non transposing, by copy'; /* */
 
   m.copy({ buffer : o.arrayMake([]), offset : o.offset });
   logger.log( 'm\n' + _.toStr( m ) );
-  checkEmptySpaceWithLongRowNonTransposing( m );
+  checkEmptyMatrixWithLongRowNonTransposing( m );
 
   test.case = 'change by non empty buffer of empty matrix with long row, non transposing'; /* */
 
@@ -1476,7 +1501,7 @@ function _make( test, o )
   logger.log( 'm\n' + _.toStr( m ) );
 
 
-  test.identical( m.atomsPerSpace, 3 );
+  test.identical( m.atomsPerMatrix, 3 );
   test.identical( m.size, 12 );
   test.identical( m.sizeOfElement, 12 );
   test.identical( m.sizeOfCol, 12 );
@@ -1543,7 +1568,7 @@ function _make( test, o )
   });
   logger.log( 'm\n' + _.toStr( m ) );
 
-  test.identical( m.atomsPerSpace, 0 );
+  test.identical( m.atomsPerMatrix, 0 );
   test.identical( m.size, 0 );
   test.identical( m.sizeOfElement, 12 );
   test.identical( m.sizeOfCol, 12 );
@@ -2294,7 +2319,7 @@ function makeLine( test )
 
   test.case = 'make col from vector with Array'; /* */
 
-  var v = vector.fromSubArrayWithStride( [ -1, 1, -1, 2, -1, 3, -1 ], 1, 3, 2 );
+  var v = vad.FromSubLongWithStride( [ -1, 1, -1, 2, -1, 3, -1 ], 1, 3, 2 );
   var m = space.makeCol( v );
 
   checkCol( m );
@@ -2321,7 +2346,7 @@ function makeLine( test )
 
   test.case = 'make col from vector with F32x'; /* */
 
-  var v = vector.fromSubArrayWithStride( new F32x([ -1, 1, -1, 2, -1, 3, -1 ]), 1, 3, 2 );
+  var v = vad.FromSubLongWithStride( new F32x([ -1, 1, -1, 2, -1, 3, -1 ]), 1, 3, 2 );
   var m = space.makeCol( v );
 
   logger.log( 'm\n' + _.toStr( m ) );
@@ -2413,7 +2438,7 @@ function makeLine( test )
 
   test.case = 'make col zeroed from vector'; /* */
 
-  var v = vector.fromSubArrayWithStride( new F32x([ -1, 1, -1, 2, -1, 3, -1 ]), 1, 3, 2 );
+  var v = vad.FromSubLongWithStride( new F32x([ -1, 1, -1, 2, -1, 3, -1 ]), 1, 3, 2 );
   var m = space.makeColZeroed( v );
 
   checkCol( m );
@@ -2537,7 +2562,7 @@ function makeLine( test )
 
   test.case = 'make row from vector with Array'; /* */
 
-  var v = vector.fromSubArrayWithStride( [ -1, 1, -1, 2, -1, 3, -1 ], 1, 3, 2 );
+  var v = vad.FromSubLongWithStride( [ -1, 1, -1, 2, -1, 3, -1 ], 1, 3, 2 );
   var m = space.makeRow( v );
 
   checkRow( m );
@@ -2564,7 +2589,7 @@ function makeLine( test )
 
   test.case = 'make row from vector with F32x'; /* */
 
-  var v = vector.fromSubArrayWithStride( new F32x([ -1, 1, -1, 2, -1, 3, -1 ]), 1, 3, 2 );
+  var v = vad.FromSubLongWithStride( new F32x([ -1, 1, -1, 2, -1, 3, -1 ]), 1, 3, 2 );
   var m = space.makeRow( v );
 
   logger.log( 'm\n' + _.toStr( m ) );
@@ -2654,7 +2679,7 @@ function makeLine( test )
 
   test.case = 'make row zeroed from vector'; /* */
 
-  var v = vector.fromSubArrayWithStride( new F32x([ -1, 1, -1, 2, -1, 3, -1 ]), 1, 3, 2 );
+  var v = vad.FromSubLongWithStride( new F32x([ -1, 1, -1, 2, -1, 3, -1 ]), 1, 3, 2 );
   var m = space.makeRowZeroed( v );
 
   checkRow( m );
@@ -2833,31 +2858,35 @@ function _makeSimilar( test, o )
 
   test.case = o.name + ' . from vector'; //
 
-  var src = vector.from( o.arrayMake([ 1, 2, 3 ]) );
+  var src = vad.From( o.arrayMake([ 1, 2, 3 ]) );
   var got = space.makeSimilar( src );
   test.is( _.vectorAdapterIs( src ) );
   test.identical( got.length , src.length );
 
-  var src = vector.fromSubArrayWithStride( o.arrayMake([ -1, 1, -1, 2, -1, 3, -1 ]), 1, 3, 1 );
+  var src = vad.FromSubLongWithStride( o.arrayMake([ -1, 1, -1, 2, -1, 3, -1 ]), 1, 3, 1 );
   var got = space.makeSimilar( src );
   test.is( _.vectorAdapterIs( src ) );
   test.identical( got.length , src.length );
 
   test.case = o.name + ' . from vector with dims'; //
 
-  var src = vector.from( o.arrayMake([ 1, 2, 3 ]) );
+  var src = vad.From( o.arrayMake([ 1, 2, 3 ]) );
   var got = space.makeSimilar( src, [ 5, 1 ] );
   test.is( _.vectorAdapterIs( src ) );
   test.identical( got.length , 5 );
 
-  var src = vector.fromSubArrayWithStride( o.arrayMake([ -1, 1, -1, 2, -1, 3, -1 ]), 1, 3, 1 );
+  var src = vad.FromSubLongWithStride( o.arrayMake([ -1, 1, -1, 2, -1, 3, -1 ]), 1, 3, 1 );
   var got = space.makeSimilar( src, [ 5, 1 ] );
   test.is( _.vectorAdapterIs( src ) );
   test.identical( got.length , 5 );
 
   test.case = o.name + ' . special'; //
 
-  var exp = o.arrayMake([ 0, 0, 0 ]);
+  var exp = o.arrayMake( 4 );
+  var got = space.makeSimilar( o.arrayMake([ 1, 2, 3 ]), [ 4, 1 ] ); /* xxx */
+  test.identical( got, exp );
+
+  var exp = o.arrayMake( 3 );
   var got = space.makeSimilar( o.arrayMake([ 1, 2, 3 ]), [ null, 1 ] ); /* xxx */
   test.identical( got, exp );
 
@@ -2893,17 +2922,17 @@ function makeSimilar( test )
 
   var o = Object.create( null );
   o.name = 'Array';
-  o.arrayMake = function( a ){ return _.longMakeUndefined( Array, a ) };
+  o.arrayMake = function( a ){ return _.longMake( Array, a ) };
   this._makeSimilar( test, o );
 
   var o = Object.create( null );
   o.name = 'F32x';
-  o.arrayMake = function( a ){ return _.longMakeUndefined( F32x, a ) };
+  o.arrayMake = function( a ){ return _.longMake( F32x, a ) };
   this._makeSimilar( test, o );
 
   var o = Object.create( null );
   o.name = 'U32x';
-  o.arrayMake = function( a ){ return _.longMakeUndefined( U32x, a ) };
+  o.arrayMake = function( a ){ return _.longMake( U32x, a ) };
   this._makeSimilar( test, o );
 
 }
@@ -2921,14 +2950,14 @@ function from( test )
 
   test.case = '_bufferFrom from vector with Array'; /* */
 
-  var v = vector.fromSubArrayWithStride( [ -1, 1, -1, 2, -1, 3, -1 ], 1, 3, 2 );
+  var v = vad.FromSubLongWithStride( [ -1, 1, -1, 2, -1, 3, -1 ], 1, 3, 2 );
   var expected = new F32x([ 1, 2, 3 ]);
   var got = space._bufferFrom( v );
   test.identical( got, expected );
 
   test.case = '_bufferFrom from vector with F32x'; /* */
 
-  var v = vector.fromSubArrayWithStride( new F32x([ -1, 1, -1, 2, -1, 3, -1 ]), 1, 3, 2 );
+  var v = vad.FromSubLongWithStride( new F32x([ -1, 1, -1, 2, -1, 3, -1 ]), 1, 3, 2 );
   var got = space._bufferFrom( v );
   test.is( got === v );
 
@@ -3338,29 +3367,23 @@ function _convertToClass( test, o )
 
   var src = space.makeCol( 3 );
   src.buffer = o.arrayMake([ 1, 2, 3 ]);
-  var got = space.convertToClass( vector.fromArray( o.arrayMake([]) ).constructor, src );
-  var expected = vector.fromArray( o.arrayMake([ 1, 2, 3 ]) );
+  var got = space.convertToClass( vad.FromLong( o.arrayMake([]) ).constructor, src );
+  var expected = vad.FromLong( o.arrayMake([ 1, 2, 3 ]) );
   test.identical( got, expected );
 
   test.case = o.name + ' . ' + 'space to array with class'; //
 
   var src = space.makeCol( o.arrayMake([ 1, 2, 3 ]) );
-  debugger;
   var got = space.convertToClass( o.arrayMake([]).constructor, src );
-  debugger;
   var expected = o.arrayMake([ 1, 2, 3 ]);
-  debugger;
   test.identical( got, expected );
-  debugger;
 
   test.case = o.name + ' . ' + 'array to space with class'; //
 
   var src = o.arrayMake([ 1, 2, 3 ]);
   var expected = space.make([ 3, 1 ]);
   expected.buffer = o.arrayMake([ 1, 2, 3 ]);
-  debugger;
   var got = space.convertToClass( space, src );
-  debugger;
   test.identical( got, expected );
 
   test.case = o.name + ' . ' + 'array to vector with class'; //
@@ -3425,17 +3448,17 @@ function convertToClass( test )
 
   var o = Object.create( null );
   o.name = 'Array';
-  o.arrayMake = function( a ){ return _.longMakeUndefined( Array, a ) };
+  o.arrayMake = function( a ){ return _.longMake( Array, a ) };
   this._convertToClass( test, o );
 
   var o = Object.create( null );
   o.name = 'F32x';
-  o.arrayMake = function( a ){ return _.longMakeUndefined( F32x, a ) };
+  o.arrayMake = function( a ){ return _.longMake( F32x, a ) };
   this._convertToClass( test, o );
 
   var o = Object.create( null );
   o.name = 'U32x';
-  o.arrayMake = function( a ){ return _.longMakeUndefined( U32x, a ) };
+  o.arrayMake = function( a ){ return _.longMake( U32x, a ) };
   this._convertToClass( test, o );
 
 }
@@ -3452,7 +3475,7 @@ function _copyTo( test, o )
   var expected = o.arrayMake([ 1, 2, 3 ]);
 
   var got = space.CopyTo( dst, src );
-  test.identical( got, expected );
+  test.identical( got, expected ); debugger;
   test.is( dst === got );
 
   test.case = o.name + ' . ' + 'space to vector'; //
@@ -3592,17 +3615,17 @@ function copyTo( test )
 
   var o = Object.create( null );
   o.name = 'Array';
-  o.arrayMake = function( a ){ return _.longMakeUndefined( Array, a ) };
+  o.arrayMake = function( a ){ return _.longMake( Array, a ) };
   this._copyTo( test, o );
 
   var o = Object.create( null );
   o.name = 'F32x';
-  o.arrayMake = function( a ){ return _.longMakeUndefined( F32x, a ) };
+  o.arrayMake = function( a ){ return _.longMake( F32x, a ) };
   this._copyTo( test, o );
 
   var o = Object.create( null );
   o.name = 'U32x';
-  o.arrayMake = function( a ){ return _.longMakeUndefined( U32x, a ) };
+  o.arrayMake = function( a ){ return _.longMake( U32x, a ) };
   this._copyTo( test, o );
 
 }
@@ -3624,7 +3647,7 @@ function copy( test )
   ]);
   var b2 = new F32x([ 0, 0, 10, 20, 30, 40, 50, 60, 0, 0 ])
 
-  var src = new _.Space
+  var src = new _.Matrix
   ({
     buffer : b1,
     dims : [ 2, 3 ],
@@ -3633,7 +3656,7 @@ function copy( test )
     inputTransposing : 1,
   });
 
-  var dst = new _.Space
+  var dst = new _.Matrix
   ({
     buffer : b2,
     dims : [ 2, 3 ],
@@ -6496,7 +6519,7 @@ function addAtomWise( test )
       4,
     ]);
 
-    v1 = vector.fromArray([ 9, 8 ]);
+    v1 = vad.FromLong([ 9, 8 ]);
     a1 = [ 6, 5 ];
 
   }
@@ -6698,7 +6721,7 @@ function subAtomWise( test )
       4,
     ]);
 
-    v1 = vector.fromArray([ 9, 8 ]);
+    v1 = vad.FromLong([ 9, 8 ]);
     a1 = [ 6, 5 ];
 
   }
@@ -6860,290 +6883,6 @@ function subAtomWise( test )
   test.is( r === m4 );
 
 }
-
-// xxx
-//   test.case = 'subAtomWise 2 spaces'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 3 ]).copy
-//   ([
-//     -9, -18, -27,
-//     -36, -45, -54,
-//   ]);
-//
-//   var r = space.subAtomWise( null, m1, m2 );
-//   test.equivalent( r, expected );
-//   test.is( r === m1 );
-//
-//   test.case = 'subAtomWise _.all sort of arguments'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 1 ]).copy
-//   ([
-//     -6,
-//     -5,
-//   ]);
-//
-//   var r = space.subAtomWise( m5, 10, v1, a1, m4 );
-//   test.equivalent( r, expected );
-//   test.is( r === m5 );
-//
-//   return;
-//
-//   /* */
-//
-//   test.case = 'mulAtomWise 2 spaces'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 3 ]).copy
-//   ([
-//     +10, +40, +90,
-//     +160, +250, +360,
-//   ]);
-//
-//   var r = space.mulAtomWise( null, m1, m2 );
-//   test.equivalent( r, expected );
-//   test.is( r !== m1 );
-//
-//   test.case = 'mulAtomWise _.all sort of arguments'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 1 ]).copy
-//   ([
-//     540,
-//     800,
-//   ]);
-//
-//   var r = space.mulAtomWise( m4, 10, v1, a1, m4 );
-//   test.equivalent( r, expected );
-//   test.is( r === m4 );
-//
-//   /* */
-//
-//   test.case = 'divAtomWise 2 spaces'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 3 ]).copy
-//   ([
-//     +0.1, +0.1, +0.1,
-//     +0.1, +0.1, +0.1,
-//   ]);
-//
-//   var r = space.divAtomWise( null, m1, m2 );
-//   test.equivalent( r, expected );
-//   test.is( r !== m1 );
-//
-//   test.case = 'divAtomWise _.all sort of arguments'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 1 ]).copy
-//   ([
-//     10 / 9 / 6 / 1,
-//     10 / 8 / 5 / 2,
-//   ]);
-//
-//   var r = space.divAtomWise( m4, 10, v1, a1, m4 );
-//   test.equivalent( r, expected );
-//   test.is( r === m4 );
-//
-//   //
-//
-//   debugger;
-// }
-
-//
-
-// function addAtomWise( test )
-// {
-//
-//   var m1, m2, m3, m4, m5, v1, a1;
-//   function remake()
-//   {
-//
-//     m1 = space.make([ 2, 3 ]).copy
-//     ([
-//       +1, +2, +3,
-//       +4, +5, +6,
-//     ]);
-//
-//     m2 = space.make([ 2, 3 ]).copy
-//     ([
-//       +10, +20, +30,
-//       +40, +50, +60,
-//     ]);
-//
-//     m3 = space.make([ 2, 3 ]).copy
-//     ([
-//       +100, +200, +300,
-//       +400, +500, +600,
-//     ]);
-//
-//     m4 = space.make([ 2, 1 ]).copy
-//     ([
-//       1,
-//       2,
-//     ]);
-//
-//     m5 = space.make([ 2, 1 ]).copy
-//     ([
-//       3,
-//       4,
-//     ]);
-//
-//     v1 = vector.fromArray([ 9, 8 ]);
-//     a1 = [ 6, 5 ];
-//
-//   }
-//
-//   test.case = 'addAtomWise 2 spaces'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 3 ]).copy
-//   ([
-//     +11, +22, +33,
-//     +44, +55, +66,
-//   ]);
-//
-//   debugger;
-//   var r = space.addAtomWise( null, [ m1, m2 ] );
-//   debugger;
-//   test.equivalent( r, expected );
-//
-//   test.case = 'addAtomWise 3 spaces into the first src'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 3 ]).copy
-//   ([
-//     +111, +222, +333,
-//     +444, +555, +666,
-//   ]);
-//
-//   var r = space.addAtomWise( m1, [ m1, m2, m3 ] );
-//   test.equivalent( r, expected );
-//   test.is( r === m1 );
-//
-//   test.case = 'addAtomWise space and scalar'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 3 ]).copy
-//   ([
-//     +11, +12, +13,
-//     +14, +15, +16,
-//   ]);
-//
-//   var r = space.addAtomWise( null, [ m1, 10 ] );
-//   test.equivalent( r, expected );
-//
-//   test.case = 'addAtomWise _.all sort of arguments'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 1 ]).copy
-//   ([
-//     26,
-//     25,
-//   ]);
-//
-//   var r = space.addAtomWise( m5, [ 10, v1, a1, m4 ] );
-//   test.equivalent( r, expected );
-//
-//   var r = space.addAtomWise( m4, [ 10, v1, a1, m4 ] );
-//   test.equivalent( r, expected );
-//
-//   /* */
-//
-//   test.case = 'subAtomWise 2 spaces'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 3 ]).copy
-//   ([
-//     -9, -18, -27,
-//     -36, -45, -54,
-//   ]);
-//
-//   var r = space.subAtomWise( null, [ m1, m2 ] );
-//   test.equivalent( r, expected );
-//
-//   test.case = 'subAtomWise _.all sort of arguments'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 1 ]).copy
-//   ([
-//     -6,
-//     -5,
-//   ]);
-//
-//   var r = space.subAtomWise( m5, [ 10, v1, a1, m4 ] );
-//   test.equivalent( r, expected );
-//
-//   /* */
-//
-//   test.case = 'mulAtomWise 2 spaces'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 3 ]).copy
-//   ([
-//     +10, +40, +90,
-//     +160, +250, +360,
-//   ]);
-//
-//   var r = space.mulAtomWise( null, [ m1, m2 ] );
-//   test.equivalent( r, expected );
-//
-//   test.case = 'mulAtomWise _.all sort of arguments'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 1 ]).copy
-//   ([
-//     540,
-//     800,
-//   ]);
-//
-//   var r = space.mulAtomWise( m4, [ 10, v1, a1, m4 ] );
-//   test.equivalent( r, expected );
-//
-//   /* */
-//
-//   test.case = 'divAtomWise 2 spaces'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 3 ]).copy
-//   ([
-//     +0.1, +0.1, +0.1,
-//     +0.1, +0.1, +0.1,
-//   ]);
-//
-//   var r = space.divAtomWise( null, [ m1, m2 ] );
-//   test.equivalent( r, expected );
-//
-//   test.case = 'divAtomWise _.all sort of arguments'; /* */
-//
-//   remake();
-//
-//   var expected = space.make([ 2, 1 ]).copy
-//   ([
-//     10 / 9 / 6 / 1,
-//     10 / 8 / 5 / 2,
-//   ]);
-//
-//   var r = space.divAtomWise( m4, [ 10, v1, a1, m4 ] );
-//   test.equivalent( r, expected );
-//
-// }
 
 //
 
@@ -10039,14 +9778,14 @@ function identical( test )
 
   test.case = 'with strides';
 
-  var m1 = new _.Space
+  var m1 = new _.Matrix
   ({
     buffer : new F32x([ 1, 3, 5 ]),
     dims : [ 3, 1 ],
     inputTransposing : 0,
   });
 
-  var m2 = new _.Space
+  var m2 = new _.Matrix
   ({
     buffer : new F32x([ 0, 1, 2, 3, 4, 5, 6, 7 ]),
     offset : 1,
@@ -10062,14 +9801,14 @@ function identical( test )
 
   test.case = 'with infinity dim';
 
-  var m1 = new _.Space
+  var m1 = new _.Matrix
   ({
     buffer : new F32x([ 1, 3, 5 ]),
     dims : [ 3, Infinity ],
     inputTransposing : 0,
   });
 
-  var m2 = new _.Space
+  var m2 = new _.Matrix
   ({
     buffer : new F32x([ 1, 3, 5 ]),
     dims : [ 3, Infinity ],
@@ -10088,7 +9827,7 @@ function identical( test )
 var Self =
 {
 
-  name : 'Tools.Math.Space',
+  name : 'Tools.Math.Matrix',
   silencing : 1,
   enabled : 1,
   // routine : 'construct',
@@ -10113,11 +9852,11 @@ var Self =
   tests :
   {
 
+    // inter
 
-    //
-
-    spaceIs, // Dmytro : the second part of test routine spaceIs in wTools
-    constructorIsSpace, // Dmytro : the second part of test routine constructorIsSpace in wTools
+    spaceIs,
+    constructorIsMatrix,
+    vectorToMatrix,
 
     // experiment,
 
@@ -10176,6 +9915,8 @@ var Self =
     polynomClosestFor,
 
     identical,
+
+    /* */
 
   },
 
