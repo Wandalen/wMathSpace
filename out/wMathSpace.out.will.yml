@@ -2,10 +2,13 @@ format: outwillfile-2.0
 root:
   - wMathSpace.out
 consistency:
-  ../.ex.will.yml: &ref_0
+  wMathSpace.out.will.yml: &ref_0
+    hash: 125648a8ae0279c5fbd0cefc2d76ae1a
+    size: 38388
+  ../.ex.will.yml: &ref_1
     hash: 52bd02db447fb86cefb01dfd8dbf72e4
     size: 1634
-  ../.im.will.yml: &ref_1
+  ../.im.will.yml: &ref_2
     hash: 28b552be5895ae6800a28d51e5bd8630
     size: 5241
 module:
@@ -16,11 +19,11 @@ module:
       description: Module has moved. Search for wMathMatrix.
       enabled: 1
       version: 0.4.0
-      interpreters: &ref_2
+      interpreters:
         - njs >= 8.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords: &ref_3
+      keywords:
         - wTools
         - math
         - matrix
@@ -28,7 +31,7 @@ module:
         - convolution
       license: MIT
       npm.name: wmathspace
-      npm.scripts: &ref_4
+      npm.scripts:
         test: wtest .run proto/**
         docgen: wdocgen .build proto
     path:
@@ -705,6 +708,24 @@ module:
           content: prime
         inherit:
           - files.transpile
+      exported.proto.export:
+        opts:
+          reflector: 'reflector::exported.proto.export*'
+        criterion:
+          generated: 1
+          content: proto
+          export: 1
+        inherit:
+          - files.reflect
+      exported.files.proto.export:
+        opts:
+          reflector: 'reflector::exported.files.proto.export*'
+        criterion:
+          generated: 1
+          content: proto
+          export: 1
+        inherit:
+          - files.reflect
     build:
       proto.export:
         steps:
@@ -793,8 +814,9 @@ module:
           content: proto
           export: 1
     consistency:
-      ../.ex.will.yml: *ref_0
-      ../.im.will.yml: *ref_1
+      wMathSpace.out.will.yml: *ref_0
+      ../.ex.will.yml: *ref_1
+      ../.im.will.yml: *ref_2
   ../:
     about:
       name: wMathSpace
@@ -802,11 +824,21 @@ module:
       description: Module has moved. Search for wMathMatrix.
       enabled: 1
       version: 0.4.0
-      interpreters: *ref_2
-      keywords: *ref_3
+      interpreters:
+        - njs >= 8.0.0
+        - chrome >= 60.0.0
+        - firefox >= 60.0.0
+      keywords:
+        - wTools
+        - math
+        - matrix
+        - matrix math
+        - convolution
       license: MIT
       npm.name: wmathspace
-      npm.scripts: *ref_4
+      npm.scripts:
+        test: wtest .run proto/**
+        docgen: wdocgen .build proto
     path:
       module.willfiles:
         criterion:
@@ -1494,3 +1526,6 @@ module:
       ../.im.will.yml:
         hash: 28b552be5895ae6800a28d51e5bd8630
         size: 5241
+      wMathSpace.out.will.yml:
+        hash: 125648a8ae0279c5fbd0cefc2d76ae1a
+        size: 38388
