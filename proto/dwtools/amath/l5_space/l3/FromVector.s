@@ -332,7 +332,7 @@ function declareAtomWiseHomogeneousRoutine( routine, name )
       args = _.longSlice( arguments, 0 );
     }
 
-    let result = self.Self.atomWiseHomogeneous /* xxx : rename */
+    let result = self.Self.AtomWiseHomogeneous /* xxx : rename */
     ({
       onContinue : onContinue0,
       onVectorsBegin,

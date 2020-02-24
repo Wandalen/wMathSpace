@@ -3515,7 +3515,7 @@ let Extension =
   atomWiseWithAssign,
   AtomWiseHomogeneous,
   // AtomWiseHomogeneousZip,
-  atomWiseZip,
+  AtomWiseZip,
 
   elementEach,
   elementsZip,
