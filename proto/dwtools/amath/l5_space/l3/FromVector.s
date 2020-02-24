@@ -1,11 +1,11 @@
-(function _FromVector_s_() {
+(function _RoutinesFromVector_s_() {
 
 'use strict';
 
 //
 
 let _ = _global_.wTools;
-let vector = _.vector;
+let vector = _.vectorAdapter;
 let operations = vector.operations;
 
 let _abs = Math.abs;
@@ -16,11 +16,11 @@ let _sqrt = Math.sqrt;
 let _sqr = _.sqr;
 
 let Parent = null;
-let Self = _global_.wSpace;
+let Self = _global_.wMatrix;
 let Proto = Object.create( null );
 let Statics = Proto.Statics = Object.create( null );
 
-_.assert( _.routineIs( Self ),'wSpace is not defined, please include wSpace.s first' );
+_.assert( _.routineIs( Self ), 'wMatrix is not defined, please include wMatrix.s first' );
 
 /*
 map
@@ -31,7 +31,7 @@ zip
 
 //
 
-function declareElementsZipRoutine( routine,rname )
+function declareElementsZipRoutine( routine, rname )
 {
 
   if( routine.operation.takingVectors[ 1 ] < 2 )
@@ -50,13 +50,17 @@ function declareElementsZipRoutine( routine,rname )
   Proto[ name ] = function()
   {
     let self = this;
+
+    _.assert( _.objectIs( self.vectorAdapter ) );
+    let routine2 = _.routineJoin( self.vectorAdapter, routine );
+
     let args = _.longSlice( arguments );
-    args.unshift( routine );
+    args.unshift( routine2 );
 
     debugger;
     throw _.err( 'Not tested' );
 
-    self.elementsZip.apply( self,args ); xxx
+    self.elementsZip.apply( self, args ); xxx
 
     return self;
   }
@@ -65,7 +69,7 @@ function declareElementsZipRoutine( routine,rname )
 
 //
 
-function declareColWiseCollectingRoutine( routine,rname )
+function declareColWiseCollectingRoutine( routine, rname )
 {
 
   let op = routine.operation;
@@ -75,11 +79,16 @@ function declareColWiseCollectingRoutine( routine,rname )
   _.assert( _.boolIs( returningNumber ) );
   _.assert( !Proto[ name ] );
 
+  if( name === 'distributionRangeSummary' )
+  debugger;
+
   Proto[ name ] = function reduceColWise()
   {
     let self = this;
 
-    let result = self.colEachCollecting( routine , arguments , returningNumber );
+    _.assert( _.objectIs( self.vectorAdapter ) );
+    let routine2 = _.routineJoin( self.vectorAdapter, routine );
+    let result = self.colEachCollecting( routine2 , arguments , returningNumber );
 
     return result;
   }
@@ -102,7 +111,11 @@ function declareRowWiseCollectingRoutine( routine , rname )
   {
     let self = this;
 
-    let result = self.rowEachCollecting( routine , arguments , returningNumber );
+    // let result = self.rowEachCollecting( routine , arguments , returningNumber );
+
+    _.assert( _.objectIs( self.vectorAdapter ) );
+    let routine2 = _.routineJoin( self.vectorAdapter, routine );
+    let result = self.rowEachCollecting( routine2 , arguments , returningNumber );
 
     return result;
   }
@@ -141,7 +154,7 @@ function declareAtomWiseReducingRoutine( routine , rname )
   if( op.generator.name !== '__operationReduceToScalar_functor' ) /* xxx */
   return;
 
-  if( _.longIdentical( op.takingArguments,[ 1,1 ] ) )
+  if( _.longIdentical( op.takingArguments, [ 1, 1 ] ) )
   return;
 
   // debugger;
@@ -178,7 +191,7 @@ function declareAtomWiseReducingRoutine( routine , rname )
   {
     let self = this;
     _.assert( arguments.length === 0, 'Expects no arguments' );
-    let result = self.atomWiseReduceWithAtomHandler( onBegin,handleAtom,onEnd );
+    let result = self.atomWiseReduceWithAtomHandler( onBegin, handleAtom, onEnd );
     return result;
   }
 
@@ -186,7 +199,7 @@ function declareAtomWiseReducingRoutine( routine , rname )
 
 //
 
-function declareAtomWiseHomogeneousWithScalarRoutines( routine,rname )
+function declareAtomWiseHomogeneousWithScalarRoutines( routine, rname )
 {
   let op = routine.operation;
 
@@ -220,7 +233,7 @@ function declareAtomWiseHomogeneousWithScalarRoutines( routine,rname )
     _.assert( val === undefined );
     _.assert( _.numberIs( op.dstElement ) );
     _.assert( _.numberIs( op.srcElement ) );
-    self.atomSet( op.key,op.dstElement );
+    self.atomSet( op.key, op.dstElement );
 
   }
 
@@ -235,7 +248,7 @@ function declareAtomWiseHomogeneousWithScalarRoutines( routine,rname )
     _.assert( arguments.length === 1, 'Expects single argument' );
     _.assert( _.numberIs( arguments[ 0 ] ) );
 
-    self.atomWiseWithAssign( handleAtom2,arguments );
+    self.atomWiseWithAssign( handleAtom2, arguments );
 
     return self;
   }
@@ -244,7 +257,7 @@ function declareAtomWiseHomogeneousWithScalarRoutines( routine,rname )
 
 //
 
-function declareAtomWiseHomogeneousRoutine( routine,name )
+function declareAtomWiseHomogeneousRoutine( routine, name )
 {
   let dop = routine.operation;
 
@@ -260,7 +273,7 @@ function declareAtomWiseHomogeneousRoutine( routine,name )
   if( dop.kind === 'reducing' )
   return;
 
-  if( _.longIdentical( dop.input,[ 'vw|s', 's' ] ) )
+  if( _.longIdentical( dop.input, [ 'vw|s', 's' ] ) )
   return;
 
   let routineName = name + 'AtomWise';
@@ -285,7 +298,7 @@ function declareAtomWiseHomogeneousRoutine( routine,name )
 
   function handleAtom( o )
   {
-    let r = onAtom1.call( this,o );
+    let r = onAtom1.call( this, o );
     _.assert( r === undefined );
   }
 
@@ -305,21 +318,21 @@ function declareAtomWiseHomogeneousRoutine( routine,name )
   Proto[ routineName ] = Statics[ routineName ] = function AtomWiseHomogeneous()
   {
     let self = this;
-    let dst,args;
+    let dst, args;
 
     if( _.instanceIs( this ) )
     {
       dst = this;
-      args = _.longSlice( arguments,0 );
+      args = _.longSlice( arguments, 0 );
       args.unshift( dst );
     }
     else
     {
       dst = arguments[ 0 ];
-      args = _.longSlice( arguments,0 );
+      args = _.longSlice( arguments, 0 );
     }
 
-    let result = self.Self.AtomWiseHomogeneous
+    let result = self.Self.AtomWiseHomogeneous /* xxx : rename */
     ({
       onContinue : onContinue0,
       onVectorsBegin,
@@ -337,18 +350,18 @@ function declareAtomWiseHomogeneousRoutine( routine,name )
   Statics[ routineName ] = Statics[ routineName ] = function AtomWiseHomogeneous()
   {
     let self = this;
-    let dst,args;
+    let dst, args;
 
     if( _.instanceIs( this ) )
     {
       dst = this;
-      args = _.longSlice( arguments,0 );
+      args = _.longSlice( arguments, 0 );
       args.unshift( dst );
     }
     else
     {
       dst = arguments[ 0 ];
-      args = _.longSlice( arguments,0 );
+      args = _.longSlice( arguments, 0 );
     }
 
     let result = self.Self.AtomWiseHomogeneous
@@ -385,7 +398,7 @@ function declareAtomWiseHomogeneousRoutine( routine,name )
 // {
 //
 //   for( let op in operations.atomWiseHomogeneous )
-//   declareAtomWiseHomogeneousRoutine( operations.atomWiseHomogeneous[ op ],op );
+//   declareAtomWiseHomogeneousRoutine( operations.atomWiseHomogeneous[ op ], op );
 //
 //   _.assert( Statics.addAtomWise );
 //   _.assert( Statics.allFiniteAtomWise );
@@ -421,7 +434,7 @@ function declareAliases()
 //
 // --
 
-let routines = _.vector.RoutinesMathematical;
+let routines = _.vectorAdapter._routinesMathematical;
 let r;
 for( r in routines )
 {
@@ -442,7 +455,7 @@ for( r in routines )
 
 declareAliases();
 
-_.classExtend( Self,Proto );
+_.classExtend( Self, Proto );
 
 _.assert( _.routineIs( Statics.addAtomWise ) );
 _.assert( _.routineIs( Self.prototype.allFiniteAtomWise ) );
