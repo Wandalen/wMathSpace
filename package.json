@@ -1,6 +1,6 @@
 {
   "name" : "wmathspace", 
-  "version" : "0.3.173", 
+  "version" : "0.3.174", 
   "engine" : "node >= 8.0.0", 
   "description" : "Module has moved. Search for wMathMatrix.", 
   "license" : "MIT", 
