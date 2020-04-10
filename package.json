@@ -1,6 +1,6 @@
 {
   "name" : "wmathspace", 
-  "version" : "0.3.179", 
+  "version" : "0.3.180", 
   "engine" : "node >= 8.0.0", 
   "description" : "Module has moved. Search for wMathMatrix.", 
   "license" : "MIT", 
@@ -14,6 +14,6 @@
     "url" : "https://github.com/Wandalen/wMathSpace/issues"
   }, 
   "dependencies" : {}, 
-  "devDependencies" : { "wTesting" : "beta" }, 
+  "devDependencies" : { "wTesting" : "alpha" }, 
   "keywords" : [ "wTools", "math", "matrix", "matrix math", "convolution" ]
 }
